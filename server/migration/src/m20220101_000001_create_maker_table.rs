@@ -12,7 +12,7 @@ impl MigrationName for Migration {
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let _ = manager
+        manager
             .create_table(
                 sea_query::Table::create()
                     .table(maker::Entity)
@@ -25,15 +25,6 @@ impl MigrationTrait for Migration {
                             .primary_key(),
                     )
                     .col(ColumnDef::new(maker::Column::CodeName).string().not_null())
-                    .to_owned(),
-            )
-            .await;
-        manager
-            .create_index(
-                sea_query::Index::create()
-                    .name("idx_maker_code_name")
-                    .table(maker::Entity)
-                    .col(maker::Column::CodeName)
                     .to_owned(),
             )
             .await
