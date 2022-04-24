@@ -1,0 +1,47 @@
+version: "3.7"
+
+# docker-compose参考 https://qiita.com/yagince/items/ffbff7d15420be1fc411#%E7%92%B0%E5%A2%83%E6%BA%96%E5%82%99
+# x-environment https://qiita.com/reireias/items/ecb81e248314253eb156
+x-environment: &environment
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: postgres
+  POSTGRES_PORT: 8765
+  POSTGRES_DB: suzuya
+  PGSSLMODE: disable
+  TZ: Asia/Tokyo
+  PGTZ: Asia/Tokyo
+
+
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: app
+    working_dir: /app
+    command: bash
+    tty: true
+    environment: *environment
+    volumes:
+      - ./:/app
+    ports:
+      - 1123:1123
+    depends_on:
+      - postgres
+
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    container_name: postgres
+    environment: *environment
+    ports:
+      - "8765:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
