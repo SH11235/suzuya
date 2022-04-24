@@ -1,0 +1,28 @@
+[package]
+edition = "2021"
+name = "server"
+publish = false
+version = "0.1.0"
+[dependencies]
+actix-files = "0.6"
+actix-http = "3"
+actix-rt = "2.7"
+actix-service = "2"
+actix-web = "4"
+dotenv = "0.15"
+listenfd = "0.5"
+serde = "1"
+tera = "1.15.0"
+
+[dependencies.entity]
+path = "entity"
+
+[dependencies.migration]
+path = "migration"
+
+[dependencies.tracing-subscriber]
+features = ["env-filter"]
+version = "0.3"
+
+[workspace]
+members = [".", "entity", "migration"]
