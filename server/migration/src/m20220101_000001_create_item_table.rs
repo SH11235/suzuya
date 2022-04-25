@@ -1,6 +1,6 @@
 use entity::item;
-use entity::maker;
 use entity::item_category;
+use entity::maker;
 use entity::user;
 use sea_schema::migration::prelude::*;
 
@@ -36,11 +36,14 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::Sku).integer())
                     .col(ColumnDef::new(item::Column::Status).string())
                     .col(ColumnDef::new(item::Column::LastUpdated).date().not_null())
-                    .col(ColumnDef::new(item::Column::RetailPrice).integer().not_null())
+                    .col(
+                        ColumnDef::new(item::Column::RetailPrice)
+                            .integer()
+                            .not_null(),
+                    )
                     .col(ColumnDef::new(item::Column::CatalogStatus).string())
                     .col(ColumnDef::new(item::Column::AnnouncementStatus).string())
                     .col(ColumnDef::new(item::Column::Remarks).string())
-
                     // 外部キー
                     .col(ColumnDef::new(item::Column::MakerId).integer())
                     .col(ColumnDef::new(item::Column::CategoryId).integer())
