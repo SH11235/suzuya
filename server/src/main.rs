@@ -71,7 +71,7 @@ async fn new_item_category(data: web::Data<AppState>) -> Result<HttpResponse, Er
     ctx.insert("h4", &h4);
     ctx.insert("path", &path);
     let body = template
-        .render("new.html.tera", &ctx)
+        .render("new_item_category.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
