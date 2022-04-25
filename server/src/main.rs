@@ -2,12 +2,8 @@ use actix_files::Files as Fs;
 use actix_web::{
     error, get, middleware, post, web, App, Error, HttpRequest, HttpResponse, HttpServer, Result
 };
-// use entity::user;
-// use entity::user::Entity as User;
 use entity::item_category;
 use entity::item_category::Entity as ItemCategory;
-// use entity::maker;
-// use entity::maker::Entity as Maker;
 use entity::sea_orm;
 use listenfd::ListenFd;
 // use migration::{Migrator, MigratorTrait};
@@ -17,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::env;
 use tera::Tera;
 
-const DEFAULT_ITEMS_PER_PAGE: usize = 5;
+const DEFAULT_ITEMS_PER_PAGE: usize = 10;
 
 #[derive(Debug, Clone)]
 struct AppState {
@@ -66,6 +62,46 @@ async fn item_category_list(req: HttpRequest, data: web::Data<AppState>) -> Resu
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
+#[get("/new_item_category")]
+async fn new_item_category(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+    let template = &data.templates;
+    let mut ctx = tera::Context::new();
+    let h4 = "アイテムカテゴリー登録";
+    let path = "item_category";
+    ctx.insert("h4", &h4);
+    ctx.insert("path", &path);
+    let body = template
+        .render("new.html.tera", &ctx)
+        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(body))
+}
+
+#[post("/new_item_category")]
+async fn create_item_category(
+    data: web::Data<AppState>,
+    post_form: web::Form<item_category::Model>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    let count = ItemCategory::find().column(item_category::Column::Id).all(conn).await.unwrap().len() as i32;
+    let mut form = post_form.into_inner();
+    form.id = count + 1;
+
+    item_category::ActiveModel {
+        id: Set(form.id),
+        name: Set(form.name.to_owned()),
+        code_name: Set(form.code_name.to_owned()),
+        ..Default::default()
+    }
+    .insert(conn)
+    .await
+    .expect("could not insert item category");
+
+    Ok(HttpResponse::Found()
+        .append_header(("location", "/new_item_category"))
+        .finish())
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "debug");
@@ -110,4 +146,6 @@ async fn main() -> std::io::Result<()> {
 
 pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(item_category_list);
+    cfg.service(new_item_category);
+    cfg.service(create_item_category);
 }
