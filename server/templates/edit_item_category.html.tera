@@ -1,0 +1,58 @@
+{% extends "layout.html.tera" %} {% block content %}
+<div class="row">
+  <h4>Edit Item Category</h4>
+  <div class="twelve columns">
+    <div class="ten columns">
+      <form action="/{{ path }}/{{ item_category.id }}" method="post">
+        <div class="twelve columns">
+          <input style="display: none;"
+            type="text"
+            placeholder="id"
+            name="id"
+            id="id"
+            value="{{ item_category.id }}"
+            autofocus
+            class="u-full-width"
+          />
+          <input
+            type="text"
+            placeholder="name"
+            name="name"
+            id="name"
+            value="{{ item_category.name }}"
+            autofocus
+            class="u-full-width"
+          />
+          <input
+            type="text"
+            placeholder="code_name"
+            name="code_name"
+            id="code_name"
+            value="{{ item_category.code_name }}"
+            autofocus
+            class="u-full-width"
+          />
+        </div>
+        <div class="twelve columns">
+          <div class="two columns">
+            <a href="/{{ path }}">
+              <input type="button" value="cancel" />
+            </a>
+          </div>
+          <div class="eight columns"></div>
+          <div class="two columns">
+            <input type="submit" value="save item category" />
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="two columns">
+      <form action="/delete_{{ path }}/{{ item_category.id }}" method="post">
+        <div class="two columns">
+          <input id="delete-button" type="submit" value="delete item category" />
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock content %}

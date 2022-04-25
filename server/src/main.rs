@@ -102,6 +102,69 @@ async fn create_item_category(
         .finish())
 }
 
+#[get("/item_category/{id}")]
+async fn edit_item_category(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let template = &data.templates;
+
+    let item_category: item_category::Model = ItemCategory::find_by_id(id.into_inner())
+        .one(conn)
+        .await
+        .expect("could not find item category")
+        .unwrap();
+
+    let mut ctx = tera::Context::new();
+    let path = "item_category";
+    ctx.insert("item_category", &item_category);
+    ctx.insert("path", &path);
+
+    let body = template
+        .render("edit_item_category.html.tera", &ctx)
+        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(body))
+}
+
+#[post("/item_category/{id}")]
+async fn update_item_category(
+    data: web::Data<AppState>,
+    id: web::Path<i32>,
+    post_form: web::Form<item_category::Model>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let form = post_form.into_inner();
+
+    item_category::ActiveModel {
+        id: Set(id.into_inner()),
+        name: Set(form.name.to_owned()),
+        code_name: Set(form.code_name.to_owned()),
+    }
+    .save(conn)
+    .await
+    .expect("could not edit item category");
+
+    Ok(HttpResponse::Found()
+        .append_header(("location", "/item_category"))
+        .finish())
+}
+
+#[post("/delete_item_category/{id}")]
+async fn delete_item_category(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    let post: item_category::ActiveModel = ItemCategory::find_by_id(id.into_inner())
+        .one(conn)
+        .await
+        .unwrap()
+        .unwrap()
+        .into();
+
+    post.delete(conn).await.unwrap();
+
+    Ok(HttpResponse::Found()
+        .append_header(("location", "/item_category"))
+        .finish())
+}
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "debug");
@@ -148,4 +211,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(item_category_list);
     cfg.service(new_item_category);
     cfg.service(create_item_category);
+    cfg.service(edit_item_category);
+    cfg.service(update_item_category);
+    cfg.service(delete_item_category);
 }
