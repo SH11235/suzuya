@@ -2,11 +2,6 @@
 <div class="container">
   <p><!--Nothing to see here --></p>
   <h1>{{ h1 }}</h1>
-  {% if flash %}
-  <small class="field-{{ flash.kind }}-flash">
-    {{ flash.message }}
-  </small>
-  {% endif %}
   <table>
     <tbody>
       <thead>

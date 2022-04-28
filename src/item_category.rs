@@ -37,7 +37,7 @@ async fn item_category_list(
     ctx.insert("num_pages", &num_pages);
 
     let body = template
-        .render("data.html.tera", &ctx)
+        .render("item_category_list.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
