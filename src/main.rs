@@ -7,6 +7,7 @@ use std::env;
 use suzuya::item_category;
 use suzuya::maker;
 use suzuya::setting::AppState;
+use suzuya::user;
 use tera::Tera;
 
 #[actix_web::main]
@@ -74,4 +75,12 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(maker::edit_maker);
     cfg.service(maker::update_maker);
     cfg.service(maker::delete_maker);
+
+    // user
+    cfg.service(user::user_list);
+    cfg.service(user::new_user);
+    cfg.service(user::create_user);
+    cfg.service(user::edit_user);
+    cfg.service(user::update_user);
+    cfg.service(user::delete_user);
 }
