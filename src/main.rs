@@ -4,6 +4,7 @@ use entity::sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use suzuya::item_category;
+use suzuya::maker;
 use suzuya::setting::AppState;
 use std::env;
 use tera::Tera;
@@ -58,10 +59,19 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub fn init(cfg: &mut web::ServiceConfig) {
+    // item_category
     cfg.service(item_category::item_category_list);
     cfg.service(item_category::new_item_category);
     cfg.service(item_category::create_item_category);
     cfg.service(item_category::edit_item_category);
     cfg.service(item_category::update_item_category);
     cfg.service(item_category::delete_item_category);
+
+    // maker
+    cfg.service(maker::maker_list);
+    cfg.service(maker::new_maker);
+    cfg.service(maker::create_maker);
+    cfg.service(maker::edit_maker);
+    cfg.service(maker::update_maker);
+    cfg.service(maker::delete_maker);
 }
