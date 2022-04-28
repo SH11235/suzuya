@@ -5,10 +5,7 @@ use entity::maker::Entity as Maker;
 use sea_orm::{entity::*, query::*};
 
 #[get("/maker")]
-async fn maker_list(
-    req: HttpRequest,
-    data: web::Data<AppState>,
-) -> Result<HttpResponse, Error> {
+async fn maker_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
 
@@ -87,10 +84,7 @@ async fn create_maker(
 }
 
 #[get("/maker/{id}")]
-async fn edit_maker(
-    data: web::Data<AppState>,
-    id: web::Path<i32>,
-) -> Result<HttpResponse, Error> {
+async fn edit_maker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let template = &data.templates;
 
