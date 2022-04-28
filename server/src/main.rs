@@ -4,7 +4,6 @@ use entity::sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use sea_orm::DatabaseConnection;
-pub use sea_orm::{entity::*, query::*};
 use serde::Deserialize;
 use std::env;
 use tera::Tera;
