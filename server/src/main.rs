@@ -196,11 +196,13 @@ async fn main() -> std::io::Result<()> {
     // establish connection to database and apply migrations
     let conn = sea_orm::Database::connect(&db_url).await.unwrap();
     match env::var("MIGRATION") {
-        Ok(_) => {
-            println!("Run migration.");
-            Migrator::up(&conn, None).await.unwrap();
-            println!("Finish migration.");
-        },
+        Ok(flag) => {
+            if flag == String::from("true") {
+                println!("Run migration.");
+                Migrator::up(&conn, None).await.unwrap();
+                println!("Finish migration.");
+            }
+        }
         Err(_) => (),
     }
     // load tera templates and build app state
