@@ -3,8 +3,8 @@ use actix_web::{middleware, web, App, HttpServer};
 use entity::sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
-use server::item_category;
-use server::setting::AppState;
+use suzuya::item_category;
+use suzuya::setting::AppState;
 use std::env;
 use tera::Tera;
 
