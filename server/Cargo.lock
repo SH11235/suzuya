@@ -2295,6 +2295,7 @@ dependencies = [
  "entity",
  "listenfd",
  "migration",
+ "sea-orm",
  "serde",
  "tera",
  "tracing-subscriber",
