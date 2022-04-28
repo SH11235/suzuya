@@ -2,7 +2,7 @@ use actix_files::Files as Fs;
 use actix_web::{middleware, web, App, HttpServer};
 use entity::sea_orm;
 use listenfd::ListenFd;
-// use migration::{Migrator, MigratorTrait};
+use migration::{Migrator, MigratorTrait};
 use sea_orm::DatabaseConnection;
 pub use sea_orm::{entity::*, query::*};
 use serde::Deserialize;
@@ -195,10 +195,15 @@ async fn main() -> std::io::Result<()> {
     let server_url = format!("{}:{}", host, port);
 
     // establish connection to database and apply migrations
-    // -> create post table if not exists
     let conn = sea_orm::Database::connect(&db_url).await.unwrap();
-    // Migrator::up(&conn, None).await.unwrap();
-
+    match env::var("MIGRATION") {
+        Ok(_) => {
+            println!("Run migration.");
+            Migrator::up(&conn, None).await.unwrap();
+            println!("Finish migration.");
+        },
+        Err(_) => (),
+    }
     // load tera templates and build app state
     let templates = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*")).unwrap();
     let state = AppState { templates, conn };
