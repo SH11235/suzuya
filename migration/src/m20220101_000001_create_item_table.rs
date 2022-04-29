@@ -45,7 +45,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::Remarks).string())
                     // 外部キー
                     .col(ColumnDef::new(item::Column::MakerId).integer())
-                    .col(ColumnDef::new(item::Column::CategoryId).integer())
                     .col(ColumnDef::new(item::Column::PicId).integer())
                     .col(ColumnDef::new(item::Column::DoubleCheckPersonId).integer())
                     .to_owned(),
@@ -56,13 +55,6 @@ impl MigrationTrait for Migration {
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::MakerId)
                     .to(maker::Entity, maker::Column::Id)
-                    .to_owned(),
-            )
-            .await;
-        let _ = manager
-            .create_foreign_key(
-                sea_query::ForeignKey::create()
-                    .from(item::Entity, item::Column::CategoryId)
                     .to_owned(),
             )
             .await;
