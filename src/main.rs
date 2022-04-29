@@ -60,14 +60,6 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub fn init(cfg: &mut web::ServiceConfig) {
-    // item_category
-    cfg.service(item_category::item_category_list);
-    cfg.service(item_category::new_item_category);
-    cfg.service(item_category::create_item_category);
-    cfg.service(item_category::edit_item_category);
-    cfg.service(item_category::update_item_category);
-    cfg.service(item_category::delete_item_category);
-
     // maker
     cfg.service(maker::maker_list);
     cfg.service(maker::new_maker);
