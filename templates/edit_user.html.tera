@@ -15,49 +15,49 @@
             class="u-full-width"
           />
           <input
-              type="text"
-              placeholder="{{ user.name }}"
-              name="name"
-              id="name"
-              value=""
-              autofocus
-              class="u-full-width"
+            type="text"
+            placeholder="{{ user.name }}"
+            name="name"
+            id="name"
+            value=""
+            autofocus
+            class="u-full-width"
           />
           <input
-              type="text"
-              placeholder="{{ user.description }}"
-              name="description"
-              id="description"
-              value=""
-              autofocus
-              class="u-full-width"
+            type="text"
+            placeholder="{{ user.description }}"
+            name="description"
+            id="description"
+            value=""
+            autofocus
+            class="u-full-width"
           />
           <input style="display: none;"
-              type="text"
-              placeholder=""
-              name="deleted"
-              id="deleted"
-              value="false"
-              autofocus
-              class="u-full-width"
+            type="text"
+            placeholder=""
+            name="deleted"
+            id="deleted"
+            value="false"
+            autofocus
+            class="u-full-width"
           />
           <input style="display: none;"
-              type="text"
-              placeholder=""
-              name="created_at"
-              id="created_at"
-              value="2000-01-01T00:00:00+09:00"
-              autofocus
-              class="u-full-width"
+            type="text"
+            placeholder=""
+            name="created_at"
+            id="created_at"
+            value="2000-01-01T00:00:00+09:00"
+            autofocus
+            class="u-full-width"
           />
           <input style="display: none;"
-              type="text"
-              placeholder=""
-              name="updated_at"
-              id="updated_at"
-              value="2000-01-01T00:00:00+09:00"
-              autofocus
-              class="u-full-width"
+            type="text"
+            placeholder=""
+            name="updated_at"
+            id="updated_at"
+            value="2000-01-01T00:00:00+09:00"
+            autofocus
+            class="u-full-width"
           />
         </div>
         <div class="twelve columns">
