@@ -8,12 +8,14 @@ pub struct Model {
     pub id: i32,
     pub title: String,
     pub name: String,
+    pub product_code: String,
     pub arrival_date: Option<Date>,           // メーカーからの入荷日
     pub reservation_start_date: Option<Date>, // 予約開始日(BtoBおよびBtoC)
     pub reservation_deadline: Option<Date>,   // 予約締切日
     pub order_date: Option<Date>,             // メーカーへの発注日
     pub sku: Option<i32>,                     // 種類数
-    pub status: String,
+    pub illust_status: String,
+    pub design_status: String,
     pub last_updated: Date,        // 最終更新日（ステータス変更時）
     pub retail_price: Option<u32>, // 上代
     pub catalog_status: Option<String>,

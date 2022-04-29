@@ -28,12 +28,18 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(item::Column::Title).string().not_null())
                     .col(ColumnDef::new(item::Column::Name).string().not_null())
+                    .col(
+                        ColumnDef::new(item::Column::ProductCode)
+                            .string()
+                            .not_null(),
+                    )
                     .col(ColumnDef::new(item::Column::ArrivalDate).date())
                     .col(ColumnDef::new(item::Column::ReservationStartDate).date())
                     .col(ColumnDef::new(item::Column::ReservationDeadline).date())
                     .col(ColumnDef::new(item::Column::OrderDate).date())
                     .col(ColumnDef::new(item::Column::Sku).integer())
-                    .col(ColumnDef::new(item::Column::Status).string())
+                    .col(ColumnDef::new(item::Column::IllustStatus).string())
+                    .col(ColumnDef::new(item::Column::DesignStatus).string())
                     .col(ColumnDef::new(item::Column::LastUpdated).date().not_null())
                     .col(
                         ColumnDef::new(item::Column::RetailPrice)
