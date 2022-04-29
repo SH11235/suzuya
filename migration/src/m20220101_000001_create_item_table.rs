@@ -1,5 +1,4 @@
 use entity::item;
-use entity::item_category;
 use entity::maker;
 use entity::user;
 use sea_schema::migration::prelude::*;
@@ -64,7 +63,6 @@ impl MigrationTrait for Migration {
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::CategoryId)
-                    .to(maker::Entity, item_category::Column::Id)
                     .to_owned(),
             )
             .await;

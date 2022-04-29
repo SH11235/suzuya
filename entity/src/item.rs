@@ -21,7 +21,6 @@ pub struct Model {
     pub remarks: Option<String>, // 備考
     // 外部キー
     pub maker_id: Option<i32>,               // from maker
-    pub category_id: Option<i32>,            // from item_category
     pub pic_id: Option<i32>,                 // from user 「担当者」person in charge
     pub double_check_person_id: Option<i32>, // from user 社員名
 }
@@ -36,13 +35,6 @@ pub enum Relation {
     Maker,
 
     #[sea_orm(
-        belongs_to = "super::item_category::Entity",
-        from = "Column::CategoryId",
-        to = "super::item_category::Column::Id"
-    )]
-    ItemCategory,
-
-    #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::PicId",
         to = "super::user::Column::Id"
@@ -53,12 +45,6 @@ pub enum Relation {
 impl Related<super::maker::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Maker.def()
-    }
-}
-
-impl Related<super::item_category::Entity> for Entity {
-    fn to() -> RelationDef {
-        Relation::ItemCategory.def()
     }
 }
 

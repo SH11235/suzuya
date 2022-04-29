@@ -4,7 +4,6 @@ use entity::sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use std::env;
-use suzuya::item_category;
 use suzuya::maker;
 use suzuya::setting::AppState;
 use suzuya::user;
