@@ -1,0 +1,10 @@
+<header class="fixed" style="position: fixed; width: 220px; top: 0px; left: 20px;">
+    <h1 id="Logo"><img style="width: 30px;" src="/static/images/ram.png" alt="ram">Suzuya</h1>
+    <nav class="gNav">
+        <ul id="contents">
+            <li><a href="/item_category">アイテムカテゴリー</a></li>
+            <li><a href="/user">関係者</a></li>
+            <li><a href="/maker">メーカー</a></li>
+        </ul>
+    </nav>
+</header>
