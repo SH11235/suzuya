@@ -28,11 +28,7 @@ impl MigrationTrait for Migration {
                     )
                     .col(ColumnDef::new(item::Column::Title).string().not_null())
                     .col(ColumnDef::new(item::Column::Name).string().not_null())
-                    .col(
-                        ColumnDef::new(item::Column::ProductCode)
-                            .string()
-                            .not_null(),
-                    )
+                    .col(ColumnDef::new(item::Column::ProductCode).string())
                     .col(ColumnDef::new(item::Column::ArrivalDate).date())
                     .col(ColumnDef::new(item::Column::ReservationStartDate).date())
                     .col(ColumnDef::new(item::Column::ReservationDeadline).date())
@@ -40,12 +36,12 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::Sku).integer())
                     .col(ColumnDef::new(item::Column::IllustStatus).string())
                     .col(ColumnDef::new(item::Column::DesignStatus).string())
-                    .col(ColumnDef::new(item::Column::LastUpdated).date().not_null())
                     .col(
-                        ColumnDef::new(item::Column::RetailPrice)
-                            .integer()
+                        ColumnDef::new(item::Column::LastUpdated)
+                            .timestamp_with_time_zone()
                             .not_null(),
                     )
+                    .col(ColumnDef::new(item::Column::RetailPrice).integer())
                     .col(ColumnDef::new(item::Column::CatalogStatus).string())
                     .col(ColumnDef::new(item::Column::AnnouncementStatus).string())
                     .col(ColumnDef::new(item::Column::Remarks).string())
@@ -56,7 +52,7 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await;
-        let _ = manager
+        let _foreign_key_maker_id = manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::MakerId)
@@ -64,7 +60,7 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await;
-        let _ = manager
+        let _foreign_key_pic_id = manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::PicId)
@@ -72,6 +68,16 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await;
+        let _foreign_key_double_check_person_id = manager
+            .create_index(
+                sea_query::Index::create()
+                    .name("idx-item-title")
+                    .table(item::Entity)
+                    .col(item::Column::Title)
+                    .to_owned(),
+            )
+            .await;
+
         let _ = manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
