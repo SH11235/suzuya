@@ -1,6 +1,5 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
-  <p><!--Nothing to see here --></p>
   <h1>{{ h1 }}</h1>
   <table>
     <tbody>
