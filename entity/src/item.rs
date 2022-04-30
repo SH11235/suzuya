@@ -18,8 +18,8 @@ pub struct Model {
     pub design_status: String,
     pub last_updated: DateTimeLocal, // 最終更新日（ステータス変更時）
     pub retail_price: Option<u32>,   // 上代
-    pub catalog_status: Option<String>,
-    pub announcement_status: Option<String>,
+    pub catalog_status: String,
+    pub announcement_status: String,
     pub remarks: Option<String>, // 備考
     // 外部キー
     pub maker_id: Option<i32>,               // from maker

@@ -34,16 +34,36 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::ReservationDeadline).date())
                     .col(ColumnDef::new(item::Column::OrderDate).date())
                     .col(ColumnDef::new(item::Column::Sku).integer())
-                    .col(ColumnDef::new(item::Column::IllustStatus).string())
-                    .col(ColumnDef::new(item::Column::DesignStatus).string())
+                    .col(
+                        ColumnDef::new(item::Column::IllustStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(item::Column::DesignStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
                     .col(
                         ColumnDef::new(item::Column::LastUpdated)
                             .timestamp_with_time_zone()
                             .not_null(),
                     )
                     .col(ColumnDef::new(item::Column::RetailPrice).integer())
-                    .col(ColumnDef::new(item::Column::CatalogStatus).string())
-                    .col(ColumnDef::new(item::Column::AnnouncementStatus).string())
+                    .col(
+                        ColumnDef::new(item::Column::CatalogStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(item::Column::AnnouncementStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
                     .col(ColumnDef::new(item::Column::Remarks).string())
                     // 外部キー
                     .col(ColumnDef::new(item::Column::MakerId).integer())
