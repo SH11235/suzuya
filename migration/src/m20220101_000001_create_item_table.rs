@@ -31,8 +31,14 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::ProductCode).string())
                     .col(ColumnDef::new(item::Column::ReleaseDate).timestamp_with_time_zone())
                     .col(ColumnDef::new(item::Column::ArrivalDate).timestamp_with_time_zone())
-                    .col(ColumnDef::new(item::Column::ReservationStartDate).timestamp_with_time_zone())
-                    .col(ColumnDef::new(item::Column::ReservationDeadline).timestamp_with_time_zone())
+                    .col(
+                        ColumnDef::new(item::Column::ReservationStartDate)
+                            .timestamp_with_time_zone(),
+                    )
+                    .col(
+                        ColumnDef::new(item::Column::ReservationDeadline)
+                            .timestamp_with_time_zone(),
+                    )
                     .col(ColumnDef::new(item::Column::OrderDate).timestamp_with_time_zone())
                     .col(ColumnDef::new(item::Column::Sku).integer())
                     .col(

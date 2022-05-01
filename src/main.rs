@@ -4,9 +4,8 @@ use entity::sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use std::env;
-use suzuya::maker;
 use suzuya::setting::AppState;
-use suzuya::user;
+use suzuya::{item, maker, user};
 use tera::Tera;
 
 #[actix_web::main]
@@ -59,6 +58,12 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub fn init(cfg: &mut web::ServiceConfig) {
+    // item
+    cfg.service(item::item_list);
+    cfg.service(item::new_item);
+    cfg.service(item::create_item);
+    // cfg.service(item::edit_item);
+
     // maker
     cfg.service(maker::maker_list);
     cfg.service(maker::new_maker);

@@ -1,0 +1,76 @@
+{% extends "layout.html.tera" %} {% block content %}
+<div class="container">
+  <h1>{{ h1 }}</h1>
+  <table>
+    <tbody>
+      <thead>
+        <tr>
+          <th>発売日</th>
+          <th>案内</th>
+          <th>締切</th>
+          <th>発注</th>
+          <th>タイトル</th>
+          <th>アイテム名</th>
+          <th>品番</th>
+          <th>SKU</th>
+          <th>イラスト<br>ステータス</th>
+          <th>デザイン<br>ステータス</th>
+          <th>最終更新日</th>
+          <th>担当者</th>
+          <th>メーカー</th>
+          <th>上代</th>
+          <th>ダブチェ</th>
+          <th>カタログ</th>
+          <th>告知</th>
+          <th>備考</th>
+        </tr>
+      </thead>
+      {% for data in view_datas %}
+      <tr class="post">
+        <td>{{ data.release_date }}</td>
+        <td>{{ data.reservation_start_date }}</td>
+        <td>{{ data.reservation_deadline }}</td>
+        <td>{{ data.order_date }}</td>
+        <td>{{ data.title }}<br><a onclick="window.location='/{{ path }}/{{ data.title }}';">編集</a></td>
+        <td>{{ data.name }}</td>
+        <td>{{ data.product_code }}</td>
+        <td>{{ data.sku }}</td>
+        <td>{{ data.illust_status }}</td>
+        <td>{{ data.design_status }}</td>
+        <td>{{ data.last_updated }}</td>
+        <td>{{ data.pic }}</td>
+        <td>{{ data.maker_code }}</td>
+        <td>{{ data.retail_price }}</td>
+        <td>{{ data.double_check_person }}</td>
+        <td>{{ data.catalog_status }}</td>
+        <td>{{ data.announcement_status }}</td>
+        <td>{{ data.remarks }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td></td>
+        <td>
+          {% if page == 1 %} Previous {% else %}
+          <a href="/{{ path }}?page={{ page - 1 }}&posts_per_page={{ items_per_page }}"
+            >Previous</a
+          >
+          {% endif %} | {% if page == num_pages %} Next {% else %}
+          <a href="/{{ path }}?page={{ page + 1 }}&posts_per_page={{ items_per_page }}"
+            >Next</a
+          >
+          {% endif %}
+        </td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="twelve columns">
+    <a href="/new_{{ path }}">
+      <input type="button" value="add {{ path }}" />
+    </a>
+  </div>
+</div>
+{% endblock content %}
