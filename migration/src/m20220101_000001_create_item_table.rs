@@ -30,7 +30,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::Name).string().not_null())
                     .col(ColumnDef::new(item::Column::ProductCode).string())
                     .col(ColumnDef::new(item::Column::ReleaseDate).timestamp_with_time_zone())
-                    .col(ColumnDef::new(item::Column::ArrivalDate).timestamp_with_time_zone())
                     .col(
                         ColumnDef::new(item::Column::ReservationStartDate)
                             .timestamp_with_time_zone(),

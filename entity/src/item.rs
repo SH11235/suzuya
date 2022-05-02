@@ -10,7 +10,6 @@ pub struct Model {
     pub name: String,
     pub product_code: Option<String>,
     pub release_date: Option<DateTimeLocal>, // 発売日
-    pub arrival_date: Option<DateTimeLocal>, // メーカーからの入荷日
     pub reservation_start_date: Option<DateTimeLocal>, // 予約開始日(BtoBおよびBtoC)
     pub reservation_deadline: Option<DateTimeLocal>, // 予約締切日
     pub order_date: Option<DateTimeLocal>,   // メーカーへの発注日

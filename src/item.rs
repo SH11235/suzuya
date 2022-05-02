@@ -32,7 +32,6 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         name: String,
         release_date: Option<DateTimeLocal>,
         product_code: Option<String>,
-        arrival_date: Option<DateTimeLocal>,
         reservation_start_date: Option<DateTimeLocal>,
         reservation_deadline: Option<DateTimeLocal>,
         order_date: Option<DateTimeLocal>,
@@ -57,7 +56,6 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
                     "items"."name",
                     "items"."product_code",
                     "items"."release_date",
-                    "items"."arrival_date",
                     "items"."reservation_start_date",
                     "items"."reservation_deadline",
                     "items"."order_date",
@@ -97,7 +95,6 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         name: String,
         release_date: Option<String>,
         product_code: Option<String>,
-        arrival_date: Option<String>,           // メーカーからの入荷日
         reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
         reservation_deadline: Option<String>,   // 予約締切日
         order_date: Option<String>,             // メーカーへの発注日
@@ -125,13 +122,6 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
                 product_code: item.product_code.clone(),
                 release_date: {
                     if let Some(date) = item.release_date {
-                        Some(date_to_string(&date))
-                    } else {
-                        None
-                    }
-                },
-                arrival_date: {
-                    if let Some(date) = item.arrival_date {
                         Some(date_to_string(&date))
                     } else {
                         None
