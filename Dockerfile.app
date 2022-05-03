@@ -1,31 +1,30 @@
-FROM rust:1.60.0-slim-buster
+FROM rust:1.60.0-slim-buster AS build-stage
 
-ENV CARGO_TARGET_DIR=/tmp/target \
-    DEBIAN_FRONTEND=noninteractive \
-    LC_CTYPE=ja_JP.utf8 \
+ENV LC_CTYPE=ja_JP.utf8 \
     LANG=ja_JP.utf8
-
-RUN apt-get update \
-  && apt-get install -y -q \
-     ca-certificates \
-     locales \
-     libpq-dev \
-     gnupg \
-     apt-transport-https\
-     libssl-dev \
-     pkg-config \
-     curl \
-     build-essential \
-     git \
-     wget \
-  && echo "ja_JP UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  \
-  && echo "install rust tools" \
-  && rustup component add rustfmt \
-  && cargo install cargo-watch cargo-make sea-orm-cli \
-  && cargo install sqlx-cli --no-default-features --features native-tls,postgres
 
 WORKDIR /app
 
-CMD ["cargo", "run"]
+RUN USER=root cargo new suzuya
+WORKDIR /app/suzuya
+
+COPY Cargo.toml Cargo.lock ./
+RUN cargo build --release
+COPY . .
+RUN rm ./target/release/deps/at_api*
+RUN cargo build --release
+RUN cargo install sea-orm-cli
+
+# production
+FROM debian:buster-slim AS production
+RUN apt-get update
+RUN apt-get install libpq-dev -y
+COPY --from=build-stage /app/suzuya/target/release/suzuya .
+CMD ["./suzuya"]
+
+# dev
+FROM rust:1.60.0 AS develop
+WORKDIR /app
+RUN cargo install cargo-watch
+RUN cargo install sea-orm-cli
+COPY . .
