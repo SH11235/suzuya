@@ -1,6 +1,9 @@
 use std::fmt::Debug;
 
-use crate::setting::{AppState, Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM};
+use crate::setting::{
+    announce_status_list, catalog_status_list, design_status_list, illust_status_list, AppState,
+    Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+};
 use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result};
 use chrono::{DateTime, Local};
 use entity::item;
@@ -240,6 +243,45 @@ async fn create_item(
     Ok(HttpResponse::Found()
         .append_header(("location", "/new_item"))
         .finish())
+}
+
+#[get("/item/{title}")]
+async fn edit_item(
+    data: web::Data<AppState>,
+    title: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let template = &data.templates;
+
+    let items = Item::find()
+        .order_by_asc(item::Column::Id)
+        .filter(item::Column::Title.eq(title.to_owned()))
+        .all(conn)
+        .await
+        .expect("could not find item by title.");
+
+    println!("{:?}", items);
+
+    let mut ctx = tera::Context::new();
+    let path = "item";
+    let illust_status_list = illust_status_list();
+    let design_status_list = design_status_list();
+    let catalog_status_list = catalog_status_list();
+    let announce_status_list = announce_status_list();
+    let last_updated = Local::now();
+
+    ctx.insert("items", &items);
+    ctx.insert("path", &path);
+    ctx.insert("illust_status_list", &illust_status_list);
+    ctx.insert("design_status_list", &design_status_list);
+    ctx.insert("last_updated", &last_updated);
+    ctx.insert("catalog_status_list", &catalog_status_list);
+    ctx.insert("announcement_status_list", &announce_status_list);
+
+    let body = template
+        .render("edit_item.html.tera", &ctx)
+        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+    Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
 fn date_to_string(date_time: &DateTime<Local>) -> String {
