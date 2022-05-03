@@ -31,50 +31,51 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
     #[derive(Debug, FromQueryResult)]
     struct SelectResult {
         id: i32,
-        title: String,
-        name: String,
         release_date: Option<DateTimeLocal>,
-        product_code: Option<String>,
         reservation_start_date: Option<DateTimeLocal>,
         reservation_deadline: Option<DateTimeLocal>,
         order_date: Option<DateTimeLocal>,
+        title: String,
+        project_type: String,
+        last_updated: DateTimeLocal,
+        name: String,
+        product_code: Option<String>,
         sku: Option<i32>,
         illust_status: String,
+        pic_illust: Option<String>,
         design_status: String,
-        last_updated: DateTimeLocal,
+        pic_design: Option<String>,
+        maker_code: Option<String>,
         retail_price: Option<i32>,
+        double_check_person: Option<String>,
         catalog_status: String,
         announcement_status: String,
         remarks: Option<String>,
-        // 外部キー
-        maker_code: Option<String>,
-        pic_illust: Option<String>,
-        pic_design: Option<String>,
-        double_check_person: Option<String>,
     }
     let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
                     "items"."id",
-                    "items"."title",
-                    "items"."name",
-                    "items"."product_code",
                     "items"."release_date",
                     "items"."reservation_start_date",
                     "items"."reservation_deadline",
                     "items"."order_date",
+                    "items"."title",
+                    "items"."project_type",
+                    "items"."last_updated",
+                    "items"."name",
+                    "items"."product_code",
                     "items"."sku",
                     "items"."illust_status",
+                    "pics_illust"."name" AS "pic_illust",
                     "items"."design_status",
-                    "items"."last_updated",
+                    "pics_design"."name" AS "pic_design",
+                    "makers"."code_name" AS "maker_code",
                     "items"."retail_price",
+                    "users"."name" AS "double_check_person",
                     "items"."catalog_status",
                     "items"."announcement_status",
-                    "items"."remarks",
-                    "makers"."code_name" AS "maker_code",
-                    "pics_illust"."name" AS "pic_illust",
-                    "pics_design"."name" AS "pic_design",
-                    "users"."name" AS "double_check_person"
+                    "items"."remarks"
                 FROM
                     "items"
                     LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
@@ -94,81 +95,80 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         .await
         .expect("could not retrieve datas");
 
+    println!("{:?}", datas);
     #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
     struct ViewData {
         id: i32,
-        title: String,
-        name: String,
         release_date: Option<String>,
-        product_code: Option<String>,
         reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
         reservation_deadline: Option<String>,   // 予約締切日
         order_date: Option<String>,             // メーカーへの発注日
-        sku: Option<i32>,                       // 種類数
+        title: String,
+        project_type: String,
+        last_updated: String, // 最終更新日（ステータス変更時）
+        name: String,
+        product_code: Option<String>,
+        sku: Option<i32>, // 種類数
         illust_status: String,
+        pic_illust: Option<String>, // from user 「イラスト担当者」
         design_status: String,
-        last_updated: String,      // 最終更新日（ステータス変更時）
-        retail_price: Option<i32>, // 上代
+        pic_design: Option<String>, // from user 「デザイン担当者」
+        maker_code: Option<String>, // from maker
+        retail_price: Option<i32>,  // 上代
+        double_check_person: Option<String>, // from user 「社員名」
         catalog_status: String,
         announcement_status: String,
         remarks: Option<String>, // 備考
-        // 外部キー
-        maker_code: Option<String>,          // from maker
-        pic_illust: Option<String>,          // from user 「イラスト担当者」
-        pic_design: Option<String>,          // from user 「デザイン担当者」
-        double_check_person: Option<String>, // from user 「社員名」
     }
 
     let view_datas = datas
         .iter()
-        .map(|item| {
-            ViewData {
-                id: item.id,
-                title: item.title.clone(),
-                name: item.name.clone(),
-                product_code: item.product_code.clone(),
-                release_date: {
-                    if let Some(date) = item.release_date {
-                        Some(date_to_string(&date))
-                    } else {
-                        None
-                    }
-                },
-                reservation_start_date: {
-                    if let Some(date) = item.reservation_start_date {
-                        Some(date_to_string(&date))
-                    } else {
-                        None
-                    }
-                },
-                reservation_deadline: {
-                    if let Some(date) = item.reservation_deadline {
-                        Some(date_to_string(&date))
-                    } else {
-                        None
-                    }
-                },
-                order_date: {
-                    if let Some(date) = item.order_date {
-                        Some(date_to_string(&date))
-                    } else {
-                        None
-                    }
-                },
-                sku: item.sku,
-                illust_status: item.illust_status.clone(),
-                design_status: item.design_status.clone(),
-                last_updated: date_to_string(&item.last_updated),
-                retail_price: item.retail_price,
-                catalog_status: item.catalog_status.clone(),
-                announcement_status: item.announcement_status.clone(),
-                remarks: item.remarks.clone(),
-                // 外部キー
-                maker_code: item.maker_code.clone(),
-                pic_illust: item.pic_illust.clone(),
-                pic_design: item.pic_design.clone(),
-                double_check_person: item.double_check_person.clone(),
-            }
+        .map(|item| ViewData {
+            id: item.id,
+            release_date: {
+                if let Some(date) = item.release_date {
+                    Some(date_to_string(&date))
+                } else {
+                    None
+                }
+            },
+            reservation_start_date: {
+                if let Some(date) = item.reservation_start_date {
+                    Some(date_to_string(&date))
+                } else {
+                    None
+                }
+            },
+            reservation_deadline: {
+                if let Some(date) = item.reservation_deadline {
+                    Some(date_to_string(&date))
+                } else {
+                    None
+                }
+            },
+            order_date: {
+                if let Some(date) = item.order_date {
+                    Some(date_to_string(&date))
+                } else {
+                    None
+                }
+            },
+            title: item.title.clone(),
+            project_type: item.project_type.clone(),
+            last_updated: date_to_string(&item.last_updated),
+            name: item.name.clone(),
+            product_code: item.product_code.clone(),
+            sku: item.sku,
+            illust_status: item.illust_status.clone(),
+            pic_illust: item.pic_illust.clone(),
+            design_status: item.design_status.clone(),
+            pic_design: item.pic_design.clone(),
+            maker_code: item.maker_code.clone(),
+            retail_price: item.retail_price,
+            double_check_person: item.double_check_person.clone(),
+            catalog_status: item.catalog_status.clone(),
+            announcement_status: item.announcement_status.clone(),
+            remarks: item.remarks.clone(),
         })
         .collect::<Vec<ViewData>>();
 
@@ -265,19 +265,11 @@ async fn edit_item(
         None => None,
     };
     let reservation_start_date: Option<String> = match items[0].reservation_start_date {
-        Some(reservation_start_date) => Some(
-            reservation_start_date
-                .format("%Y/%m/%d")
-                .to_string(),
-        ),
+        Some(reservation_start_date) => Some(reservation_start_date.format("%Y/%m/%d").to_string()),
         None => None,
     };
     let reservation_deadline: Option<String> = match items[0].reservation_deadline {
-        Some(reservation_deadline) => Some(
-            reservation_deadline
-                .format("%Y/%m/%d")
-                .to_string(),
-        ),
+        Some(reservation_deadline) => Some(reservation_deadline.format("%Y/%m/%d").to_string()),
         None => None,
     };
     let order_date: Option<String> = match items[0].order_date {
@@ -330,37 +322,52 @@ fn date_to_yyyymmddhhmmss(date_time: &DateTime<Local>) -> String {
 
 #[cfg(test)]
 mod tests {
-    use chrono::{Local, NaiveDateTime, DateTime, TimeZone};
+    use chrono::{DateTime, Local, NaiveDateTime, TimeZone};
 
     use crate::item::{date_to_string, date_to_yyyymmddhhmmss};
 
     #[test]
     fn test_date_to_string() {
-        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/02/22 22:22:22", "%Y/%m/%d %H:%M:%S").unwrap();
+        let dt: NaiveDateTime =
+            NaiveDateTime::parse_from_str("2022/02/22 22:22:22", "%Y/%m/%d %H:%M:%S").unwrap();
         let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
         assert_eq!(date_to_string(&date_time_local), "02/22(火)".to_string());
 
-        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/12/31 23:59:59", "%Y/%m/%d %H:%M:%S").unwrap();
+        let dt: NaiveDateTime =
+            NaiveDateTime::parse_from_str("2022/12/31 23:59:59", "%Y/%m/%d %H:%M:%S").unwrap();
         let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
         assert_eq!(date_to_string(&date_time_local), "12/31(土)".to_string());
 
-        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2023/01/01 00:00:00", "%Y/%m/%d %H:%M:%S").unwrap();
+        let dt: NaiveDateTime =
+            NaiveDateTime::parse_from_str("2023/01/01 00:00:00", "%Y/%m/%d %H:%M:%S").unwrap();
         let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
         assert_eq!(date_to_string(&date_time_local), "01/01(日)".to_string());
     }
 
     #[test]
     fn test_date_to_yyyymmddhhmmss() {
-        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/02/22 22:22:22", "%Y/%m/%d %H:%M:%S").unwrap();
+        let dt: NaiveDateTime =
+            NaiveDateTime::parse_from_str("2022/02/22 22:22:22", "%Y/%m/%d %H:%M:%S").unwrap();
         let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
-        assert_eq!(date_to_yyyymmddhhmmss(&date_time_local), "20220222222222".to_string());
+        assert_eq!(
+            date_to_yyyymmddhhmmss(&date_time_local),
+            "20220222222222".to_string()
+        );
 
-        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/12/31 23:59:59", "%Y/%m/%d %H:%M:%S").unwrap();
+        let dt: NaiveDateTime =
+            NaiveDateTime::parse_from_str("2022/12/31 23:59:59", "%Y/%m/%d %H:%M:%S").unwrap();
         let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
-        assert_eq!(date_to_yyyymmddhhmmss(&date_time_local), "20221231235959".to_string());
+        assert_eq!(
+            date_to_yyyymmddhhmmss(&date_time_local),
+            "20221231235959".to_string()
+        );
 
-        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2023/01/01 00:00:00", "%Y/%m/%d %H:%M:%S").unwrap();
+        let dt: NaiveDateTime =
+            NaiveDateTime::parse_from_str("2023/01/01 00:00:00", "%Y/%m/%d %H:%M:%S").unwrap();
         let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
-        assert_eq!(date_to_yyyymmddhhmmss(&date_time_local), "20230101000000".to_string());
+        assert_eq!(
+            date_to_yyyymmddhhmmss(&date_time_local),
+            "20230101000000".to_string()
+        );
     }
 }
