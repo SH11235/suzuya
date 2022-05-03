@@ -91,7 +91,7 @@ impl MigrationTrait for Migration {
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::PicIllustId)
-                    .to(maker::Entity, user::Column::Id)
+                    .to(user::Entity, user::Column::Id)
                     .to_owned(),
             )
             .await;
@@ -99,25 +99,26 @@ impl MigrationTrait for Migration {
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::PicDesignId)
-                    .to(maker::Entity, user::Column::Id)
+                    .to(user::Entity, user::Column::Id)
                     .to_owned(),
             )
             .await;
+
         let _foreign_key_double_check_person_id = manager
+            .create_foreign_key(
+                sea_query::ForeignKey::create()
+                    .from(item::Entity, item::Column::DoubleCheckPersonId)
+                    .to(user::Entity, user::Column::Id)
+                    .to_owned(),
+            )
+            .await;
+
+        let _create_index = manager
             .create_index(
                 sea_query::Index::create()
                     .name("idx-item-title")
                     .table(item::Entity)
                     .col(item::Column::Title)
-                    .to_owned(),
-            )
-            .await;
-
-        let _ = manager
-            .create_foreign_key(
-                sea_query::ForeignKey::create()
-                    .from(item::Entity, item::Column::DoubleCheckPersonId)
-                    .to(maker::Entity, user::Column::Id)
                     .to_owned(),
             )
             .await;
