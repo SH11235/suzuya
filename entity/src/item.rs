@@ -34,16 +34,27 @@ pub enum Relation {
     #[sea_orm(
         belongs_to = "super::maker::Entity",
         from = "Column::MakerId",
-        to = "super::maker::Column::Id"
+        to = "super::maker::Column::Id",
     )]
     Maker,
-
     #[sea_orm(
         belongs_to = "super::user::Entity",
         from = "Column::DoubleCheckPersonId",
-        to = "super::user::Column::Id"
+        to = "super::user::Column::Id",
     )]
-    User,
+    User1,
+    #[sea_orm(
+        belongs_to = "super::user::Entity",
+        from = "Column::PicIllustId",
+        to = "super::user::Column::Id",
+    )]
+    User2,
+    #[sea_orm(
+        belongs_to = "super::user::Entity",
+        from = "Column::PicDesignId",
+        to = "super::user::Column::Id",
+    )]
+    User3,
 }
 
 impl Related<super::maker::Entity> for Entity {
@@ -54,7 +65,7 @@ impl Related<super::maker::Entity> for Entity {
 
 impl Related<super::user::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::User.def()
+        Relation::User1.def()
     }
 }
 
