@@ -15,8 +15,6 @@ struct UpdateMaker {
     code_name: String,
 }
 
-
-
 #[get("/maker")]
 async fn maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
