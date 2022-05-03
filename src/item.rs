@@ -217,10 +217,13 @@ async fn create_item(
     let form = post_form.into_inner();
     let name_list: Vec<&str> = form.name_list.split(',').collect();
 
+    let date = Local::now();
+    let yyyymmddhhmmss = date_to_yyyymmddhhmmss(&date);
+
     let last_updated = Local::now();
     for item_name in name_list.iter() {
         item::ActiveModel {
-            title: Set(form.title.to_owned()),
+            title: Set(format!("{}_{}", form.title.to_owned(), yyyymmddhhmmss)),
             name: Set(item_name.to_string()),
             last_updated: Set(last_updated),
             ..Default::default()
@@ -275,6 +278,7 @@ async fn edit_item(
 }
 
 fn date_to_string(date_time: &DateTime<Local>) -> String {
+    // format document https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html
     let day_format = date_time.format("%w").to_string(); // Sunday = 0, Monday = 1, ..., Saturday = 6.
     let day_jp = match &*day_format {
         "0" => "(日)",
@@ -288,4 +292,8 @@ fn date_to_string(date_time: &DateTime<Local>) -> String {
     };
     let month_date = date_time.format("%m/%d").to_string();
     format!("{}{}", month_date, day_jp)
+}
+
+fn date_to_yyyymmddhhmmss(date_time: &DateTime<Local>) -> String {
+    date_time.format("%Y%m%d%H%M%S").to_string()
 }
