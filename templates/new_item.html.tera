@@ -47,7 +47,7 @@
         const name_list = [];
         let inputName = "";
         {% for id_num in input_id_list %}
-        inputName = inputFormElements.name{ { id_num } }.value;
+        inputName = inputFormElements.name{{ id_num }}.value;
         if (inputName && inputName.match(/,/)) {
             alert("カンマ「,」はアイテム名に含めないでください");
         }
