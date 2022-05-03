@@ -214,22 +214,16 @@ async fn create_item(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    let count = Item::find()
-        .column(item::Column::Id)
-        .all(conn)
-        .await
-        .unwrap()
-        .len() as i32;
-    let mut id = count + 1;
     let form = post_form.into_inner();
     let name_list: Vec<&str> = form.name_list.split(',').collect();
 
-    println!("{:?}", name_list);
+    let date = Local::now();
+    let yyyymmddhhmmss = date_to_yyyymmddhhmmss(&date);
+
     let last_updated = Local::now();
     for item_name in name_list.iter() {
         item::ActiveModel {
-            id: Set(id),
-            title: Set(form.title.to_owned()),
+            title: Set(format!("{}_{}", form.title.to_owned(), yyyymmddhhmmss)),
             name: Set(item_name.to_string()),
             last_updated: Set(last_updated),
             ..Default::default()
@@ -237,7 +231,6 @@ async fn create_item(
         .insert(conn)
         .await
         .expect("could not insert item");
-        id = id + 1;
     }
 
     Ok(HttpResponse::Found()
@@ -285,6 +278,7 @@ async fn edit_item(
 }
 
 fn date_to_string(date_time: &DateTime<Local>) -> String {
+    // format document https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html
     let day_format = date_time.format("%w").to_string(); // Sunday = 0, Monday = 1, ..., Saturday = 6.
     let day_jp = match &*day_format {
         "0" => "(日)",
@@ -298,4 +292,45 @@ fn date_to_string(date_time: &DateTime<Local>) -> String {
     };
     let month_date = date_time.format("%m/%d").to_string();
     format!("{}{}", month_date, day_jp)
+}
+
+fn date_to_yyyymmddhhmmss(date_time: &DateTime<Local>) -> String {
+    date_time.format("%Y%m%d%H%M%S").to_string()
+}
+
+#[cfg(test)]
+mod tests {
+    use chrono::{Local, NaiveDateTime, DateTime, TimeZone};
+
+    use crate::item::{date_to_string, date_to_yyyymmddhhmmss};
+
+    #[test]
+    fn test_date_to_string() {
+        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/02/22 22:22:22", "%Y/%m/%d %H:%M:%S").unwrap();
+        let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
+        assert_eq!(date_to_string(&date_time_local), "02/22(火)".to_string());
+
+        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/12/31 23:59:59", "%Y/%m/%d %H:%M:%S").unwrap();
+        let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
+        assert_eq!(date_to_string(&date_time_local), "12/31(土)".to_string());
+
+        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2023/01/01 00:00:00", "%Y/%m/%d %H:%M:%S").unwrap();
+        let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
+        assert_eq!(date_to_string(&date_time_local), "01/01(日)".to_string());
+    }
+
+    #[test]
+    fn test_date_to_yyyymmddhhmmss() {
+        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/02/22 22:22:22", "%Y/%m/%d %H:%M:%S").unwrap();
+        let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
+        assert_eq!(date_to_yyyymmddhhmmss(&date_time_local), "20220222222222".to_string());
+
+        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2022/12/31 23:59:59", "%Y/%m/%d %H:%M:%S").unwrap();
+        let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
+        assert_eq!(date_to_yyyymmddhhmmss(&date_time_local), "20221231235959".to_string());
+
+        let dt: NaiveDateTime = NaiveDateTime::parse_from_str("2023/01/01 00:00:00", "%Y/%m/%d %H:%M:%S").unwrap();
+        let date_time_local: DateTime<Local> = Local.from_local_datetime(&dt).unwrap();
+        assert_eq!(date_to_yyyymmddhhmmss(&date_time_local), "20230101000000".to_string());
+    }
 }
