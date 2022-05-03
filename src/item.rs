@@ -1,8 +1,8 @@
 use std::fmt::Debug;
 
 use crate::setting::{
-    announce_status_list, catalog_status_list, design_status_list, illust_status_list, AppState,
-    Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+    announce_status_list, catalog_status_list, design_status_list, illust_status_list,
+    project_type_list, AppState, Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
 use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result};
 use chrono::{DateTime, Local};
@@ -255,6 +255,7 @@ async fn edit_item(
 
     let mut ctx = tera::Context::new();
     let path = "item";
+    let project_type_list = project_type_list();
     let illust_status_list = illust_status_list();
     let design_status_list = design_status_list();
     let catalog_status_list = catalog_status_list();
@@ -283,6 +284,7 @@ async fn edit_item(
 
     ctx.insert("items", &items);
     ctx.insert("path", &path);
+    ctx.insert("project_type_list", &project_type_list);
     ctx.insert("illust_status_list", &illust_status_list);
     ctx.insert("design_status_list", &design_status_list);
     ctx.insert("release_date", &release_date);
