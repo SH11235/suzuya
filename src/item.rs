@@ -45,7 +45,8 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         remarks: Option<String>,
         // 外部キー
         maker_code: Option<String>,
-        pic: Option<String>,
+        pic_illust: Option<String>,
+        pic_design: Option<String>,
         double_check_person: Option<String>,
     }
     let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
@@ -68,12 +69,14 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
                     "items"."announcement_status",
                     "items"."remarks",
                     "makers"."code_name" AS "maker_code",
-                    "pics"."name" AS "pic",
+                    "pics_illust"."name" AS "pic_illust",
+                    "pics_design"."name" AS "pic_design",
                     "users"."name" AS "double_check_person"
                 FROM
                     "items"
                     LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
-                    LEFT JOIN "users" AS "pics" ON "items"."pic_id" = "pics"."id"
+                    LEFT JOIN "users" AS "pics_illust" ON "items"."pic_illust_id" = "pics_illust"."id"
+                    LEFT JOIN "users" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
                     LEFT JOIN "users" ON "items"."double_check_person_id" = "users"."id"
                 ORDER BY
                     "items"."id" ASC
@@ -108,8 +111,9 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         remarks: Option<String>, // 備考
         // 外部キー
         maker_code: Option<String>,          // from maker
-        pic: Option<String>,                 // from user 「担当者」person in charge
-        double_check_person: Option<String>, // from user 社員名
+        pic_illust: Option<String>,          // from user 「イラスト担当者」
+        pic_design: Option<String>,          // from user 「デザイン担当者」
+        double_check_person: Option<String>, // from user 「社員名」
     }
 
     let view_datas = datas
@@ -158,7 +162,8 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
                 remarks: item.remarks.clone(),
                 // 外部キー
                 maker_code: item.maker_code.clone(),
-                pic: item.pic.clone(),
+                pic_illust: item.pic_illust.clone(),
+                pic_design: item.pic_design.clone(),
                 double_check_person: item.double_check_person.clone(),
             }
         })

@@ -22,8 +22,10 @@ pub struct Model {
     pub announcement_status: String,
     pub remarks: Option<String>, // 備考
     // 外部キー
-    pub maker_id: Option<i32>,               // from maker
-    pub pic_id: Option<i32>,                 // from user 「担当者」person in charge
+    pub maker_id: Option<i32>, // from maker
+    // pic：person in charge
+    pub pic_illust_id: Option<i32>, // from user 「イラスト担当者」
+    pub pic_design_id: Option<i32>, // from user 「デザイン担当者」
     pub double_check_person_id: Option<i32>, // from user 社員名
 }
 
@@ -38,7 +40,7 @@ pub enum Relation {
 
     #[sea_orm(
         belongs_to = "super::user::Entity",
-        from = "Column::PicId",
+        from = "Column::DoubleCheckPersonId",
         to = "super::user::Column::Id"
     )]
     User,

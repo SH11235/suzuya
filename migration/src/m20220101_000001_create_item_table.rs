@@ -73,7 +73,8 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::Remarks).string())
                     // 外部キー
                     .col(ColumnDef::new(item::Column::MakerId).integer())
-                    .col(ColumnDef::new(item::Column::PicId).integer())
+                    .col(ColumnDef::new(item::Column::PicIllustId).integer())
+                    .col(ColumnDef::new(item::Column::PicDesignId).integer())
                     .col(ColumnDef::new(item::Column::DoubleCheckPersonId).integer())
                     .to_owned(),
             )
@@ -86,10 +87,18 @@ impl MigrationTrait for Migration {
                     .to_owned(),
             )
             .await;
-        let _foreign_key_pic_id = manager
+        let _foreign_key_pic_illust_id = manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
-                    .from(item::Entity, item::Column::PicId)
+                    .from(item::Entity, item::Column::PicIllustId)
+                    .to(maker::Entity, user::Column::Id)
+                    .to_owned(),
+            )
+            .await;
+        let _foreign_key_pic_design_id = manager
+            .create_foreign_key(
+                sea_query::ForeignKey::create()
+                    .from(item::Entity, item::Column::PicDesignId)
                     .to(maker::Entity, user::Column::Id)
                     .to_owned(),
             )
