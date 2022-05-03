@@ -1,5 +1,5 @@
-use crate::setting::{AppState, Params, DEFAULT_ITEMS_PER_PAGE};
-use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result};
+use crate::setting::AppState;
+use actix_web::{error, get, post, web, Error, HttpResponse, Result};
 use chrono::Local;
 use entity::user;
 use entity::user::Entity as User;
