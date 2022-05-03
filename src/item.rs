@@ -224,7 +224,6 @@ async fn create_item(
     let form = post_form.into_inner();
     let name_list: Vec<&str> = form.name_list.split(',').collect();
 
-    println!("{:?}", name_list);
     let last_updated = Local::now();
     for item_name in name_list.iter() {
         item::ActiveModel {
@@ -260,20 +259,50 @@ async fn edit_item(
         .await
         .expect("could not find item by title.");
 
-    println!("{:?}", items);
-
     let mut ctx = tera::Context::new();
     let path = "item";
     let illust_status_list = illust_status_list();
     let design_status_list = design_status_list();
     let catalog_status_list = catalog_status_list();
     let announce_status_list = announce_status_list();
-    let last_updated = Local::now();
+
+    let release_date: Option<String> = match items[0].release_date {
+        Some(release_date) => Some(release_date.format("%Y/%m/%d").to_string()),
+        None => None,
+    };
+    let reservation_start_date: Option<String> = match items[0].reservation_start_date {
+        Some(reservation_start_date) => Some(
+            reservation_start_date
+                .format("%Y/%m/%d")
+                .to_string(),
+        ),
+        None => None,
+    };
+    let reservation_deadline: Option<String> = match items[0].reservation_deadline {
+        Some(reservation_deadline) => Some(
+            reservation_deadline
+                .format("%Y/%m/%d")
+                .to_string(),
+        ),
+        None => None,
+    };
+    let order_date: Option<String> = match items[0].order_date {
+        Some(order_date) => Some(order_date.format("%Y/%m/%d").to_string()),
+        None => None,
+    };
+    let last_updated = items[0]
+        .last_updated
+        .format("%Y/%m/%d %H:%M:%S")
+        .to_string();
 
     ctx.insert("items", &items);
     ctx.insert("path", &path);
     ctx.insert("illust_status_list", &illust_status_list);
     ctx.insert("design_status_list", &design_status_list);
+    ctx.insert("release_date", &release_date);
+    ctx.insert("reservation_start_date", &reservation_start_date);
+    ctx.insert("reservation_deadline", &reservation_deadline);
+    ctx.insert("order_date", &order_date);
     ctx.insert("last_updated", &last_updated);
     ctx.insert("catalog_status_list", &catalog_status_list);
     ctx.insert("announcement_status_list", &announce_status_list);
