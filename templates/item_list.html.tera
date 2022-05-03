@@ -10,12 +10,12 @@
           <th>締切</th>
           <th>発注</th>
           <th>タイトル</th>
+          <th>最終更新日</th>
           <th>アイテム名</th>
           <th>品番</th>
           <th>SKU</th>
           <th>イラスト<br>ステータス</th>
           <th>デザイン<br>ステータス</th>
-          <th>最終更新日</th>
           <th>担当者</th>
           <th>メーカー</th>
           <th>上代</th>
@@ -32,12 +32,12 @@
         <td>{{ data.reservation_deadline }}</td>
         <td>{{ data.order_date }}</td>
         <td>{{ data.title }}<br><a onclick="window.location='/{{ path }}/{{ data.title }}';">編集</a></td>
+        <td>{{ data.last_updated }}</td>
         <td>{{ data.name }}</td>
         <td>{{ data.product_code }}</td>
         <td>{{ data.sku }}</td>
         <td>{{ data.illust_status }}</td>
         <td>{{ data.design_status }}</td>
-        <td>{{ data.last_updated }}</td>
         <td>{{ data.pic }}</td>
         <td>{{ data.maker_code }}</td>
         <td>{{ data.retail_price }}</td>
