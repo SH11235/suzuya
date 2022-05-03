@@ -1,12 +1,12 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
   <h1>{{ h1 }}</h1>
-  <table>
+  <table class="two columns">
     <tbody>
       <thead>
         <tr>
           <th>ID</th>
-          <th>Code</th>
+          <th>メーカーコード</th>
         </tr>
       </thead>
       {% for data in datas %}
@@ -17,28 +17,10 @@
       {% endfor %}
     </tbody>
     <tfoot>
-      <tr>
-        <td></td>
-        <td>
-          {% if page == 1 %} Previous {% else %}
-          <a href="/{{ path }}?page={{ page - 1 }}&posts_per_page={{ items_per_page }}"
-            >Previous</a
-          >
-          {% endif %} | {% if page == num_pages %} Next {% else %}
-          <a href="/{{ path }}?page={{ page + 1 }}&posts_per_page={{ items_per_page }}"
-            >Next</a
-          >
-          {% endif %}
-        </td>
-        <td></td>
-      </tr>
+      <a href="/new_{{ path }}">
+        <input type="button" value="メーカー追加" />
+      </a>
     </tfoot>
   </table>
-
-  <div class="twelve columns">
-    <a href="/new_{{ path }}">
-      <input type="button" value="add {{ path }}" />
-    </a>
-  </div>
 </div>
 {% endblock content %}

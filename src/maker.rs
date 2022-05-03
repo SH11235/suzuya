@@ -8,30 +8,17 @@ use sea_orm::{entity::*, query::*};
 async fn maker_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
-
-    // get params
-    let params = web::Query::<Params>::from_query(req.query_string()).unwrap();
-
-    let page = params.page.unwrap_or(1);
-    let items_per_page = params.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
-    let paginator = Maker::find()
+    let datas = Maker::find()
         .order_by_asc(maker::Column::Id)
-        .paginate(conn, items_per_page);
-    let num_pages = paginator.num_pages().await.ok().unwrap();
-
-    let datas = paginator
-        .fetch_page(page - 1)
+        .all(conn)
         .await
         .expect("could not retrieve datas");
     let mut ctx = tera::Context::new();
     let h1 = "メーカーコード";
     let path = "maker";
     ctx.insert("datas", &datas);
-    ctx.insert("page", &page);
     ctx.insert("h1", &h1);
     ctx.insert("path", &path);
-    ctx.insert("items_per_page", &items_per_page);
-    ctx.insert("num_pages", &num_pages);
 
     let body = template
         .render("maker_list.html.tera", &ctx)
