@@ -134,3 +134,7 @@ button.small {
 .toggle-wrap > input[type="checkbox"]:checked ~ .icon::after {
   display: none;
 }
+
+.item-edit-input {
+  width: 225px;
+}
