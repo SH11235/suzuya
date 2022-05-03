@@ -10,6 +10,7 @@
                     <th>締切</th>
                     <th>発注</th>
                     <th>タイトル</th>
+                    <th>案件</th>
                     <th>最終更新日</th>
                     <th>アイテム名</th>
                     <th>品番</th>
@@ -33,6 +34,7 @@
                 <td>{{ data.reservation_deadline }}</td>
                 <td>{{ data.order_date }}</td>
                 <td>{{ data.title }}<br><a onclick="window.location='/{{ path }}/{{ data.title }}';">編集</a></td>
+                <td>{{ data.project_type }}</td>
                 <td>{{ data.last_updated }}</td>
                 <td>{{ data.name }}</td>
                 <td>{{ data.product_code }}</td>

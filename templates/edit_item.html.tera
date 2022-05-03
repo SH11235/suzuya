@@ -18,6 +18,16 @@
             タイトル：<input class="item-edit-input" type="text" placeholder="タイトル" name="title" id="title"
                 value="{{ items[0].title }}" autofocus class="u-full-width" />
             <br>
+            案件：<select class="u-full-width" name="project_type" id="project_type">
+                {% for project_type in project_type_list %}
+                {% if project_type.name == items[0].project_type %}
+                <option value="{{ project_type.name }}" selected>{{ project_type.name }}</option>
+                {% else %}
+                <option value="{{ project_type.name }}">{{ project_type.name }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            <br>
             最終更新日：<input class="item-edit-input" type="text" name="title" id="title" value="{{ last_updated }}"
                 autofocus readonly class="u-full-width" />
             <br>

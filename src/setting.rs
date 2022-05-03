@@ -32,6 +32,27 @@ pub enum Color {
     GRAY,
 }
 
+pub fn project_type_list() -> Vec<StatusName> {
+    vec![
+        StatusName {
+            name: String::from("デフォルト"),
+            color: Color::WHITE,
+        },
+        StatusName {
+            name: String::from("A案件"),
+            color: Color::YELLOW,
+        },
+        StatusName {
+            name: String::from("Y案件"),
+            color: Color::LIGHTBLUE,
+        },
+        StatusName {
+            name: String::from("再販"),
+            color: Color::GRAY,
+        },
+    ]
+}
+
 pub fn illust_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
