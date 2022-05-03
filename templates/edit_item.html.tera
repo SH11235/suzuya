@@ -2,84 +2,75 @@
 <div class="container">
     <h4>Edit Item</h4>
     <div class="twelve columns">
-        <div class="ten columns">
-            <form action="/{{ path }}/{{ items[0].title }}" method="post">
-                発売日：<input class="item-edit-input" type="text" placeholder=" yyyy-mm-dd" name="release_date"
-                    id="release_date" value="{{ release_date }}" autofocus class="u-full-width" />
-                <br>
-                案内日：<input class="item-edit-input" type="text" placeholder="yyyy-mm-dd" name="reservation_start_date"
-                    id="reservation_start_date" value="{{ reservation_start_date }}" autofocus
-                    class="u-full-width" />
-                <br>
-                締切日：<input class="item-edit-input" type="text" placeholder="yyyy-mm-dd" name="reservation_deadline"
-                    id="reservation_deadline" value="{{ reservation_deadline }}" autofocus
-                    class="u-full-width" />
-                <br>
-                発注日：<input class="item-edit-input" type="text" placeholder="yyyy-mm-dd" name="order_date"
-                    id="order_date" value="{{ order_date }}" autofocus class="u-full-width" />
-                <br>
-                タイトル：<input class="item-edit-input" type="text" placeholder="タイトル" name="title" id="title"
-                    value="{{ items[0].title }}" autofocus class="u-full-width" />
-                <br>
-                最終更新日：<input class="item-edit-input" type="text" name="title" id="title" value="{{ last_updated }}"
-                    autofocus readonly class="u-full-width" />
-                <br>
-                アイテム名<input class="item-edit-input" type="text" placeholder="アイテム名" name="name" id="name" value=""
-                    autofocus class="u-full-width" />
-                品番<input class="item-edit-input" type="text" placeholder="品番" name="product_code" id="product_code"
-                    value="" autofocus class="u-full-width" />
-                SKU<input class="item-edit-input" type="text" placeholder="SKU" name="sku" id="sku" value="" autofocus
-                    class="u-full-width" />
-                イラストステータス：<select class="u-full-width" name="status" id="status">
-                    {% for status in illust_status_list %}
-                    <option value="{{ status.name }}">{{ status.name }}</option>
-                    {% endfor %}
-                </select>
-                担当者<input class="item-edit-input" type="text" placeholder="イラスト担当者" name="pic_illust" id="pic_illust"
-                    value="" autofocus class="u-full-width" />
-                デザインステータス<select class="u-full-width" name="status" id="status">
-                    {% for status in design_status_list %}
-                    <option value="{{ status.name }}">{{ status.name }}</option>
-                    {% endfor %}
-                </select>
-                担当者<input class="item-edit-input" type="text" placeholder="デザイン担当者" name="pic_design" id="pic_design"
-                    value="" autofocus class="u-full-width" />
-                メーカー<input class="item-edit-input" type="text" placeholder="メーカー" name="maker_code" id="maker_code"
-                    value="" autofocus class="u-full-width" />
-                上代<input class="item-edit-input" type="text" placeholder="上代" name="retail_price" id="retail_price"
-                    value="" autofocus class="u-full-width" />
-                カタログステータス：<select class="u-full-width" name="catalog_status" id="catalog_status">
-                    {% for catalog_status in catalog_status_list %}
-                    <option value="{{ catalog_status.name }}">{{ catalog_status.name }}</option>
-                    {% endfor %}
-                </select>
-                告知<select class="u-full-width" name="announcement_status" id="announcement_status">
-                    {% for announcement_status in announcement_status_list %}
-                    <option value="{{ announcement_status.name }}">{{ announcement_status.name }}</option>
-                    {% endfor %}
-                </select>
-                備考<input class="item-edit-input" type="text" placeholder="備考" name="remarks" id="remarks" value=""
-                    autofocus class="u-full-width" />
-                <div class="twelve columns">
-                    <div class="two columns">
-                        <a href="/{{ path }}">
-                            <input class="item-edit-input" type="button" value="cancel" />
-                        </a>
-                    </div>
-                    <div class="eight columns"></div>
-                    <div class="two columns">
-                        <input class="item-edit-input" type="submit" value="save item" />
-                    </div>
-                </div>
-            </form>
-        </div>
-        <!-- <div class="two columns">
-            <form action="/delete_{{ path }}/" method="post">
+        <form name="inputItems" action="/{{ path }}/{{ items[0].title }}" method="post">
+            発売日：<input class="item-edit-input" type="text" placeholder=" yyyy-mm-dd" name="release_date"
+                id="release_date" value="{{ release_date }}" autofocus class="u-full-width" />
+            <br>
+            案内日：<input class="item-edit-input" type="text" placeholder="yyyy-mm-dd" name="reservation_start_date"
+                id="reservation_start_date" value="{{ reservation_start_date }}" autofocus class="u-full-width" />
+            <br>
+            締切日：<input class="item-edit-input" type="text" placeholder="yyyy-mm-dd" name="reservation_deadline"
+                id="reservation_deadline" value="{{ reservation_deadline }}" autofocus class="u-full-width" />
+            <br>
+            発注日：<input class="item-edit-input" type="text" placeholder="yyyy-mm-dd" name="order_date" id="order_date"
+                value="{{ order_date }}" autofocus class="u-full-width" />
+            <br>
+            タイトル：<input class="item-edit-input" type="text" placeholder="タイトル" name="title" id="title"
+                value="{{ items[0].title }}" autofocus class="u-full-width" />
+            <br>
+            最終更新日：<input class="item-edit-input" type="text" name="title" id="title" value="{{ last_updated }}"
+                autofocus readonly class="u-full-width" />
+            <br>
+            {% for item in items %}
+            アイテム名<input class="item-edit-input" type="text" placeholder="アイテム名" name="name" id="name" value="" autofocus
+                class="u-full-width" />
+            品番<input class="item-edit-input" type="text" placeholder="品番" name="product_code" id="product_code" value=""
+                autofocus class="u-full-width" />
+            SKU<input class="item-edit-input" type="text" placeholder="SKU" name="sku" id="sku" value="" autofocus
+                class="u-full-width" />
+            イラストステータス：<select class="u-full-width" name="status" id="status">
+                {% for status in illust_status_list %}
+                <option value="{{ status.name }}">{{ status.name }}</option>
+                {% endfor %}
+            </select>
+            担当者<input class="item-edit-input" type="text" placeholder="イラスト担当者" name="pic_illust" id="pic_illust"
+                value="" autofocus class="u-full-width" />
+            デザインステータス<select class="u-full-width" name="status" id="status">
+                {% for status in design_status_list %}
+                <option value="{{ status.name }}">{{ status.name }}</option>
+                {% endfor %}
+            </select>
+            担当者<input class="item-edit-input" type="text" placeholder="デザイン担当者" name="pic_design" id="pic_design"
+                value="" autofocus class="u-full-width" />
+            メーカー<input class="item-edit-input" type="text" placeholder="メーカー" name="maker_code" id="maker_code" value=""
+                autofocus class="u-full-width" />
+            上代<input class="item-edit-input" type="text" placeholder="上代" name="retail_price" id="retail_price" value=""
+                autofocus class="u-full-width" />
+            {% endfor %}
+            カタログステータス：<select class="u-full-width" name="catalog_status" id="catalog_status">
+                {% for catalog_status in catalog_status_list %}
+                <option value="{{ catalog_status.name }}">{{ catalog_status.name }}</option>
+                {% endfor %}
+            </select>
+            告知<select class="u-full-width" name="announcement_status" id="announcement_status">
+                {% for announcement_status in announcement_status_list %}
+                <option value="{{ announcement_status.name }}">{{ announcement_status.name }}</option>
+                {% endfor %}
+            </select>
+            備考<input class="item-edit-input" type="text" placeholder="備考" name="remarks" id="remarks" value="" autofocus
+                class="u-full-width" />
+            <div class="twelve columns">
                 <div class="two columns">
-                    <input class="item-edit-input" id="delete-button" type="submit" value="delete user" />
+                    <a href="/{{ path }}">
+                        <input class="item-edit-input" type="button" value="cancel" />
+                    </a>
                 </div>
-            </form>
-        </div> -->
+                <div class="eight columns"></div>
+                <div class="two columns">
+                    <input class="item-edit-input" type="submit" value="save item" />
+                </div>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock content %}

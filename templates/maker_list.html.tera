@@ -1,26 +1,26 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
-  <h1>{{ h1 }}</h1>
-  <table class="two columns">
-    <tbody>
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>メーカーコード</th>
-        </tr>
-      </thead>
-      {% for data in datas %}
-      <tr class="post" onclick="window.location='/{{ path }}/{{ data.id }}';">
-        <td>{{ data.id }}</td>
-        <td>{{ data.code_name }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-    <tfoot>
-      <a href="/new_{{ path }}">
-        <input type="button" value="メーカー追加" />
-      </a>
-    </tfoot>
-  </table>
+    <h1>{{ h1 }}</h1>
+    <table class="two columns">
+        <tbody>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>メーカーコード</th>
+                </tr>
+            </thead>
+            {% for data in datas %}
+            <tr class="post" onclick="window.location='/{{ path }}/{{ data.id }}';">
+                <td>{{ data.id }}</td>
+                <td>{{ data.code_name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <a href="/new_{{ path }}">
+                <input type="button" value="メーカー追加" />
+            </a>
+        </tfoot>
+    </table>
 </div>
 {% endblock content %}

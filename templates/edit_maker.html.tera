@@ -1,40 +1,33 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
-  <h4>Edit Maker</h4>
-  <div class="twelve columns">
-    <div class="ten columns">
-      <form action="/{{ path }}/{{ maker.id }}" method="post">
-        <div class="twelve columns">
-          <input
-            type="text"
-            placeholder="code_name"
-            name="code_name"
-            id="code_name"
-            value="{{ maker.code_name }}"
-            autofocus
-            class="u-full-width"
-          />
+    <h4>Edit Maker</h4>
+    <div class="twelve columns">
+        <div class="ten columns">
+            <form action="/{{ path }}/{{ maker.id }}" method="post">
+                <div class="twelve columns">
+                    <input type="text" placeholder="code_name" name="code_name" id="code_name"
+                        value="{{ maker.code_name }}" autofocus class="u-full-width" />
+                </div>
+                <div class="twelve columns">
+                    <div class="two columns">
+                        <a href="/{{ path }}">
+                            <input type="button" value="メーカー一覧に戻る" />
+                        </a>
+                    </div>
+                    <div class="eight columns"></div>
+                    <div class="two columns">
+                        <input type="submit" value="保存" />
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="twelve columns">
-          <div class="two columns">
-            <a href="/{{ path }}">
-              <input type="button" value="メーカー一覧に戻る" />
-            </a>
-          </div>
-          <div class="eight columns"></div>
-          <div class="two columns">
-            <input type="submit" value="保存" />
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="two columns">
-      <form action="/delete_{{ path }}/{{ maker.id }}" method="post">
         <div class="two columns">
-          <input id="delete-button" type="submit" value="削除" />
+            <form action="/delete_{{ path }}/{{ maker.id }}" method="post">
+                <div class="two columns">
+                    <input id="delete-button" type="submit" value="削除" />
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 {% endblock content %}

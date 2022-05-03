@@ -1,35 +1,35 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
-  <h1>関係者情報編集</h1>
-  <div class="twelve columns">
-    <div class="ten columns">
-      <form action="/{{ path }}/{{ user.id }}" method="post">
-        <div class="twelve columns">
-          名前：<input type="text" placeholder="{{ user.name }}" name="name" id="name" value="{{ user.name }}" autofocus
-            class="u-full-width" />
-          備考：<input type="text" placeholder="{{ user.description }}" name="description" id="description"
-            value="{{ user.description }}" autofocus class="u-full-width" />
+    <h1>関係者情報編集</h1>
+    <div class="twelve columns">
+        <div class="ten columns">
+            <form action="/{{ path }}/{{ user.id }}" method="post">
+                <div class="twelve columns">
+                    名前：<input type="text" placeholder="{{ user.name }}" name="name" id="name" value="{{ user.name }}"
+                        autofocus class="u-full-width" />
+                    備考：<input type="text" placeholder="{{ user.description }}" name="description" id="description"
+                        value="{{ user.description }}" autofocus class="u-full-width" />
+                </div>
+                <div class="twelve columns">
+                    <div class="two columns">
+                        <a href="/{{ path }}">
+                            <input type="button" value="一覧へ戻る" />
+                        </a>
+                    </div>
+                    <div class="eight columns"></div>
+                    <div class="two columns">
+                        <input type="submit" value="保存" />
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="twelve columns">
-          <div class="two columns">
-            <a href="/{{ path }}">
-              <input type="button" value="一覧へ戻る" />
-            </a>
-          </div>
-          <div class="eight columns"></div>
-          <div class="two columns">
-            <input type="submit" value="保存" />
-          </div>
-        </div>
-      </form>
-    </div>
-    <div class="two columns">
-      <form action="/delete_{{ path }}/{{ user.id }}" method="post">
         <div class="two columns">
-          <input id="delete-button" type="submit" value="削除" />
+            <form action="/delete_{{ path }}/{{ user.id }}" method="post">
+                <div class="two columns">
+                    <input id="delete-button" type="submit" value="削除" />
+                </div>
+            </form>
         </div>
-      </form>
     </div>
-  </div>
 </div>
 {% endblock content %}

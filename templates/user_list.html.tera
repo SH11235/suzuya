@@ -1,32 +1,32 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
-  <h1>{{ h1 }}</h1>
-  <table>
-    <tbody class="five columns">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>名前</th>
-          <th>備考</th>
-          <th>Created_at</th>
-          <th>Updated_at</th>
-        </tr>
-      </thead>
-      {% for data in datas %}
-      <tr class="post" onclick="window.location='/{{ path }}/{{ data.id }}';">
-        <td>{{ data.id }}</td>
-        <td>{{ data.name }}</td>
-        <td>{{ data.description }}</td>
-        <td>{{ data.created_at }}</td>
-        <td>{{ data.updated_at }}</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-  <div class="twelve columns">
-    <a href="/new_{{ path }}">
-      <input type="button" value="関係者追加" />
-    </a>
-  </div>
+    <h1>{{ h1 }}</h1>
+    <table>
+        <tbody class="five columns">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名前</th>
+                    <th>備考</th>
+                    <th>Created_at</th>
+                    <th>Updated_at</th>
+                </tr>
+            </thead>
+            {% for data in datas %}
+            <tr class="post" onclick="window.location='/{{ path }}/{{ data.id }}';">
+                <td>{{ data.id }}</td>
+                <td>{{ data.name }}</td>
+                <td>{{ data.description }}</td>
+                <td>{{ data.created_at }}</td>
+                <td>{{ data.updated_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="twelve columns">
+        <a href="/new_{{ path }}">
+            <input type="button" value="関係者追加" />
+        </a>
+    </div>
 </div>
 {% endblock content %}
