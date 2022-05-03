@@ -15,6 +15,7 @@
           <th>品番</th>
           <th>SKU</th>
           <th>イラスト<br>ステータス</th>
+          <th>担当者</th>
           <th>デザイン<br>ステータス</th>
           <th>担当者</th>
           <th>メーカー</th>
@@ -37,8 +38,9 @@
         <td>{{ data.product_code }}</td>
         <td>{{ data.sku }}</td>
         <td>{{ data.illust_status }}</td>
+        <td>{{ data.pic_illust }}</td>
         <td>{{ data.design_status }}</td>
-        <td>{{ data.pic }}</td>
+        <td>{{ data.pic_design }}</td>
         <td>{{ data.maker_code }}</td>
         <td>{{ data.retail_price }}</td>
         <td>{{ data.double_check_person }}</td>
@@ -48,23 +50,6 @@
       </tr>
       {% endfor %}
     </tbody>
-    <tfoot>
-      <tr>
-        <td></td>
-        <td>
-          {% if page == 1 %} Previous {% else %}
-          <a href="/{{ path }}?page={{ page - 1 }}&posts_per_page={{ items_per_page }}"
-            >Previous</a
-          >
-          {% endif %} | {% if page == num_pages %} Next {% else %}
-          <a href="/{{ path }}?page={{ page + 1 }}&posts_per_page={{ items_per_page }}"
-            >Next</a
-          >
-          {% endif %}
-        </td>
-        <td></td>
-      </tr>
-    </tfoot>
   </table>
 
   <div class="twelve columns">
