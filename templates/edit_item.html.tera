@@ -1,0 +1,78 @@
+{% extends "layout.html.tera" %} {% block content %}
+<div class="container">
+    <h4>Edit Item</h4>
+    <div class="twelve columns">
+        <div class="ten columns">
+            <form action="/{{ path }}/{{ items[0].title }}" method="post">
+                <div class="twelve columns">
+                    発売日: <input type="text" placeholder=" yyyy-mm-dd" name="release_date" id="release_date" value=""
+                        autofocus class="u-full-width" />
+                    案内日<input type="text" placeholder="yyyy-mm-dd" name="reservation_start_date"
+                        id="reservation_start_date" value="" autofocus class="u-full-width" />
+                    締切日<input type="text" placeholder="yyyy-mm-dd" name="reservation_deadline"
+                        id="reservation_deadline" value="" autofocus class="u-full-width" />
+                    発注日<input type="text" placeholder="yyyy-mm-dd" name="order_date" id="order_date" value=""
+                        autofocus class="u-full-width" />
+                    タイトル<input type="text" placeholder="タイトル" name="title" id="title" value="" autofocus
+                        class="u-full-width" />
+                    アイテム名<input type="text" placeholder="アイテム名" name="name" id="name" value="" autofocus
+                        class="u-full-width" />
+                    品番<input type="text" placeholder="品番" name="product_code" id="product_code" value="" autofocus
+                        class="u-full-width" />
+                    SKU<input type="text" placeholder="SKU" name="sku" id="sku" value="" autofocus class="u-full-width" />
+                    イラストステータス：<select class="u-full-width" name="status" id="status">
+                        {% for status in illust_status_list %}
+                        <option value="{{ status.name }}">{{ status.name }}</option>
+                        {% endfor %}
+                    </select>
+                    担当者<input type="text" placeholder="イラスト担当者" name="pic_illust" id="pic_illust" value="" autofocus
+                        class="u-full-width" />
+                    デザインステータス<select class="u-full-width" name="status" id="status">
+                        {% for status in design_status_list %}
+                        <option value="{{ status.name }}">{{ status.name }}</option>
+                        {% endfor %}
+                    </select>
+                    担当者<input type="text" placeholder="デザイン担当者" name="pic_design" id="pic_design" value="" autofocus
+                        class="u-full-width" />
+                    <input style="display: none;" type="text" placeholder="" name="last_updated" id="last_updated"
+                        value="{{ last_updated }}" autofocus class="u-full-width" />
+                    メーカー<input type="text" placeholder="メーカー" name="maker_code" id="maker_code" value="" autofocus
+                        class="u-full-width" />
+                    上代<input type="text" placeholder="上代" name="retail_price" id="retail_price" value="" autofocus
+                        class="u-full-width" />
+                    カタログステータス：<select class="u-full-width" name="catalog_status" id="catalog_status">
+                        {% for catalog_status in catalog_status_list %}
+                        <option value="{{ catalog_status.name }}">{{ catalog_status.name }}</option>
+                        {% endfor %}
+                    </select>
+                    告知<select class="u-full-width" name="announcement_status" id="announcement_status">
+                        {% for announcement_status in announcement_status_list %}
+                        <option value="{{ announcement_status.name }}">{{ announcement_status.name }}</option>
+                        {% endfor %}
+                    </select>
+                    備考<input type="text" placeholder="備考" name="remarks" id="remarks" value="" autofocus
+                        class="u-full-width" />
+                </div>
+                <div class="twelve columns">
+                    <div class="two columns">
+                        <a href="/{{ path }}">
+                            <input type="button" value="cancel" />
+                        </a>
+                    </div>
+                    <div class="eight columns"></div>
+                    <div class="two columns">
+                        <input type="submit" value="save item" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!-- <div class="two columns">
+            <form action="/delete_{{ path }}/" method="post">
+                <div class="two columns">
+                    <input id="delete-button" type="submit" value="delete user" />
+                </div>
+            </form>
+        </div> -->
+    </div>
+</div>
+{% endblock content %}

@@ -3,15 +3,6 @@
   <h4>{{ h4 }}</h4>
   <form action="/new_maker" method="post">
     <div class="twelve columns">
-      <input style="display: none;"
-          type="text"
-          placeholder="enter id"
-          name="id"
-          id="id"
-          value="1"
-          autofocus
-          class="u-full-width"
-      />
       <input
         type="text"
         placeholder="enter code_name"

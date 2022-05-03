@@ -5,15 +5,6 @@
     <div class="ten columns">
       <form action="/{{ path }}/{{ maker.id }}" method="post">
         <div class="twelve columns">
-          <input style="display: none;"
-            type="text"
-            placeholder="id"
-            name="id"
-            id="id"
-            value="{{ maker.id }}"
-            autofocus
-            class="u-full-width"
-          />
           <input
             type="text"
             placeholder="code_name"

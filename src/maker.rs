@@ -1,11 +1,24 @@
-use crate::setting::{AppState, Params, DEFAULT_ITEMS_PER_PAGE};
-use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result};
+use crate::setting::AppState;
+use actix_web::{error, get, post, web, Error, HttpResponse, Result};
 use entity::maker;
 use entity::maker::Entity as Maker;
 use sea_orm::{entity::*, query::*};
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+struct InputNewMaker {
+    code_name: String,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+struct UpdateMaker {
+    code_name: String,
+}
+
+
 
 #[get("/maker")]
-async fn maker_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+async fn maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
     let datas = Maker::find()
@@ -43,21 +56,12 @@ async fn new_maker(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 #[post("/new_maker")]
 async fn create_maker(
     data: web::Data<AppState>,
-    post_form: web::Form<maker::Model>,
+    post_form: web::Form<InputNewMaker>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
-
-    let count = Maker::find()
-        .column(maker::Column::Id)
-        .all(conn)
-        .await
-        .unwrap()
-        .len() as i32;
-    let mut form = post_form.into_inner();
-    form.id = count + 1;
+    let form = post_form.into_inner();
 
     maker::ActiveModel {
-        id: Set(form.id),
         code_name: Set(form.code_name.to_owned()),
         ..Default::default()
     }
@@ -96,7 +100,7 @@ async fn edit_maker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<Htt
 async fn update_maker(
     data: web::Data<AppState>,
     id: web::Path<i32>,
-    post_form: web::Form<maker::Model>,
+    post_form: web::Form<UpdateMaker>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let form = post_form.into_inner();
