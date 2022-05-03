@@ -1,32 +1,24 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
-  <h4>Edit Personal Information</h4>
+  <h1>関係者情報編集</h1>
   <div class="twelve columns">
     <div class="ten columns">
       <form action="/{{ path }}/{{ user.id }}" method="post">
         <div class="twelve columns">
-          <input style="display: none;" type="text" placeholder="id" name="id" id="id" value="{{ user.id }}" autofocus
-            class="u-full-width" />
           名前：<input type="text" placeholder="{{ user.name }}" name="name" id="name" value="{{ user.name }}" autofocus
             class="u-full-width" />
-          <input type="text" placeholder="{{ user.description }}" name="description" id="description"
+          備考：<input type="text" placeholder="{{ user.description }}" name="description" id="description"
             value="{{ user.description }}" autofocus class="u-full-width" />
-          <input style="display: none;" type="text" placeholder="" name="deleted" id="deleted" value="false" autofocus
-            class="u-full-width" />
-          <input style="display: none;" type="text" placeholder="" name="created_at" id="created_at"
-            value="2000-01-01T00:00:00+09:00" autofocus class="u-full-width" />
-          <input style="display: none;" type="text" placeholder="" name="updated_at" id="updated_at"
-            value="2000-01-01T00:00:00+09:00" autofocus class="u-full-width" />
         </div>
         <div class="twelve columns">
           <div class="two columns">
             <a href="/{{ path }}">
-              <input type="button" value="cancel" />
+              <input type="button" value="一覧へ戻る" />
             </a>
           </div>
           <div class="eight columns"></div>
           <div class="two columns">
-            <input type="submit" value="save user" />
+            <input type="submit" value="保存" />
           </div>
         </div>
       </form>
@@ -34,7 +26,7 @@
     <div class="two columns">
       <form action="/delete_{{ path }}/{{ user.id }}" method="post">
         <div class="two columns">
-          <input id="delete-button" type="submit" value="delete user" />
+          <input id="delete-button" type="submit" value="削除" />
         </div>
       </form>
     </div>

@@ -6,24 +6,26 @@ use entity::user::Entity as User;
 use sea_orm::{entity::*, query::*};
 use serde::{Deserialize, Serialize};
 
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+struct InputNewUser {
+    name: String,
+    description: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+struct UpdateUser {
+    name: String,
+    description: Option<String>,
+}
+
 #[get("/user")]
-async fn user_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+async fn user_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
-
-    // get params
-    let params = web::Query::<Params>::from_query(req.query_string()).unwrap();
-
-    let page = params.page.unwrap_or(1);
-    let items_per_page = params.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
-    let paginator = User::find()
+    let datas = User::find()
         .order_by_asc(user::Column::Id)
         .filter(user::Column::Deleted.eq(false))
-        .paginate(conn, items_per_page);
-    let num_pages = paginator.num_pages().await.ok().unwrap();
-
-    let datas = paginator
-        .fetch_page(page - 1)
+        .all(conn)
         .await
         .expect("could not retrieve datas");
     let mut ctx = tera::Context::new();
@@ -57,11 +59,8 @@ async fn user_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         .collect::<Vec<ViewData>>();
 
     ctx.insert("datas", &view_datas);
-    ctx.insert("page", &page);
     ctx.insert("h1", &h1);
     ctx.insert("path", &path);
-    ctx.insert("items_per_page", &items_per_page);
-    ctx.insert("num_pages", &num_pages);
 
     let body = template
         .render("user_list.html.tera", &ctx)
@@ -72,11 +71,7 @@ async fn user_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
 #[get("/new_user")]
 async fn new_user(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
-    let mut ctx = tera::Context::new();
-    let h4 = "関係者登録";
-    let path = "person";
-    ctx.insert("h4", &h4);
-    ctx.insert("path", &path);
+    let ctx = tera::Context::new();
     let body = template
         .render("new_user.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
@@ -86,33 +81,18 @@ async fn new_user(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 #[post("/new_user")]
 async fn create_user(
     data: web::Data<AppState>,
-    post_form: web::Form<user::Model>,
+    post_form: web::Form<InputNewUser>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
-
-    let count = User::find()
-        .column(user::Column::Id)
-        .order_by_desc(user::Column::Id)
-        .one(conn)
-        .await
-        .unwrap();
-    let count = match count {
-        Some(user) => user.id,
-        None => 0,
-    };
-    let mut form = post_form.into_inner();
-    form.id = count + 1;
+    let form = post_form.into_inner();
 
     let date = Local::now();
-    form.created_at = date;
-    form.updated_at = date;
 
     user::ActiveModel {
-        id: Set(form.id),
         name: Set(form.name.to_owned()),
         description: Set(form.description.to_owned()),
-        created_at: Set(form.created_at.to_owned()),
-        updated_at: Set(form.updated_at.to_owned()),
+        created_at: Set(date),
+        updated_at: Set(date),
         ..Default::default()
     }
     .insert(conn)
@@ -150,30 +130,19 @@ async fn edit_user(data: web::Data<AppState>, id: web::Path<i32>) -> Result<Http
 async fn update_user(
     data: web::Data<AppState>,
     id: web::Path<i32>,
-    post_form: web::Form<user::Model>,
+    post_form: web::Form<UpdateUser>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
-    let mut form = post_form.into_inner();
-
-    let created_at = User::find_by_id(id.clone())
-        .column(user::Column::CreatedAt)
-        .one(conn)
-        .await
-        .unwrap()
-        .unwrap()
-        .created_at;
-    form.created_at = created_at;
+    let form = post_form.into_inner();
 
     let date = Local::now();
-    form.updated_at = date;
 
     user::ActiveModel {
         id: Set(*id),
         name: Set(form.name.to_owned()),
         description: Set(form.description.to_owned()),
-        deleted: Set(false),
-        created_at: Set(form.created_at.to_owned()),
-        updated_at: Set(form.updated_at.to_owned()),
+        updated_at: Set(date),
+        ..Default::default()
     }
     .save(conn)
     .await
@@ -188,19 +157,10 @@ async fn update_user(
 async fn delete_user(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    let user = User::find_by_id(id.clone())
-        .one(conn)
-        .await
-        .unwrap()
-        .unwrap();
-
     user::ActiveModel {
         id: Set(*id),
-        name: Set(user.name.to_owned()),
-        description: Set(user.description.to_owned()),
         deleted: Set(true),
-        created_at: Set(user.created_at.to_owned()),
-        updated_at: Set(user.updated_at.to_owned()),
+        ..Default::default()
     }
     .save(conn)
     .await

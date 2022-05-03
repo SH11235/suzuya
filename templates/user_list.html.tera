@@ -2,12 +2,12 @@
 <div class="container">
   <h1>{{ h1 }}</h1>
   <table>
-    <tbody>
+    <tbody class="five columns">
       <thead>
         <tr>
           <th>ID</th>
-          <th>Name</th>
-          <th>Description</th>
+          <th>名前</th>
+          <th>備考</th>
           <th>Created_at</th>
           <th>Updated_at</th>
         </tr>
@@ -22,28 +22,10 @@
       </tr>
       {% endfor %}
     </tbody>
-    <tfoot>
-      <tr>
-        <td></td>
-        <td>
-          {% if page == 1 %} Previous {% else %}
-          <a href="/{{ path }}?page={{ page - 1 }}&posts_per_page={{ items_per_page }}"
-            >Previous</a
-          >
-          {% endif %} | {% if page == num_pages %} Next {% else %}
-          <a href="/{{ path }}?page={{ page + 1 }}&posts_per_page={{ items_per_page }}"
-            >Next</a
-          >
-          {% endif %}
-        </td>
-        <td></td>
-      </tr>
-    </tfoot>
   </table>
-
   <div class="twelve columns">
     <a href="/new_{{ path }}">
-      <input type="button" value="add {{ path }}" />
+      <input type="button" value="関係者追加" />
     </a>
   </div>
 </div>
