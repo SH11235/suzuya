@@ -26,9 +26,6 @@ impl MigrationTrait for Migration {
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(ColumnDef::new(item::Column::Title).string().not_null())
-                    .col(ColumnDef::new(item::Column::Name).string().not_null())
-                    .col(ColumnDef::new(item::Column::ProductCode).string())
                     .col(ColumnDef::new(item::Column::ReleaseDate).timestamp_with_time_zone())
                     .col(
                         ColumnDef::new(item::Column::ReservationStartDate)
@@ -39,17 +36,11 @@ impl MigrationTrait for Migration {
                             .timestamp_with_time_zone(),
                     )
                     .col(ColumnDef::new(item::Column::OrderDate).timestamp_with_time_zone())
-                    .col(ColumnDef::new(item::Column::Sku).integer())
+                    .col(ColumnDef::new(item::Column::Title).string().not_null())
                     .col(
-                        ColumnDef::new(item::Column::IllustStatus)
+                        ColumnDef::new(item::Column::ProjectType)
                             .string()
-                            .default("未着手")
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(item::Column::DesignStatus)
-                            .string()
-                            .default("未着手")
+                            .default("デフォルト")
                             .not_null(),
                     )
                     .col(
@@ -57,7 +48,26 @@ impl MigrationTrait for Migration {
                             .timestamp_with_time_zone()
                             .not_null(),
                     )
+                    .col(ColumnDef::new(item::Column::Name).string().not_null())
+                    .col(ColumnDef::new(item::Column::ProductCode).string())
+                    .col(ColumnDef::new(item::Column::Sku).integer())
+                    .col(
+                        ColumnDef::new(item::Column::IllustStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(item::Column::PicIllustId).integer())
+                    .col(
+                        ColumnDef::new(item::Column::DesignStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(item::Column::PicDesignId).integer())
+                    .col(ColumnDef::new(item::Column::MakerId).integer())
                     .col(ColumnDef::new(item::Column::RetailPrice).integer())
+                    .col(ColumnDef::new(item::Column::DoubleCheckPersonId).integer())
                     .col(
                         ColumnDef::new(item::Column::CatalogStatus)
                             .string()
@@ -71,11 +81,6 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(ColumnDef::new(item::Column::Remarks).string())
-                    // 外部キー
-                    .col(ColumnDef::new(item::Column::MakerId).integer())
-                    .col(ColumnDef::new(item::Column::PicIllustId).integer())
-                    .col(ColumnDef::new(item::Column::PicDesignId).integer())
-                    .col(ColumnDef::new(item::Column::DoubleCheckPersonId).integer())
                     .to_owned(),
             )
             .await;

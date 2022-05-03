@@ -16,7 +16,70 @@ INSERT INTO users (name, deleted, created_at, updated_at) VALUES
     ('name2', 'false', '2022-02-22T22:22:22+09:00', '2022-12-22T22:22:22+09:00')
 ;
 
-INSERT INTO items (title, name, product_code, release_date, reservation_start_date, reservation_deadline, order_date, sku, illust_status, design_status, last_updated, retail_price, catalog_status, announcement_status, remarks, maker_id, pic_illust_id, pic_design_id, double_check_person_id) VALUES
-    ('title_20220504022303', 'name', null, null, null, null, null, null,  '未着手(sample)', '未着手(sample)', '2022-02-22T22:22:22+09:00', null, '未着手(sample)', '未着手(sample)', null, 1, 1, 1, null)
-    ,('title_20220504022303', 'name', 'A123456', '2022-12-22T22:22:22+09:00', '2022-02-22T22:22:22+09:00', '2022-02-22T22:22:22+09:00', '2022-02-22T22:22:22+09:00', 89, 'イラスト納品待ち', '入稿データ作成中', '2022-02-28T22:22:22+09:00', 5000, '作成済み', '作成済み', 'ここには備考が入ります。文字数文字数文字数文字数文字数文字数文字数', 1, 1, 1, 1)
+INSERT INTO items (
+    release_date,
+    reservation_start_date,
+    reservation_deadline,
+    order_date,
+    title,
+    project_type,
+    last_updated,
+    name,
+    product_code,
+    sku,
+    illust_status,
+    pic_illust_id,
+    design_status,
+    pic_design_id,
+    maker_id,
+    retail_price,
+    double_check_person_id,
+    catalog_status,
+    announcement_status,
+    remarks
+) VALUES
+    (
+        null,
+        null,
+        null,
+        null,
+        '日付未定サンプル_20220504022303',
+        'デフォルト',
+        '2022-05-04T04:24:22+09:00',
+        'アイテム名サンプル',
+        null,
+        null,
+        '未着手',
+        null,
+        '未着手',
+        null,
+        null,
+        null,
+        null,
+        '未着手',
+        '未着手',
+        null
+     ),
+     (
+        '2022-08-04T04:24:22+09:00',
+        '2022-07-04T04:24:22+09:00',
+        '2022-07-11T04:24:22+09:00',
+        '2022-07-18T04:24:22+09:00',
+        'アイテムタイトル_20220504044723',
+        'A案件',
+        '2022-05-04T04:47:23+09:00',
+        'アイテム名',
+        'ABC-11235',
+        5,
+        'イラスト納品待ち',
+        1,
+        '素材提供待ち',
+        2,
+        1,
+        500,
+        2,
+        '未着手',
+        '未着手',
+        '備考'
+     )
 ;
