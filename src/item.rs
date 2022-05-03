@@ -214,21 +214,12 @@ async fn create_item(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    let count = Item::find()
-        .column(item::Column::Id)
-        .all(conn)
-        .await
-        .unwrap()
-        .len() as i32;
-    let mut id = count + 1;
     let form = post_form.into_inner();
     let name_list: Vec<&str> = form.name_list.split(',').collect();
 
-    println!("{:?}", name_list);
     let last_updated = Local::now();
     for item_name in name_list.iter() {
         item::ActiveModel {
-            id: Set(id),
             title: Set(form.title.to_owned()),
             name: Set(item_name.to_string()),
             last_updated: Set(last_updated),
@@ -237,7 +228,6 @@ async fn create_item(
         .insert(conn)
         .await
         .expect("could not insert item");
-        id = id + 1;
     }
 
     Ok(HttpResponse::Found()
