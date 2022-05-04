@@ -61,8 +61,8 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     // item
     cfg.service(item::item_list);
     cfg.service(item::new_item);
-    cfg.service(item::create_item);
-    cfg.service(item::edit_item);
+    cfg.service(item::create_items);
+    cfg.service(item::edit_items);
 
     // maker
     cfg.service(maker::maker_list);

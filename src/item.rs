@@ -208,7 +208,7 @@ async fn new_item(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 }
 
 #[post("/new_item")]
-async fn create_item(
+async fn create_items(
     data: web::Data<AppState>,
     post_form: web::Form<InputNewItem>,
 ) -> Result<HttpResponse, Error> {
@@ -239,7 +239,7 @@ async fn create_item(
 }
 
 #[get("/item/{title}")]
-async fn edit_item(
+async fn edit_items(
     data: web::Data<AppState>,
     title: web::Path<String>,
 ) -> Result<HttpResponse, Error> {
