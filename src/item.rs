@@ -15,7 +15,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 struct InputNewItem {
     title: String,
-    name_list: String,
+    name_list: Vec<String>,
 }
 
 #[get("/item")]
@@ -210,12 +210,13 @@ async fn new_item(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 #[post("/new_item")]
 async fn create_items(
     data: web::Data<AppState>,
-    post_form: web::Form<InputNewItem>,
+    post_data: web::Json<InputNewItem>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    let form = post_form.into_inner();
-    let name_list: Vec<&str> = form.name_list.split(',').collect();
+    let form = post_data.into_inner();
+    let name_list = form.name_list;
+
 
     let date = Local::now();
     let yyyymmddhhmmss = date_to_yyyymmddhhmmss(&date);

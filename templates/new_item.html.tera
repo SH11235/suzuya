@@ -1,61 +1,76 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div class="container">
     <h4>{{ h4 }}</h4>
-    <form name="inputItems">
-        <div class="twelve columns">
-            タイトル<input type="text" placeholder="タイトル" name="inputTitle" id="inputTitle" autofocus
-                class="u-full-width" />
-            {% for id_num in input_id_list %}
-            {% if id_num == 1 %}
-            アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}" id="name{{ id_num }}"
-                autofocus class="u-full-width" onchange="inputChange()" />
-            {% else %}
-            <div class="toggle-wrap">
-                <input type="checkbox" id="toggle-checkbox{{ id_num }}">
-                <label class="icon icon--plus" for="toggle-checkbox{{ id_num }}"><span
-                        class="icon__mark"></span></label>
-                <div class="toggle-content">
-                    アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}"
-                        id="name{{ id_num }}" autofocus class="u-full-width" onchange="inputChange()" />
-                </div>
-            </div>
-            {% endif %}
-            {% endfor %}
-        </div>
-    </form>
-    <form name="postItems" action="/new_item" method="post">
-        <input style="display: none;" name="title" id="item-title" />
-        <input style="display: none;" name="name_list" id="name_list" />
-        <div class="twelve columns">
-            <div class="two columns">
-                <a href="/item">
-                    <input type="button" value="cancel" />
-                </a>
-            </div>
-            <div class="two columns">
-                <input type="submit" value="save item" />
+    <div class="twelve columns">
+        タイトル<input type="text" placeholder="タイトル" name="inputTitle" id="inputTitle" autofocus
+            class="u-full-width" />
+        {% for id_num in input_id_list %}
+        {% if id_num == 1 %}
+        アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}" id="name{{ id_num }}"
+            autofocus class="u-full-width" />
+        {% else %}
+        <div class="toggle-wrap">
+            <input type="checkbox" id="toggle-checkbox{{ id_num }}">
+            <label class="icon icon--plus" for="toggle-checkbox{{ id_num }}"><span
+                    class="icon__mark"></span></label>
+            <div class="toggle-content">
+                アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}"
+                    id="name{{ id_num }}" autofocus class="u-full-width" />
             </div>
         </div>
-    </form>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <div class="twelve columns">
+        <div class="two columns">
+            <a href="/item">
+                <input type="button" value="cancel" />
+            </a>
+        </div>
+        <div class="two columns">
+            <input id="btn_submit" type="submit" value="save item" />
+        </div>
+    </div>
 </div>
 <script>
-    const inputChange = () => {
-        const inputFormElements = document.forms.inputItems;
-        const postFormElements = document.forms.postItems;
-        const title = inputFormElements.inputTitle.value;
-        postFormElements.title.value = title;
-        const name_list = [];
-        let inputName = "";
-        {% for id_num in input_id_list %}
-        inputName = inputFormElements.name{{ id_num }}.value;
-        if (inputName && inputName.match(/,/)) {
-            alert("カンマ「,」はアイテム名に含めないでください");
-        }
-        if (inputName && !inputName.match(/,/)) {
-            name_list.push(inputName);
-        }
-        {% endfor %}
-        postFormElements.name_list.value = name_list;
-    }
+    window.addEventListener('DOMContentLoaded', () => {
+        const btn_submit = document.getElementById("btn_submit");
+        btn_submit.addEventListener('click', (e) => {
+            e.preventDefault();
+            const title = document.getElementById("inputTitle").value;
+            const name_list = [];
+            let inputName = "";
+            {% for id_num in input_id_list %}
+            inputName = document.getElementById("name{{ id_num }}").value;
+            if (inputName && inputName.match(/,/)) {
+                alert("カンマ「,」はアイテム名に含めないでください");
+            }
+            if (inputName && !inputName.match(/,/)) {
+                name_list.push(inputName);
+            }
+            {% endfor %}
+
+            const data = {
+                title: title,
+                name_list: name_list
+            };
+
+            fetch('/new_item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(_data => {
+                    alert("登録に成功しました");
+                })
+                .catch((error) => {
+                    alert("登録に失敗しました");
+                    console.error(error);
+                });
+
+        });
+    });
 </script>
 {% endblock content %}
