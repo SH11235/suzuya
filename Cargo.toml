@@ -15,20 +15,15 @@ listenfd = "0.5"
 serde = "1"
 tera = "1.15.0"
 
-[dependencies.sea-orm]
-version = "^0.7.0"
-features = [
-    "macros",
-    "debug-print",
-    "runtime-actix-native-tls",
-    "sqlx-postgres"
-]
-
 [dependencies.entity]
 path = "entity"
 
 [dependencies.migration]
 path = "migration"
+
+[dependencies.sea-orm]
+features = ["macros", "debug-print", "runtime-actix-native-tls", "sqlx-postgres"]
+version = "^0.7.0"
 
 [dependencies.tracing-subscriber]
 features = ["env-filter"]
