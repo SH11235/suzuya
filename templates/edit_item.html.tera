@@ -34,12 +34,12 @@
             {% for item in items %}
             <div>
                 <div style="display: none;">ID{{ loop.index }}
-                    <input class="item-edit-input" type="text"
-                    name="id{{ loop.index }}" id="id{{ loop.index }}" value="{{ item.id }}" autofocus />
+                    <input class="item-edit-input" type="text" name="id{{ loop.index }}" id="id{{ loop.index }}"
+                        value="{{ item.id }}" autofocus />
                 </div>
                 <div>アイテム{{ loop.index }}
-                    <input class="item-edit-input" type="text" placeholder="アイテム名"
-                        name="name{{ loop.index }}" id="name{{ loop.index }}" value="{{ item.name }}" autofocus />
+                    <input class="item-edit-input" type="text" placeholder="アイテム名" name="name{{ loop.index }}"
+                        id="name{{ loop.index }}" value="{{ item.name }}" autofocus />
                 </div>
                 <div>品番
                     <input class="item-edit-input" type="text" placeholder="品番" name="product_code{{ loop.index }}"
@@ -62,8 +62,7 @@
                     </select>
                 </div>
                 <div>担当者
-                    <select class="item-edit-input" name="pic_illust{{ loop.index }}"
-                        id="pic_illust{{ loop.index }}">
+                    <select class="item-edit-input" name="pic_illust{{ loop.index }}" id="pic_illust{{ loop.index }}">
                         {% for user in users %}
                         {% if user.id == item.pic_illust_id %}
                         <option value="{{ user.id }}" selected>{{ user.name }}</option>
@@ -86,8 +85,7 @@
                     </select>
                 </div>
                 <div>担当者
-                    <select class="item-edit-input" name="pic_design{{ loop.index }}"
-                        id="pic_design{{ loop.index }}">
+                    <select class="item-edit-input" name="pic_design{{ loop.index }}" id="pic_design{{ loop.index }}">
                         {% for user in users %}
                         {% if user.id == item.pic_design_id %}
                         <option value="{{ user.id }}" selected>{{ user.name }}</option>
@@ -98,8 +96,7 @@
                     </select>
                 </div>
                 <div>メーカー
-                    <select class="item-edit-input" name="maker_code{{ loop.index }}"
-                        id="maker_code{{ loop.index }}">
+                    <select class="item-edit-input" name="maker_code{{ loop.index }}" id="maker_code{{ loop.index }}">
                         {% for maker in makers %}
                         {% if maker.id == item.maker_id %}
                         <option value="{{ maker.id }}" selected>{{ maker.code_name }}</option>
@@ -137,7 +134,8 @@
             {% endfor %}
         </select>
         備考
-        <input class="item-edit-input" type="text" placeholder="備考" name="remarks" id="remarks" value="{{ items[0].remarks }}" autofocus />
+        <input class="item-edit-input" type="text" placeholder="備考" name="remarks" id="remarks"
+            value="{{ items[0].remarks }}" autofocus />
         <div class="twelve columns">
             <div class="two columns">
                 <a href="/{{ path }}">
