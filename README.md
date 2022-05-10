@@ -26,6 +26,11 @@ install sea-orm-cli
 cargo install sea-orm-cli
 ```
 
+migration
+```
+sea-orm-cli migrate up
+```
+
 App start
 ```
 cargo run
