@@ -6,8 +6,10 @@ use crate::setting::{
 };
 use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result};
 use chrono::{DateTime, Local};
-use entity::item;
+use entity::{item, maker, user};
 use entity::item::Entity as Item;
+use entity::maker::Entity as Maker;
+use entity::user::Entity as User;
 use sea_orm::{entity::*, prelude::DateTimeLocal, query::*};
 use sea_orm::{DbBackend, FromQueryResult};
 use serde::{Deserialize, Serialize};
@@ -252,7 +254,20 @@ async fn edit_items(
         .filter(item::Column::Title.eq(title.to_owned()))
         .all(conn)
         .await
-        .expect("could not find item by title.");
+        .expect("could not find items by title.");
+
+    let users = User::find()
+        .order_by_asc(user::Column::Id)
+        .filter(user::Column::Deleted.eq(false))
+        .all(conn)
+        .await
+        .expect("could not find users.");
+
+    let makers = Maker::find()
+        .order_by_asc(maker::Column::Id)
+        .all(conn)
+        .await
+        .expect("could not find users.");
 
     let mut ctx = tera::Context::new();
     let path = "item";
@@ -284,6 +299,8 @@ async fn edit_items(
         .to_string();
 
     ctx.insert("items", &items);
+    ctx.insert("users", &users);
+    ctx.insert("makers", &makers);
     ctx.insert("path", &path);
     ctx.insert("project_type_list", &project_type_list);
     ctx.insert("illust_status_list", &illust_status_list);
