@@ -4,7 +4,7 @@ use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
     project_type_list, AppState, Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
-use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result};
+use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result, put};
 use chrono::{DateTime, Local};
 use entity::{item, maker, user};
 use entity::item::Entity as Item;
@@ -18,6 +18,35 @@ use serde::{Deserialize, Serialize};
 struct InputNewItem {
     title: String,
     name_list: Vec<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+struct JsonItems {
+    release_date: Option<DateTimeLocal>,
+    reservation_start_date: Option<DateTimeLocal>,
+    reservation_deadline: Option<DateTimeLocal>,
+    order_date: Option<DateTimeLocal>,
+    title: String,
+    project_type: String,
+    items: Vec<Items>,
+    catalog_status: String,
+    announcement_status: String,
+    remarks: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
+struct Items {
+    id: i32,
+    name: String,
+    product_code: Option<String>,
+    sku: Option<i32>,
+    illust_status: String,
+    pic_illust_id: Option<i32>,
+    design_status: String,
+    pic_design_id: Option<i32>,
+    maker_id: Option<i32>,
+    retail_price: Option<i32>,
+    double_check_person_id: Option<i32>,
 }
 
 #[get("/item")]
@@ -317,6 +346,47 @@ async fn edit_items(
         .render("edit_item.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
+}
+
+#[put("/item")]
+async fn update_items(
+    data: web::Data<AppState>,
+    post_data: web::Json<JsonItems>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let data = post_data.into_inner();
+    let last_updated = Local::now();
+    for item in data.items.iter() {
+        item::ActiveModel {
+            id: Set(item.id),
+            release_date: Set(data.release_date),
+            reservation_start_date: Set(data.reservation_start_date),
+            reservation_deadline: Set(data.reservation_deadline),
+            order_date: Set(data.order_date),
+            title: Set(data.title.to_owned()),
+            project_type: Set(data.project_type.to_owned()),
+            last_updated: Set(last_updated.to_owned()),
+            name: Set(item.name.to_owned()),
+            product_code: Set(item.product_code.to_owned()),
+            sku: Set(item.sku.to_owned()),
+            illust_status: Set(item.illust_status.to_owned()),
+            pic_illust_id: Set(item.pic_illust_id.to_owned()),
+            design_status: Set(item.design_status.to_owned()),
+            pic_design_id: Set(item.pic_design_id.to_owned()),
+            maker_id: Set(item.maker_id.to_owned()),
+            retail_price: Set(item.retail_price.to_owned()),
+            double_check_person_id: Set(item.double_check_person_id.to_owned()),
+            catalog_status: Set(data.catalog_status.to_owned()),
+            announcement_status: Set(data.announcement_status.to_owned()),
+            remarks: Set(data.remarks.to_owned()),
+            ..Default::default()
+        }
+        .save(conn)
+        .await
+        .expect("could not edit items"); 
+    }
+
+    Ok(HttpResponse::Ok().body("put ok"))
 }
 
 fn date_to_string(date_time: &DateTime<Local>) -> String {
