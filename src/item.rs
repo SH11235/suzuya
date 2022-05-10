@@ -4,12 +4,12 @@ use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
     project_type_list, AppState, Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
-use actix_web::{error, get, post, web, Error, HttpRequest, HttpResponse, Result, put};
+use actix_web::{error, get, post, put, web, Error, HttpRequest, HttpResponse, Result};
 use chrono::{DateTime, Local};
-use entity::{item, maker, user};
 use entity::item::Entity as Item;
 use entity::maker::Entity as Maker;
 use entity::user::Entity as User;
+use entity::{item, maker, user};
 use sea_orm::{entity::*, prelude::DateTimeLocal, query::*};
 use sea_orm::{DbBackend, FromQueryResult};
 use serde::{Deserialize, Serialize};
@@ -248,7 +248,6 @@ async fn create_items(
     let form = post_data.into_inner();
     let name_list = form.name_list;
 
-
     let date = Local::now();
     let yyyymmddhhmmss = date_to_yyyymmddhhmmss(&date);
 
@@ -383,7 +382,7 @@ async fn update_items(
         }
         .save(conn)
         .await
-        .expect("could not edit items"); 
+        .expect("could not edit items");
     }
 
     Ok(HttpResponse::Ok().body("put ok"))
