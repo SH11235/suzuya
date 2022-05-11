@@ -1,9 +1,10 @@
 # suzuya
 
-業務管理アプリ
+A merchandise management application using SeaORM, Actix-Web, Tera
 
-## version
+## versions
 
+- rustc：1.60.0
 - DB：PostgreSQL（14）
 - ORM：SeaORM（0.7）
 - Backend：Actix-Web（4）
