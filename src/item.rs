@@ -214,7 +214,7 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
     ctx.insert("num_pages", &num_pages);
 
     let body = template
-        .render("item_list.html.tera", &ctx)
+        .render("item/item_list.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
@@ -233,7 +233,7 @@ async fn new_item(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     ctx.insert("input_id_list", &input_id_list);
     ctx.insert("spacer", &spacer);
     let body = template
-        .render("new_item.html.tera", &ctx)
+        .render("item/new_item.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
@@ -342,7 +342,7 @@ async fn edit_items(
     ctx.insert("announcement_status_list", &announce_status_list);
 
     let body = template
-        .render("edit_item.html.tera", &ctx)
+        .render("item/edit_item.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }

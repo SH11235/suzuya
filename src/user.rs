@@ -63,7 +63,7 @@ async fn user_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     ctx.insert("path", &path);
 
     let body = template
-        .render("user_list.html.tera", &ctx)
+        .render("user/user_list.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
@@ -73,7 +73,7 @@ async fn new_user(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let ctx = tera::Context::new();
     let body = template
-        .render("new_user.html.tera", &ctx)
+        .render("user/new_user.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
@@ -121,7 +121,7 @@ async fn edit_user(data: web::Data<AppState>, id: web::Path<i32>) -> Result<Http
     ctx.insert("path", &path);
 
     let body = template
-        .render("edit_user.html.tera", &ctx)
+        .render("user/edit_user.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }

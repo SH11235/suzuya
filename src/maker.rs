@@ -32,7 +32,7 @@ async fn maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     ctx.insert("path", &path);
 
     let body = template
-        .render("maker_list.html.tera", &ctx)
+        .render("maker/maker_list.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
@@ -46,7 +46,7 @@ async fn new_maker(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     ctx.insert("h4", &h4);
     ctx.insert("path", &path);
     let body = template
-        .render("new_maker.html.tera", &ctx)
+        .render("maker/new_maker.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
@@ -89,7 +89,7 @@ async fn edit_maker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<Htt
     ctx.insert("path", &path);
 
     let body = template
-        .render("edit_maker.html.tera", &ctx)
+        .render("maker/edit_maker.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
