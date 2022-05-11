@@ -3,12 +3,10 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Actix Example</title>
-    <meta name="description" content="Actix - SeaOrm integration example" />
-    <meta name="author" content="Sam Samai" />
+    <title>Suzuya</title>
+    <meta name="description" content="A merchandise management application using SeaORM, Actix-Web, Tera" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/static/css/normalize.css" />
     <link rel="stylesheet" href="/static/css/skeleton.css" />
     <link rel="stylesheet" href="/static/css/style.css" />
