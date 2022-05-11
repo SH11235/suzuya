@@ -9,16 +9,17 @@ RUN USER=root cargo new suzuya
 WORKDIR /app/suzuya
 
 COPY Cargo.toml Cargo.lock ./
+COPY entity/Cargo.toml entity/Cargo.lock ./entity/
+COPY migration/Cargo.toml migration/Cargo.lock ./migration/
 RUN cargo build --release
 COPY . .
-RUN rm ./target/release/deps/at_api*
 RUN cargo build --release
 RUN cargo install sea-orm-cli
 
 # production
 FROM debian:buster-slim AS production
 RUN apt-get update
-RUN apt-get install libpq-dev -y
+RUN apt-get install libpq-dev
 COPY --from=build-stage /app/suzuya/target/release/suzuya .
 CMD ["./suzuya"]
 
