@@ -5,7 +5,7 @@ use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use std::env;
 use suzuya::setting::AppState;
-use suzuya::{item, maker, user};
+use suzuya::{item, maker, top, user};
 use tera::Tera;
 
 #[actix_web::main]
@@ -58,6 +58,9 @@ async fn main() -> std::io::Result<()> {
 }
 
 pub fn init(cfg: &mut web::ServiceConfig) {
+    // top
+    cfg.service(top::index);
+
     // item
     cfg.service(item::item_list);
     cfg.service(item::new_item);

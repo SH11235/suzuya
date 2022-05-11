@@ -3,6 +3,11 @@
   height:300px;
 }
 
+.main-contents {
+  width: 100%;
+  text-align: center;
+}
+
 .post:hover {
   background-color: #bce2ee;
 }
