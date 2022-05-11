@@ -2,7 +2,7 @@
 <div>
     <h1>{{ h1 }}</h1>
     <table>
-        <tbody class="five columns">
+        <tbody>
             <thead>
                 <tr>
                     <th>ID</th>
@@ -23,10 +23,8 @@
             {% endfor %}
         </tbody>
     </table>
-    <div class="twelve columns">
-        <a href="/new_{{ path }}">
-            <input type="button" value="関係者追加" />
-        </a>
-    </div>
+    <a href="/new_{{ path }}">
+        <input type="button" value="関係者追加" />
+    </a>
 </div>
 {% endblock content %}
