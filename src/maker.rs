@@ -41,9 +41,7 @@ async fn maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 async fn new_maker(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let mut ctx = tera::Context::new();
-    let h4 = "メーカーコード登録";
     let path = "maker";
-    ctx.insert("h4", &h4);
     ctx.insert("path", &path);
     let body = template
         .render("maker/new_maker.html.tera", &ctx)
