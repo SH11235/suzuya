@@ -1,5 +1,5 @@
 {% extends "layout.html.tera" %} {% block content %}
-<div class="container">
+<div>
     <h1>関係者情報編集</h1>
     <div class="twelve columns">
         <div class="ten columns">

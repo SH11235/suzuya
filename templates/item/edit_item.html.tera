@@ -1,6 +1,6 @@
 {% extends "layout.html.tera" %} {% block content %}
-<div class="container">
-    <h4>Edit Item</h4>
+<div>
+    <h1>Edit Items</h1>
     <div class="twelve columns">
         発売日：<input class="item-edit-input" type="text" placeholder=" yyyy-mm-dd" name="release_date" id="release_date"
             value="{{ release_date }}" autofocus />

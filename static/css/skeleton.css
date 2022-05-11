@@ -1,9 +1,9 @@
 /* Grid
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
 .container {
-  position: relative;
+  display: flex;
   width: 95%;
-  margin-left: 60px;
+  margin-left: 10px;
   margin-right: 10px;
   box-sizing: border-box;
 }

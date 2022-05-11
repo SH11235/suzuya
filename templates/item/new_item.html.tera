@@ -1,6 +1,6 @@
 {% extends "layout.html.tera" %} {% block content %}
-<div class="container">
-    <h4>{{ h4 }}</h4>
+<div>
+    <h1>{{ h4 }}</h1>
     <div class="twelve columns">
         タイトル<input type="text" placeholder="タイトル" name="inputTitle" id="inputTitle" autofocus
             class="u-full-width" />

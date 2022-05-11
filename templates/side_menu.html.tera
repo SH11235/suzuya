@@ -1,7 +1,8 @@
-<header class="fixed" style="position: fixed; width: 100px; top: 0px; left: 10px;">
-    <h2>業務管理</h2>
-    <nav class="gNav">
+<header class="side-menu">
+    <h2>MENU</h2>
+    <nav>
         <ul id="contents">
+            <li><a href="/">トップ</a></li>
             <li><a href="/item">アイテム</a></li>
             <li><a href="/user">関係者</a></li>
             <li><a href="/maker">メーカー</a></li>

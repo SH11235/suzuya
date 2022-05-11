@@ -1,5 +1,5 @@
 {% extends "layout.html.tera" %} {% block content %}
-<div class="container">
+<div>
     <h1>関係者登録</h1>
     <form action="/new_user" method="post">
         <div class="twelve columns">
