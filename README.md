@@ -1,6 +1,6 @@
 # suzuya
-業務管理アプリ
 
+業務管理アプリ
 
 ## version
 
@@ -12,26 +12,37 @@
 ## develop env
 
 copy .env
-```
+
+```sh
 cp .env.sample .env
 ```
 
 PostgreSQL
-```
+
+```sh
 docker-compose up -d postgres
 ```
 
 install sea-orm-cli
-```
+
+```sh
 cargo install sea-orm-cli
 ```
 
 migration
-```
+
+```sh
 sea-orm-cli migrate up
 ```
 
-App start
+sample data input
+
+```sh
+PGPASSWORD=postgres psql -f ./sample_data.sql -p 8765 -U postgres -d suzuya -h localhost
 ```
+
+App start
+
+```sh
 cargo run
 ```
