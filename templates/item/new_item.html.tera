@@ -1,36 +1,28 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div>
     <h1>{{ h4 }}</h1>
-    <div class="twelve columns">
-        タイトル<input type="text" placeholder="タイトル" name="inputTitle" id="inputTitle" autofocus
-            class="u-full-width" />
+    <div>
+        タイトル<input type="text" placeholder="タイトル" name="inputTitle" id="inputTitle" autofocus class="u-full-width" />
         {% for id_num in input_id_list %}
         {% if id_num == 1 %}
-        アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}" id="name{{ id_num }}"
-            autofocus class="u-full-width" />
+        アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}" id="name{{ id_num }}" autofocus
+            class="u-full-width" />
         {% else %}
         <div class="toggle-wrap">
             <input type="checkbox" id="toggle-checkbox{{ id_num }}">
-            <label class="icon icon--plus" for="toggle-checkbox{{ id_num }}"><span
-                    class="icon__mark"></span></label>
+            <label class="icon icon--plus" for="toggle-checkbox{{ id_num }}"><span class="icon__mark"></span></label>
             <div class="toggle-content">
-                アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}"
-                    id="name{{ id_num }}" autofocus class="u-full-width" />
+                アイテム名{{ id_num }}<input type="text" placeholder="アイテム名" name="name{{ id_num }}" id="name{{ id_num }}"
+                    autofocus class="u-full-width" />
             </div>
         </div>
         {% endif %}
         {% endfor %}
     </div>
-    <div class="twelve columns">
-        <div class="two columns">
-            <a href="/item">
-                <input type="button" value="cancel" />
-            </a>
-        </div>
-        <div class="two columns">
-            <input id="btn_submit" type="submit" value="save item" />
-        </div>
-    </div>
+    <a href="/item">
+        <input type="button" value="cancel" />
+    </a>
+    <input id="btn_submit" type="submit" value="save item" />
 </div>
 <script>
     window.addEventListener('DOMContentLoaded', () => {

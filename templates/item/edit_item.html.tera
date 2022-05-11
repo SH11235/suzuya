@@ -1,7 +1,7 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div>
     <h1>Edit Items</h1>
-    <div class="twelve columns">
+    <div>
         発売日：<input class="item-edit-input" type="text" placeholder=" yyyy-mm-dd" name="release_date" id="release_date"
             value="{{ release_date }}" autofocus />
         <br>
@@ -27,8 +27,8 @@
             {% endfor %}
         </select>
         <br>
-        最終更新日：<input class="item-edit-input" type="text" name="last_updated" id="last_updated" value="{{ last_updated }}" autofocus
-            readonly />
+        最終更新日：<input class="item-edit-input" type="text" name="last_updated" id="last_updated"
+            value="{{ last_updated }}" autofocus readonly />
         <br>
         <div style="display: flex; justify-content: center;">
             {% for item in items %}
@@ -111,7 +111,8 @@
                         id="retail_price{{ loop.index }}" value="{{ item.retail_price }}" autofocus />
                 </div>
                 <div>ダブルチェック
-                    <select class="item-edit-input" name="double_check_person{{ loop.index }}" id="double_check_person{{ loop.index }}">
+                    <select class="item-edit-input" name="double_check_person{{ loop.index }}"
+                        id="double_check_person{{ loop.index }}">
                         {% for user in users %}
                         {% if user.id == item.double_check_person_id %}
                         <option value="{{ user.id }}" selected>{{ user.name }}</option>
@@ -134,6 +135,7 @@
             {% endif %}
             {% endfor %}
         </select>
+        <br>
         告知
         <select class="item-edit-input" name="announcement_status" id="announcement_status">
             {% for announcement_status in announcement_status_list %}
@@ -144,38 +146,33 @@
             {% endif %}
             {% endfor %}
         </select>
+        <br>
         備考
         <input class="item-edit-input" type="text" placeholder="備考" name="remarks" id="remarks"
             value="{{ items[0].remarks }}" autofocus />
-        <div class="twelve columns">
-            <div class="two columns">
-                <a href="/{{ path }}">
-                    <input class="item-edit-input" type="button" value="cancel" />
-                </a>
-            </div>
-            <div class="eight columns"></div>
-            <div class="two columns">
-                <input class="item-edit-input" id="btn_submit" type="submit" value="save item" />
-            </div>
+        <div>
+            <a href="/{{ path }}">
+                <input class="item-edit-input" type="button" value="cancel" />
+            </a>
+            <input class="item-edit-input" id="btn_submit" type="submit" value="save item" />
         </div>
     </div>
-</div>
-<script>
-    window.addEventListener('DOMContentLoaded', () => {
-        const btn_submit = document.getElementById("btn_submit");
-        btn_submit.addEventListener('click', (e) => {
-            e.preventDefault();
-            const release_date = getElement("release_date").value;
-            const reservation_start_date = getElement("reservation_start_date").value;
-            const reservation_deadline = getElement("reservation_deadline").value;
-            const order_date = getElement("order_date").value;
-            const title = getElement("title").value;
-            const project_type = getElement("project_type").value;
-            const catalog_status = getElement("catalog_status").value;
-            const announcement_status = getElement("announcement_status").value;
-            const remarks = getElement("remarks").value;
-            const item_list = [];
-            {% for item in items %}
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const btn_submit = document.getElementById("btn_submit");
+            btn_submit.addEventListener('click', (e) => {
+                e.preventDefault();
+                const release_date = getElement("release_date").value;
+                const reservation_start_date = getElement("reservation_start_date").value;
+                const reservation_deadline = getElement("reservation_deadline").value;
+                const order_date = getElement("order_date").value;
+                const title = getElement("title").value;
+                const project_type = getElement("project_type").value;
+                const catalog_status = getElement("catalog_status").value;
+                const announcement_status = getElement("announcement_status").value;
+                const remarks = getElement("remarks").value;
+                const item_list = [];
+                {% for item in items %}
                 item_list.push({
                     id: Number(getElement("id{{ loop.index }}").value),
                     name: getElement("name{{ loop.index }}").value,
@@ -189,40 +186,40 @@
                     retail_price: Number(getElement("retail_price{{ loop.index }}").value),
                     double_check_person_id: Number(getElement("double_check_person{{ loop.index }}").value)
                 })
-            {% endfor %}
-            const data = {
-                release_date: new Date(release_date),
-                reservation_start_date: new Date(reservation_start_date),
-                reservation_deadline: new Date(reservation_deadline),
-                order_date: new Date(order_date),
-                title,
-                project_type,
-                items: item_list,
-                catalog_status,
-                announcement_status,
-                remarks,
-            };
+                {% endfor %}
+                const data = {
+                    release_date: new Date(release_date),
+                    reservation_start_date: new Date(reservation_start_date),
+                    reservation_deadline: new Date(reservation_deadline),
+                    order_date: new Date(order_date),
+                    title,
+                    project_type,
+                    items: item_list,
+                    catalog_status,
+                    announcement_status,
+                    remarks,
+                };
 
-            fetch('/item', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(_data => {
-                    alert("登録に成功しました");
-                    console.log(_data);
+                fetch('/item', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
                 })
-                .catch((error) => {
-                    alert("登録に失敗しました");
-                    console.error(error);
-                });
+                    .then(_data => {
+                        alert("登録に成功しました");
+                        console.log(_data);
+                    })
+                    .catch((error) => {
+                        alert("登録に失敗しました");
+                        console.error(error);
+                    });
 
+            });
         });
-    });
-    function getElement(id) {
-        return document.getElementById(id);
-    }
-</script>
-{% endblock content %}
+        function getElement(id) {
+            return document.getElementById(id);
+        }
+    </script>
+    {% endblock content %}

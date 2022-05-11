@@ -53,11 +53,8 @@
             {% endfor %}
         </tbody>
     </table>
-
-    <div class="twelve columns">
-        <a href="/new_{{ path }}">
-            <input type="button" value="add {{ path }}" />
-        </a>
-    </div>
+    <a href="/new_{{ path }}">
+        <input type="button" value="add {{ path }}" />
+    </a>
 </div>
 {% endblock content %}
