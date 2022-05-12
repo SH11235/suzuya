@@ -20,6 +20,7 @@ async fn maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
     let datas = Maker::find()
+        .filter(maker::Column::Deleted.eq(false))
         .order_by_asc(maker::Column::Id)
         .all(conn)
         .await
@@ -104,6 +105,7 @@ async fn update_maker(
     maker::ActiveModel {
         id: Set(id.into_inner()),
         code_name: Set(form.code_name.to_owned()),
+        ..Default::default()
     }
     .save(conn)
     .await
@@ -121,14 +123,14 @@ async fn delete_maker(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    let post: maker::ActiveModel = Maker::find_by_id(id.into_inner())
-        .one(conn)
-        .await
-        .unwrap()
-        .unwrap()
-        .into();
-
-    post.delete(conn).await.unwrap();
+    maker::ActiveModel {
+        id: Set(*id),
+        deleted: Set(true),
+        ..Default::default()
+    }
+    .save(conn)
+    .await
+    .expect("could not delete maker");
 
     Ok(HttpResponse::Found()
         .append_header(("location", "/maker"))
