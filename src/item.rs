@@ -292,10 +292,11 @@ async fn edit_items(
         .expect("could not find users.");
 
     let makers = Maker::find()
+        .filter(maker::Column::Deleted.eq(false))
         .order_by_asc(maker::Column::Id)
         .all(conn)
         .await
-        .expect("could not find users.");
+        .expect("could not find makers.");
 
     let mut ctx = tera::Context::new();
     let path = "item";
