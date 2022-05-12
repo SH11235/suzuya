@@ -14,7 +14,7 @@ impl MigrationName for Migration {
 #[async_trait::async_trait]
 impl MigrationTrait for Migration {
     async fn up(&self, manager: &SchemaManager) -> Result<(), DbErr> {
-        let _ = manager
+        manager
             .create_table(
                 sea_query::Table::create()
                     .table(item::Entity)
@@ -83,42 +83,42 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(item::Column::Remarks).string())
                     .to_owned(),
             )
-            .await;
-        let _foreign_key_maker_id = manager
+            .await?;
+        manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::MakerId)
                     .to(maker::Entity, maker::Column::Id)
                     .to_owned(),
             )
-            .await;
-        let _foreign_key_pic_illust_id = manager
+            .await?;
+        manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::PicIllustId)
                     .to(user::Entity, user::Column::Id)
                     .to_owned(),
             )
-            .await;
-        let _foreign_key_pic_design_id = manager
+            .await?;
+        manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::PicDesignId)
                     .to(user::Entity, user::Column::Id)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        let _foreign_key_double_check_person_id = manager
+        manager
             .create_foreign_key(
                 sea_query::ForeignKey::create()
                     .from(item::Entity, item::Column::DoubleCheckPersonId)
                     .to(user::Entity, user::Column::Id)
                     .to_owned(),
             )
-            .await;
+            .await?;
 
-        let _create_index = manager
+        manager
             .create_index(
                 sea_query::Index::create()
                     .name("idx-item-title")
@@ -126,9 +126,7 @@ impl MigrationTrait for Migration {
                     .col(item::Column::Title)
                     .to_owned(),
             )
-            .await;
-
-        Ok(())
+            .await
     }
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
