@@ -1,11 +1,14 @@
 use actix_files::Files as Fs;
+use actix_identity::{CookieIdentityPolicy, IdentityService};
+use actix_web::dev::Service;
 use actix_web::{middleware, web, App, HttpServer};
 use entity::sea_orm;
+use futures_util::FutureExt as _;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use std::env;
 use suzuya::setting::AppState;
-use suzuya::{item, maker, top, user};
+use suzuya::{item, login, maker, redirect, top, user};
 use tera::Tera;
 
 #[actix_web::main]
@@ -39,10 +42,25 @@ async fn main() -> std::io::Result<()> {
     // create server and try to serve over socket if possible
     let mut listenfd = ListenFd::from_env();
     let mut server = HttpServer::new(move || {
+        // create cookie identity backend (inside closure, since policy is not Clone)
+        let policy = CookieIdentityPolicy::new(&[0; 32])
+            .name("auth-cookie")
+            .secure(false);
         App::new()
+            .wrap(redirect::CheckLogin)
+            .wrap(IdentityService::new(policy))
             .service(Fs::new("/static", "./static"))
             .app_data(web::Data::new(state.clone()))
             .wrap(middleware::Logger::default()) // enable logger
+            .wrap_fn(|req, srv| {
+                println!("Hi from start. You requested: {}", req.path());
+                println!("{:?}", req);
+
+                srv.call(req).map(|res| {
+                    println!("Hi from response");
+                    res
+                })
+            })
             .configure(init)
     });
 
@@ -60,6 +78,11 @@ async fn main() -> std::io::Result<()> {
 pub fn init(cfg: &mut web::ServiceConfig) {
     // top
     cfg.service(top::index);
+
+    // login
+    cfg.service(login::index);
+    cfg.service(login::login);
+    cfg.service(login::logout);
 
     // item
     cfg.service(item::item_list);

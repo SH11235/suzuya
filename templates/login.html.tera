@@ -1,0 +1,10 @@
+{% extends "layout.html.tera" %} {% block content %}
+<main>
+    <form action="/login" method="post">
+        <input type="text" id="userId">
+        <br>
+        <input type="password" id="password">
+        <input type="submit" value="ログイン" />
+    </form>
+</main>
+{% endblock content %}
