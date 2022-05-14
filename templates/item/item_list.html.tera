@@ -1,6 +1,9 @@
 {% extends "layout.html.tera" %} {% block content %}
 <div>
     <h1>{{ h1 }}</h1>
+    <a href="/new_{{ path }}">
+        <input type="button" value="add {{ path }}" />
+    </a>
     <table>
         <tbody>
             <thead>
@@ -53,8 +56,5 @@
             {% endfor %}
         </tbody>
     </table>
-    <a href="/new_{{ path }}">
-        <input type="button" value="add {{ path }}" />
-    </a>
 </div>
 {% endblock content %}
