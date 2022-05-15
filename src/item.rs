@@ -47,6 +47,12 @@ struct SelectResult {
     remarks: Option<String>,
 }
 
+#[derive(Debug, FromQueryResult, Serialize)]
+struct YearMonthList {
+    yyyymm: String,
+    year: String,
+    month: String,
+}
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 struct InputNewItem {
     title: String,
@@ -99,7 +105,7 @@ async fn item_list(
             month_param.unwrap()
         )
     } else {
-        "".to_string()
+        "WHERE release_date IS NULL".to_string()
     };
 
     let sql_select = r#"
@@ -228,10 +234,30 @@ async fn item_list(
         })
         .collect::<Vec<ViewData>>();
 
+    let year_month_sql = "
+        SELECT
+            to_char(release_date, 'YYYY/MM') as yyyymm,
+            to_char(release_date, 'YYYY') as year,
+            to_char(release_date, 'MM') as month
+        FROM items
+        WHERE release_date is not NULL
+        GROUP BY yyyymm, year, month
+        ORDER BY yyyymm DESC NULLS FIRST;
+    ";
+    let year_month_list = YearMonthList::find_by_statement(Statement::from_sql_and_values(
+        DbBackend::Postgres,
+        year_month_sql,
+        vec![],
+    ))
+    .all(conn)
+    .await
+    .expect("could not find items.");
+
     let mut ctx = tera::Context::new();
     let h1 = "アイテム";
     let path = "item";
     ctx.insert("view_datas", &view_datas);
+    ctx.insert("year_month_list", &year_month_list);
     ctx.insert("page", &page);
     ctx.insert("h1", &h1);
     ctx.insert("path", &path);
