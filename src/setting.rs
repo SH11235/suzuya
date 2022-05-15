@@ -10,12 +10,6 @@ pub struct AppState {
     pub conn: DatabaseConnection,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct Params {
-    pub page: Option<usize>,
-    pub items_per_page: Option<usize>,
-}
-
 #[derive(Debug, Serialize)]
 pub struct StatusName {
     pub name: String,

@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState, Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
 use actix_web::{error, get, post, put, web, Error, HttpRequest, HttpResponse, Result};
 use chrono::{DateTime, Local};
@@ -13,6 +13,38 @@ use entity::{item, maker, user};
 use sea_orm::{entity::*, prelude::DateTimeLocal, query::*};
 use sea_orm::{DbBackend, FromQueryResult};
 use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Deserialize)]
+struct ItemListQuery {
+    month: Option<String>,
+    page: Option<usize>,
+    items_per_page: Option<usize>,
+}
+
+#[derive(Debug, FromQueryResult)]
+struct SelectResult {
+    id: i32,
+    release_date: Option<DateTimeLocal>,
+    reservation_start_date: Option<DateTimeLocal>,
+    reservation_deadline: Option<DateTimeLocal>,
+    order_date: Option<DateTimeLocal>,
+    title: String,
+    project_type: String,
+    last_updated: DateTimeLocal,
+    name: String,
+    product_code: Option<String>,
+    sku: Option<i32>,
+    illust_status: String,
+    pic_illust: Option<String>,
+    design_status: String,
+    pic_design: Option<String>,
+    maker_code: Option<String>,
+    retail_price: Option<i32>,
+    double_check_person: Option<String>,
+    catalog_status: String,
+    announcement_status: String,
+    remarks: Option<String>,
+}
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 struct InputNewItem {
@@ -50,39 +82,14 @@ struct Items {
 }
 
 #[get("/item")]
-async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+async fn item_list(
+    data: web::Data<AppState>,
+    query: web::Query<ItemListQuery>,
+) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
-
-    // get params
-    let params = web::Query::<Params>::from_query(req.query_string()).unwrap();
-
-    let page = params.page.unwrap_or(1);
-    let items_per_page = params.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
-    #[derive(Debug, FromQueryResult)]
-    struct SelectResult {
-        id: i32,
-        release_date: Option<DateTimeLocal>,
-        reservation_start_date: Option<DateTimeLocal>,
-        reservation_deadline: Option<DateTimeLocal>,
-        order_date: Option<DateTimeLocal>,
-        title: String,
-        project_type: String,
-        last_updated: DateTimeLocal,
-        name: String,
-        product_code: Option<String>,
-        sku: Option<i32>,
-        illust_status: String,
-        pic_illust: Option<String>,
-        design_status: String,
-        pic_design: Option<String>,
-        maker_code: Option<String>,
-        retail_price: Option<i32>,
-        double_check_person: Option<String>,
-        catalog_status: String,
-        announcement_status: String,
-        remarks: Option<String>,
-    }
+    let page = query.page.unwrap_or(1);
+    let items_per_page = query.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
     let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
         DbBackend::Postgres,
         r#"
