@@ -121,7 +121,7 @@ async fn item_list(
                     LEFT JOIN "users" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
                     LEFT JOIN "users" ON "items"."double_check_person_id" = "users"."id"
                 ORDER BY
-                    "items"."id" ASC
+                    "items"."title" ASC, "items"."id" ASC
                 "#,
         vec![],
     ))
