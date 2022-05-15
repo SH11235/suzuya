@@ -1,5 +1,5 @@
 use sea_orm::DatabaseConnection;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use tera::Tera;
 
 pub const DEFAULT_ITEMS_PER_PAGE: usize = 30;
@@ -8,12 +8,6 @@ pub const ITME_INPUT_NUM: i32 = 10;
 pub struct AppState {
     pub templates: Tera,
     pub conn: DatabaseConnection,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct Params {
-    pub page: Option<usize>,
-    pub items_per_page: Option<usize>,
 }
 
 #[derive(Debug, Serialize)]

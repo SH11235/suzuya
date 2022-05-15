@@ -2,9 +2,9 @@ use std::fmt::Debug;
 
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState, Params, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
-use actix_web::{error, get, post, put, web, Error, HttpRequest, HttpResponse, Result};
+use actix_web::{error, get, post, put, web, Error, HttpResponse, Result};
 use chrono::{DateTime, Local};
 use entity::item::Entity as Item;
 use entity::maker::Entity as Maker;
@@ -14,6 +14,45 @@ use sea_orm::{entity::*, prelude::DateTimeLocal, query::*};
 use sea_orm::{DbBackend, FromQueryResult};
 use serde::{Deserialize, Serialize};
 
+#[derive(Debug, Deserialize)]
+struct ItemListQuery {
+    year: Option<String>,
+    month: Option<String>,
+    page: Option<usize>,
+    items_per_page: Option<usize>,
+}
+
+#[derive(Debug, FromQueryResult)]
+struct SelectResult {
+    id: i32,
+    release_date: Option<DateTimeLocal>,
+    reservation_start_date: Option<DateTimeLocal>,
+    reservation_deadline: Option<DateTimeLocal>,
+    order_date: Option<DateTimeLocal>,
+    title: String,
+    project_type: String,
+    last_updated: DateTimeLocal,
+    name: String,
+    product_code: Option<String>,
+    sku: Option<i32>,
+    illust_status: String,
+    pic_illust: Option<String>,
+    design_status: String,
+    pic_design: Option<String>,
+    maker_code: Option<String>,
+    retail_price: Option<i32>,
+    double_check_person: Option<String>,
+    catalog_status: String,
+    announcement_status: String,
+    remarks: Option<String>,
+}
+
+#[derive(Debug, FromQueryResult, Serialize)]
+struct YearMonthList {
+    yyyymm: String,
+    year: String,
+    month: String,
+}
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 struct InputNewItem {
     title: String,
@@ -50,72 +89,66 @@ struct Items {
 }
 
 #[get("/item")]
-async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+async fn item_list(
+    data: web::Data<AppState>,
+    query: web::Query<ItemListQuery>,
+) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
+    let page = query.page.unwrap_or(1);
+    let year_param = query.year.as_ref();
+    let month_param = query.month.as_ref();
+    let where_str = if year_param.is_some() && month_param.is_some() {
+        format!(
+            "WHERE to_char(\"items\".\"release_date\", 'YYYY/MM') = '{}/{}'",
+            year_param.unwrap(),
+            month_param.unwrap()
+        )
+    } else {
+        "WHERE release_date IS NULL".to_string()
+    };
 
-    // get params
-    let params = web::Query::<Params>::from_query(req.query_string()).unwrap();
+    let sql_select = r#"
+            "items"."id",
+            "items"."release_date",
+            "items"."reservation_start_date",
+            "items"."reservation_deadline",
+            "items"."order_date",
+            "items"."title",
+            "items"."project_type",
+            "items"."last_updated",
+            "items"."name",
+            "items"."product_code",
+            "items"."sku",
+            "items"."illust_status",
+            "pics_illust"."name" AS "pic_illust",
+            "items"."design_status",
+            "pics_design"."name" AS "pic_design",
+            "makers"."code_name" AS "maker_code",
+            "items"."retail_price",
+            "users"."name" AS "double_check_person",
+            "items"."catalog_status",
+            "items"."announcement_status",
+            "items"."remarks"
+        FROM
+            "items"
+            LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
+            LEFT JOIN "users" AS "pics_illust" ON "items"."pic_illust_id" = "pics_illust"."id"
+            LEFT JOIN "users" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
+            LEFT JOIN "users" ON "items"."double_check_person_id" = "users"."id"
+    "#;
 
-    let page = params.page.unwrap_or(1);
-    let items_per_page = params.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
-    #[derive(Debug, FromQueryResult)]
-    struct SelectResult {
-        id: i32,
-        release_date: Option<DateTimeLocal>,
-        reservation_start_date: Option<DateTimeLocal>,
-        reservation_deadline: Option<DateTimeLocal>,
-        order_date: Option<DateTimeLocal>,
-        title: String,
-        project_type: String,
-        last_updated: DateTimeLocal,
-        name: String,
-        product_code: Option<String>,
-        sku: Option<i32>,
-        illust_status: String,
-        pic_illust: Option<String>,
-        design_status: String,
-        pic_design: Option<String>,
-        maker_code: Option<String>,
-        retail_price: Option<i32>,
-        double_check_person: Option<String>,
-        catalog_status: String,
-        announcement_status: String,
-        remarks: Option<String>,
-    }
+    let sql_order = r#"
+        ORDER BY
+            "items"."title" ASC, "items"."id" ASC
+    "#;
+
+    let sql = sql_select.to_string() + &where_str + sql_order;
+
+    let items_per_page = query.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
     let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
         DbBackend::Postgres,
-        r#"
-                    "items"."id",
-                    "items"."release_date",
-                    "items"."reservation_start_date",
-                    "items"."reservation_deadline",
-                    "items"."order_date",
-                    "items"."title",
-                    "items"."project_type",
-                    "items"."last_updated",
-                    "items"."name",
-                    "items"."product_code",
-                    "items"."sku",
-                    "items"."illust_status",
-                    "pics_illust"."name" AS "pic_illust",
-                    "items"."design_status",
-                    "pics_design"."name" AS "pic_design",
-                    "makers"."code_name" AS "maker_code",
-                    "items"."retail_price",
-                    "users"."name" AS "double_check_person",
-                    "items"."catalog_status",
-                    "items"."announcement_status",
-                    "items"."remarks"
-                FROM
-                    "items"
-                    LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
-                    LEFT JOIN "users" AS "pics_illust" ON "items"."pic_illust_id" = "pics_illust"."id"
-                    LEFT JOIN "users" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
-                    LEFT JOIN "users" ON "items"."double_check_person_id" = "users"."id"
-                ORDER BY
-                    "items"."id" ASC
-                "#,
+        &sql,
         vec![],
     ))
     .paginate(conn, items_per_page);
@@ -125,8 +158,6 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         .fetch_page(page - 1)
         .await
         .expect("could not retrieve datas");
-
-    println!("{:?}", datas);
     #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
     struct ViewData {
         id: i32,
@@ -203,10 +234,30 @@ async fn item_list(req: HttpRequest, data: web::Data<AppState>) -> Result<HttpRe
         })
         .collect::<Vec<ViewData>>();
 
+    let year_month_sql = "
+        SELECT
+            to_char(release_date, 'YYYY/MM') as yyyymm,
+            to_char(release_date, 'YYYY') as year,
+            to_char(release_date, 'MM') as month
+        FROM items
+        WHERE release_date is not NULL
+        GROUP BY yyyymm, year, month
+        ORDER BY yyyymm DESC NULLS FIRST;
+    ";
+    let year_month_list = YearMonthList::find_by_statement(Statement::from_sql_and_values(
+        DbBackend::Postgres,
+        year_month_sql,
+        vec![],
+    ))
+    .all(conn)
+    .await
+    .expect("could not find items.");
+
     let mut ctx = tera::Context::new();
     let h1 = "アイテム";
     let path = "item";
     ctx.insert("view_datas", &view_datas);
+    ctx.insert("year_month_list", &year_month_list);
     ctx.insert("page", &page);
     ctx.insert("h1", &h1);
     ctx.insert("path", &path);
