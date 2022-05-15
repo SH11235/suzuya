@@ -1,5 +1,5 @@
 use sea_orm::DatabaseConnection;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use tera::Tera;
 
 pub const DEFAULT_ITEMS_PER_PAGE: usize = 30;

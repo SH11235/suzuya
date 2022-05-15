@@ -4,7 +4,7 @@ use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
     project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
-use actix_web::{error, get, post, put, web, Error, HttpRequest, HttpResponse, Result};
+use actix_web::{error, get, post, put, web, Error, HttpResponse, Result};
 use chrono::{DateTime, Local};
 use entity::item::Entity as Item;
 use entity::maker::Entity as Maker;
@@ -16,6 +16,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 struct ItemListQuery {
+    year: Option<String>,
     month: Option<String>,
     page: Option<usize>,
     items_per_page: Option<usize>,
@@ -89,40 +90,59 @@ async fn item_list(
     let template = &data.templates;
     let conn = &data.conn;
     let page = query.page.unwrap_or(1);
+    let year_param = query.year.as_ref();
+    let month_param = query.month.as_ref();
+    let where_str = if year_param.is_some() && month_param.is_some() {
+        format!(
+            "WHERE to_char(\"items\".\"release_date\", 'YYYY/MM') = '{}/{}'",
+            year_param.unwrap(),
+            month_param.unwrap()
+        )
+    } else {
+        "".to_string()
+    };
+
+    let sql_select = r#"
+            "items"."id",
+            "items"."release_date",
+            "items"."reservation_start_date",
+            "items"."reservation_deadline",
+            "items"."order_date",
+            "items"."title",
+            "items"."project_type",
+            "items"."last_updated",
+            "items"."name",
+            "items"."product_code",
+            "items"."sku",
+            "items"."illust_status",
+            "pics_illust"."name" AS "pic_illust",
+            "items"."design_status",
+            "pics_design"."name" AS "pic_design",
+            "makers"."code_name" AS "maker_code",
+            "items"."retail_price",
+            "users"."name" AS "double_check_person",
+            "items"."catalog_status",
+            "items"."announcement_status",
+            "items"."remarks"
+        FROM
+            "items"
+            LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
+            LEFT JOIN "users" AS "pics_illust" ON "items"."pic_illust_id" = "pics_illust"."id"
+            LEFT JOIN "users" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
+            LEFT JOIN "users" ON "items"."double_check_person_id" = "users"."id"
+    "#;
+
+    let sql_order = r#"
+        ORDER BY
+            "items"."title" ASC, "items"."id" ASC
+    "#;
+
+    let sql = sql_select.to_string() + &where_str + sql_order;
+
     let items_per_page = query.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
     let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
         DbBackend::Postgres,
-        r#"
-                    "items"."id",
-                    "items"."release_date",
-                    "items"."reservation_start_date",
-                    "items"."reservation_deadline",
-                    "items"."order_date",
-                    "items"."title",
-                    "items"."project_type",
-                    "items"."last_updated",
-                    "items"."name",
-                    "items"."product_code",
-                    "items"."sku",
-                    "items"."illust_status",
-                    "pics_illust"."name" AS "pic_illust",
-                    "items"."design_status",
-                    "pics_design"."name" AS "pic_design",
-                    "makers"."code_name" AS "maker_code",
-                    "items"."retail_price",
-                    "users"."name" AS "double_check_person",
-                    "items"."catalog_status",
-                    "items"."announcement_status",
-                    "items"."remarks"
-                FROM
-                    "items"
-                    LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
-                    LEFT JOIN "users" AS "pics_illust" ON "items"."pic_illust_id" = "pics_illust"."id"
-                    LEFT JOIN "users" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
-                    LEFT JOIN "users" ON "items"."double_check_person_id" = "users"."id"
-                ORDER BY
-                    "items"."title" ASC, "items"."id" ASC
-                "#,
+        &sql,
         vec![],
     ))
     .paginate(conn, items_per_page);
@@ -132,8 +152,6 @@ async fn item_list(
         .fetch_page(page - 1)
         .await
         .expect("could not retrieve datas");
-
-    println!("{:?}", datas);
     #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
     struct ViewData {
         id: i32,
