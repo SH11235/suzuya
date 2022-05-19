@@ -2,7 +2,6 @@
     <h2>MENU</h2>
     <nav>
         <ul id="contents">
-            <li><a href="/">トップ</a></li>
             <li><a href="/item">アイテム</a></li>
             <li><a href="/user">関係者</a></li>
             <li><a href="/maker">メーカー</a></li>
