@@ -30,7 +30,7 @@
         最終更新日：<input class="item-edit-input" type="text" name="last_updated" id="last_updated"
             value="{{ last_updated }}" autofocus readonly />
         <br>
-        <div style="display: flex; justify-content: center;">
+        <div id="single-item-edit-form" class="single-item-edit-form">
             {% for item in items %}
             <div>
                 <div style="display: none;">ID{{ loop.index }}
@@ -124,6 +124,9 @@
                 </div>
             </div>
             {% endfor %}
+            <div class="item-add-button" id="item-add-button">
+                +
+            </div>
         </div>
         カタログステータス
         <select class="item-edit-input" name="catalog_status" id="catalog_status">
@@ -157,69 +160,70 @@
             <input class="item-edit-input" id="btn_submit" type="submit" value="save item" />
         </div>
     </div>
-    <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const btn_submit = document.getElementById("btn_submit");
-            btn_submit.addEventListener('click', (e) => {
-                e.preventDefault();
-                const release_date = getElement("release_date").value;
-                const reservation_start_date = getElement("reservation_start_date").value;
-                const reservation_deadline = getElement("reservation_deadline").value;
-                const order_date = getElement("order_date").value;
-                const title = getElement("title").value;
-                const project_type = getElement("project_type").value;
-                const catalog_status = getElement("catalog_status").value;
-                const announcement_status = getElement("announcement_status").value;
-                const remarks = getElement("remarks").value;
-                const item_list = [];
-                {% for item in items %}
-                item_list.push({
-                    id: Number(getElement("id{{ loop.index }}").value),
-                    name: getElement("name{{ loop.index }}").value,
-                    product_code: getElement("product_code{{ loop.index }}").value,
-                    sku: Number(getElement("sku{{ loop.index }}").value),
-                    illust_status: getElement("illust_status{{ loop.index }}").value,
-                    pic_illust_id: Number(getElement("pic_illust{{ loop.index }}").value),
-                    design_status: getElement("design_status{{ loop.index }}").value,
-                    pic_design_id: Number(getElement("pic_design{{ loop.index }}").value),
-                    maker_id: Number(getElement("maker_code{{ loop.index }}").value),
-                    retail_price: Number(getElement("retail_price{{ loop.index }}").value),
-                    double_check_person_id: Number(getElement("double_check_person{{ loop.index }}").value)
-                })
-                {% endfor %}
-                const data = {
-                    release_date: new Date(release_date),
-                    reservation_start_date: new Date(reservation_start_date),
-                    reservation_deadline: new Date(reservation_deadline),
-                    order_date: new Date(order_date),
-                    title,
-                    project_type,
-                    items: item_list,
-                    catalog_status,
-                    announcement_status,
-                    remarks,
-                };
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        const btn_submit = document.getElementById("btn_submit");
+        btn_submit.addEventListener('click', (e) => postData(e));
+    });
+    function getElement(id) {
+        return document.getElementById(id);
+    }
+    function postData(e) {
+        e.preventDefault();
+        const release_date = getElement("release_date").value;
+        const reservation_start_date = getElement("reservation_start_date").value;
+        const reservation_deadline = getElement("reservation_deadline").value;
+        const order_date = getElement("order_date").value;
+        const title = getElement("title").value;
+        const project_type = getElement("project_type").value;
+        const catalog_status = getElement("catalog_status").value;
+        const announcement_status = getElement("announcement_status").value;
+        const remarks = getElement("remarks").value;
+        const item_list = [];
+        {% for item in items %}
+        item_list.push({
+            id: Number(getElement("id{{ loop.index }}").value),
+            name: getElement("name{{ loop.index }}").value,
+            product_code: getElement("product_code{{ loop.index }}").value,
+            sku: Number(getElement("sku{{ loop.index }}").value),
+            illust_status: getElement("illust_status{{ loop.index }}").value,
+            pic_illust_id: Number(getElement("pic_illust{{ loop.index }}").value),
+            design_status: getElement("design_status{{ loop.index }}").value,
+            pic_design_id: Number(getElement("pic_design{{ loop.index }}").value),
+            maker_id: Number(getElement("maker_code{{ loop.index }}").value),
+            retail_price: Number(getElement("retail_price{{ loop.index }}").value),
+            double_check_person_id: Number(getElement("double_check_person{{ loop.index }}").value)
+        })
+        {% endfor %}
+        const data = {
+            release_date: new Date(release_date),
+            reservation_start_date: new Date(reservation_start_date),
+            reservation_deadline: new Date(reservation_deadline),
+            order_date: new Date(order_date),
+            title,
+            project_type,
+            items: item_list,
+            catalog_status,
+            announcement_status,
+            remarks,
+        };
 
-                fetch('/item', {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                })
-                    .then(_data => {
-                        alert("登録に成功しました");
-                        console.log(_data);
-                    })
-                    .catch((error) => {
-                        alert("登録に失敗しました");
-                        console.error(error);
-                    });
-
+        fetch('/item', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(_data => {
+                alert("登録に成功しました");
+            })
+            .catch((error) => {
+                alert("登録に失敗しました");
+                console.error(error);
             });
-        });
-        function getElement(id) {
-            return document.getElementById(id);
-        }
-    </script>
-    {% endblock content %}
+    }
+</script>
+
+{% endblock content %}
