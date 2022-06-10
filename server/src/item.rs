@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+    project_type_list, AppState, StatusName, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
 use actix_web::{error, get, post, put, web, Error, HttpResponse, Result};
 use chrono::{DateTime, Local};
@@ -86,6 +86,23 @@ struct Items {
     maker_id: Option<i32>,
     retail_price: Option<i32>,
     double_check_person_id: Option<i32>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct ItemEdit {
+    items: Vec<item::Model>,
+    users: Vec<user::Model>,
+    makers: Vec<maker::Model>,
+    project_type_list: Vec<StatusName>,
+    illust_status_list: Vec<StatusName>,
+    design_status_list: Vec<StatusName>,
+    release_date: Option<String>,
+    reservation_start_date: Option<String>,
+    reservation_deadline: Option<String>,
+    order_date: Option<String>,
+    last_updated: String,
+    catalog_status_list: Vec<StatusName>,
+    announce_status_list: Vec<StatusName>,
 }
 
 #[get("/item")]
@@ -320,6 +337,8 @@ async fn create_items(
         .finish())
 }
 
+// TODO 削除
+// ↓↓↓↓↓↓↓↓↓↓
 #[get("/item/{title}")]
 async fn edit_items(
     data: web::Data<AppState>,
@@ -397,6 +416,80 @@ async fn edit_items(
         .render("item/edit_item.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
+}
+// ↑↑↑↑↑↑↑↑↑↑
+// TODO 削除
+
+#[get("/api/item/{title}")]
+async fn api_edit_items(
+    data: web::Data<AppState>,
+    title: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    let items = Item::find()
+        .order_by_asc(item::Column::Id)
+        .filter(item::Column::Title.eq(title.to_owned()))
+        .all(conn)
+        .await
+        .expect("could not find items by title.");
+
+    let users = User::find()
+        .order_by_asc(user::Column::Id)
+        .filter(user::Column::Deleted.eq(false))
+        .all(conn)
+        .await
+        .expect("could not find users.");
+
+    let makers = Maker::find()
+        .filter(maker::Column::Deleted.eq(false))
+        .order_by_asc(maker::Column::Id)
+        .all(conn)
+        .await
+        .expect("could not find makers.");
+
+    let project_type_list = project_type_list();
+    let illust_status_list = illust_status_list();
+    let design_status_list = design_status_list();
+    let catalog_status_list = catalog_status_list();
+    let announce_status_list = announce_status_list();
+
+    let release_date: Option<String> = match items[0].release_date {
+        Some(release_date) => Some(release_date.format("%Y/%m/%d").to_string()),
+        None => None,
+    };
+    let reservation_start_date: Option<String> = match items[0].reservation_start_date {
+        Some(reservation_start_date) => Some(reservation_start_date.format("%Y/%m/%d").to_string()),
+        None => None,
+    };
+    let reservation_deadline: Option<String> = match items[0].reservation_deadline {
+        Some(reservation_deadline) => Some(reservation_deadline.format("%Y/%m/%d").to_string()),
+        None => None,
+    };
+    let order_date: Option<String> = match items[0].order_date {
+        Some(order_date) => Some(order_date.format("%Y/%m/%d").to_string()),
+        None => None,
+    };
+    let last_updated = items[0]
+        .last_updated
+        .format("%Y/%m/%d %H:%M:%S")
+        .to_string();
+
+    Ok(HttpResponse::Ok().json(ItemEdit {
+        items: items,
+        users: users,
+        makers: makers,
+        project_type_list: project_type_list,
+        illust_status_list: illust_status_list,
+        design_status_list: design_status_list,
+        release_date,
+        reservation_start_date,
+        reservation_deadline,
+        order_date,
+        last_updated,
+        catalog_status_list,
+        announce_status_list,
+    }))
 }
 
 #[put("/item")]
