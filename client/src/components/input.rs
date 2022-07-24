@@ -1,12 +1,21 @@
-use yew::{function_component, html};
+use yew::{function_component, html, Properties};
+
+#[derive(Properties, PartialEq)]
+pub struct EditItemProperty {
+    pub placeholder: String,
+    pub input_type: String,
+    pub id: String,
+    pub name: String,
+    pub value: String,
+}
 
 #[function_component(Input)]
-pub fn input_text() -> Html {
+pub fn input_text(props: &EditItemProperty) -> Html {
     html! {
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-          <a class="navbar-brand" href="#">{"Yew TODO App"}</a>
-        </div>
-      </nav>
+      <>
+        <input class="item-edit-input"
+          type={ props.input_type.clone() } placeholder={ props.placeholder.clone() }
+          name={ props.name.clone() } id={ props.id.clone() } value={ props.value.clone() } />
+      </>
     }
 }

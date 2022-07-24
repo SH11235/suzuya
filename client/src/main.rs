@@ -10,8 +10,8 @@ mod pages;
 pub enum Route {
     #[at("/")]
     Home,
-    #[at("/edit_item")]
-    EditItem,
+    #[at("/edit_item/:title")]
+    EditItem { title: String },
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -31,9 +31,9 @@ fn switch(routes: &Route) -> Html {
         Route::Home => {
             html! { <Home/> }
         }
-        Route::EditItem => {
+        Route::EditItem { title } => {
             html! {
-                <EditItem/>
+                <EditItem title={ title.clone() }/>
             }
         }
         Route::NotFound => html! { <h1>{ "404" }</h1> },
