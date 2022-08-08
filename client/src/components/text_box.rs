@@ -9,7 +9,7 @@ pub struct EditItemProperty {
     pub value: String,
 }
 
-#[function_component(Input)]
+#[function_component(TextBox)]
 pub fn input_text(props: &EditItemProperty) -> Html {
     html! {
       <>

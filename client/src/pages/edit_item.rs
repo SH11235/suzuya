@@ -1,4 +1,4 @@
-use crate::components::input::Input;
+use crate::components::text_box::TextBox;
 use chrono::{DateTime, Local, Utc};
 use chrono_tz::{Asia::Tokyo, Tz};
 use reqwasm::http::Request;
@@ -156,15 +156,15 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 html! {
                     <>
                         <button {onclick}>{ "test button" }</button>
-                        { "発売日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
+                        { "発売日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
-                        { "案内日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
+                        { "案内日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
                         <br/>
-                        { "締切日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
+                        { "締切日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
                         <br/>
-                        { "発注日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
+                        { "発注日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
                         <br/>
-                        { "タイトル：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
+                        { "タイトル：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
                         
                         // <div>{ &item.project_type }</div>
                         // <div>{ &item.illust_status }</div>
