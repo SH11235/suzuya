@@ -1,12 +1,11 @@
 use crate::components::input::Input;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Local, Utc};
 use chrono_tz::{Asia::Tokyo, Tz};
+use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
-// use reqwasm::http::Request;
-use reqwest::header;
 use urlencoding::decode;
 use wasm_bindgen::JsValue;
-use yew::{function_component, html, use_effect_with_deps, use_state, Html, Properties};
+use yew::{function_component, html, use_effect_with_deps, use_state, Callback, Html, Properties};
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
 pub struct StatusName {
@@ -24,7 +23,7 @@ pub enum Color {
     GRAY,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 struct ItemModel {
     pub id: i32,
     pub release_date: Option<String>,           // 発売日
@@ -51,7 +50,7 @@ struct ItemModel {
 }
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
-struct ItemEdit {
+struct GetItem {
     items: Vec<ItemModel>,
     // users: Vec<user::Model>,
     // makers: Vec<maker::Model>,
@@ -67,6 +66,20 @@ struct ItemEdit {
     announce_status_list: Vec<StatusName>,
 }
 
+#[derive(Debug, Deserialize, PartialEq, Serialize)]
+struct PostItem {
+    release_date: Option<String>,
+    reservation_start_date: Option<String>,
+    reservation_deadline: Option<String>,
+    order_date: Option<String>,
+    title: String,
+    project_type: String,
+    items: Vec<ItemModel>,
+    catalog_status: String,
+    announcement_status: String,
+    remarks: Option<String>,
+}
+
 #[derive(Properties, PartialEq)]
 pub struct EditItemPageProperty {
     pub title: String,
@@ -75,35 +88,49 @@ pub struct EditItemPageProperty {
 #[function_component(EditItem)]
 pub fn edit_item(props: &EditItemPageProperty) -> Html {
     let items = use_state(|| vec![]);
-    let url = format!(
+    let get_url = format!(
         "http://localhost:1123/api/item/{}",
         decode(&props.title.clone()).expect("UTF-8")
     );
+    let onclick = {
+        let items = items.clone();
+        let post_url = format!("http://localhost:1123/item");
+        Callback::from(move |_| {
+            if items.len() > 0 {
+                let item: &GetItem = &items[0];
+                let post_item = PostItem {
+                    release_date: item.release_date.clone(),
+                    reservation_start_date: item.reservation_start_date.clone(),
+                    reservation_deadline: item.reservation_deadline.clone(),
+                    order_date: item.order_date.clone(),
+                    title: item.items[0].title.clone(),
+                    project_type: "item.project_type.clone()".to_string(), // TODO
+                    catalog_status: "item.catalog_status.clone()".to_string(), // TODO
+                    announcement_status: "item.announcement_status.clone()".to_string(), // TODO
+                    remarks: Some("item.remarks.clone()".to_string()), // TODO
+                    items: item.items.clone(),
+                };
+                web_sys::console::log_1(&JsValue::from_serde(&items[0]).unwrap());
+                web_sys::console::log_1(&JsValue::from_serde(&post_item).unwrap());
+            }
+        })
+    };
     {
         let items = items.clone();
         use_effect_with_deps(
             move |_| {
                 let items = items.clone();
                 wasm_bindgen_futures::spawn_local(async move {
-                    let client = reqwest::Client::new().get(&url);
-                    let fetched_items: ItemEdit = client
+                    let client = Request::get(&get_url);
+                    let fetched_items: GetItem = client
                         .send()
                         .await
                         .expect("Failed to fetch items")
                         .json()
                         .await
                         .expect("Failed to parse items");
-                    // let fetched_items: String = client
-                    //     .send()
-                    //     .await
-                    //     .expect("Failed to fetch items")
-                    //     .text()
-                    //     .await
-                    //     .expect("Failed to parse items");
-                    // web_sys::console::log_1(&JsValue::from_str(&fetched_items));
-                    web_sys::console::log_1(&JsValue::from_str(
-                        &serde_json::to_string(&fetched_items).unwrap(),
-                    ));
+                    // debug
+                    web_sys::console::log_1(&JsValue::from_serde(&fetched_items).unwrap());
                     items.set(vec![fetched_items]);
                 });
                 || ()
@@ -122,12 +149,23 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
             } else {
                 let item = &items[0].items[0];
-                let release_date = item.release_date.clone().unwrap_or_default();
+                let release_date = parse_date(&item.release_date);
+                let reservation_start_date = parse_date(&item.reservation_start_date);
+                let reservation_deadline = parse_date(&item.reservation_deadline);
+                let order_date = parse_date(&item.order_date);
                 html! {
                     <>
+                        <button {onclick}>{ "test button" }</button>
                         { "発売日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
-                        // <div>{ &item.title }</div>
+                        { "案内日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
+                        <br/>
+                        { "締切日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
+                        <br/>
+                        { "発注日：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
+                        <br/>
+                        { "タイトル：" }<Input input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
+                        
                         // <div>{ &item.project_type }</div>
                         // <div>{ &item.illust_status }</div>
                         // <div>{ &item.design_status }</div>
@@ -139,5 +177,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             }
         }
       </div>
+    }
+}
+
+fn parse_date(date: &Option<String>) -> String {
+    match date {
+        Some(date) => (&date[0..10]).to_string(),
+        None => "".to_string(),
     }
 }
