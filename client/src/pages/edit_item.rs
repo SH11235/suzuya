@@ -1,4 +1,6 @@
+use crate::components::select_box::SelectBox;
 use crate::components::text_box::TextBox;
+use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use chrono::{DateTime, Local, Utc};
 use chrono_tz::{Asia::Tokyo, Tz};
 use reqwasm::http::Request;
@@ -107,7 +109,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     project_type: "item.project_type.clone()".to_string(), // TODO
                     catalog_status: "item.catalog_status.clone()".to_string(), // TODO
                     announcement_status: "item.announcement_status.clone()".to_string(), // TODO
-                    remarks: Some("item.remarks.clone()".to_string()), // TODO
+                    remarks: Some("item.remarks.clone()".to_string()),     // TODO
                     items: item.items.clone(),
                 };
                 web_sys::console::log_1(&JsValue::from_serde(&items[0]).unwrap());
@@ -156,6 +158,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 html! {
                     <>
                         <button {onclick}>{ "test button" }</button>
+                        <br/>
                         { "発売日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
                         { "案内日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
@@ -165,13 +168,17 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         { "発注日：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
                         <br/>
                         { "タイトル：" }<TextBox input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
-                        
-                        // <div>{ &item.project_type }</div>
-                        // <div>{ &item.illust_status }</div>
-                        // <div>{ &item.design_status }</div>
-                        // <div>{ &item.catalog_status }</div>
-                        // <div>{ &item.announcement_status }</div>
-                        // <div>{ &item.last_updated }</div>
+                        <br/>
+                        { "案件：" }<SelectBox id="project_type" name="project_type" value={item.project_type.clone()} select_list={project_type_list()} />
+                        <br/>
+                        { "最終更新日：" } <span>{ parse_date_time(&item.last_updated) }</span>
+                        <br/>
+                        { "ここにアイテム詳細が並ぶ" }
+                        <br/>
+                        { "カタログステータス：" }<SelectBox id="catalog_status" name="catalog_status" value={item.catalog_status.clone()} select_list={catalog_status_list()} />
+                        <br/>
+                        { "告知：" }<SelectBox id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />
+                        <br/>
                     </>
                 }
             }
@@ -185,4 +192,10 @@ fn parse_date(date: &Option<String>) -> String {
         Some(date) => (&date[0..10]).to_string(),
         None => "".to_string(),
     }
+}
+
+fn parse_date_time(date: &String) -> String {
+    let date_str = &date[0..10];
+    let time = &date[11..19];
+    format!("{} {}", date_str, time)
 }

@@ -5,6 +5,7 @@ use yew_router::prelude::*;
 
 mod components;
 mod pages;
+mod settings;
 
 #[derive(Routable, PartialEq, Clone, Debug)]
 pub enum Route {
