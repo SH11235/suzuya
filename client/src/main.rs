@@ -4,6 +4,7 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 mod components;
+mod model;
 mod pages;
 mod settings;
 

@@ -1,64 +1,12 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
+use crate::model::edit_item::{GetItem, PostItem};
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use reqwasm::http::Request;
-use serde::{Deserialize, Serialize};
 use urlencoding::decode;
 use wasm_bindgen::JsValue;
 use yew::{function_component, html, use_effect_with_deps, use_state, Callback, Html, Properties};
-
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
-struct ItemModel {
-    pub id: i32,
-    pub release_date: Option<String>,           // 発売日
-    pub reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
-    pub reservation_deadline: Option<String>,   // 予約締切日
-    pub order_date: Option<String>,             // メーカーへの発注日
-    pub title: String,
-    pub project_type: String,
-    pub last_updated: String, // 最終更新日（ステータス変更時）
-    pub name: String,
-    pub product_code: Option<String>,
-    pub sku: Option<i32>, // 種類数
-    pub illust_status: String,
-    // pic：person in charge
-    pub pic_illust_id: Option<i32>, // from user 「イラスト担当者」
-    pub design_status: String,
-    pub pic_design_id: Option<i32>, // from user 「デザイン担当者」
-    pub maker_id: Option<i32>,      // from maker
-    pub retail_price: Option<i32>,  // 上代
-    pub double_check_person_id: Option<i32>, // from user 社員名
-    pub catalog_status: String,
-    pub announcement_status: String,
-    pub remarks: Option<String>, // 備考
-}
-
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-struct GetItem {
-    items: Vec<ItemModel>,
-    // users: Vec<user::Model>,
-    // makers: Vec<maker::Model>,
-    release_date: Option<String>,
-    reservation_start_date: Option<String>,
-    reservation_deadline: Option<String>,
-    order_date: Option<String>,
-    last_updated: String,
-}
-
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-struct PostItem {
-    release_date: Option<String>,
-    reservation_start_date: Option<String>,
-    reservation_deadline: Option<String>,
-    order_date: Option<String>,
-    title: String,
-    project_type: String,
-    items: Vec<ItemModel>,
-    catalog_status: String,
-    announcement_status: String,
-    remarks: Option<String>,
-}
 
 #[derive(Properties, PartialEq)]
 pub struct EditItemPageProperty {
