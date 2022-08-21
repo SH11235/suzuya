@@ -105,6 +105,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "告知：" }<SelectBox id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />
                         <br/>
+                        { "備考：" }<TextBox input_type="text" placeholder="備考" id="remarks" name="title" value={item.remarks.clone().unwrap_or("".to_string())} />
                     </>
                 }
             }
