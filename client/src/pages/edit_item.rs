@@ -1,29 +1,12 @@
 use crate::components::select_box::SelectBox;
 use crate::components::text_box::TextBox;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
-use chrono::{DateTime, Local, Utc};
-use chrono_tz::{Asia::Tokyo, Tz};
+use crate::settings::api::backend_url;
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use urlencoding::decode;
 use wasm_bindgen::JsValue;
 use yew::{function_component, html, use_effect_with_deps, use_state, Callback, Html, Properties};
-
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-pub struct StatusName {
-    pub name: String,
-    pub color: Color,
-}
-
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
-pub enum Color {
-    WHITE,
-    PINK,
-    YELLOW,
-    LIGHTBLUE,
-    GREEN,
-    GRAY,
-}
 
 #[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
 struct ItemModel {
@@ -56,16 +39,11 @@ struct GetItem {
     items: Vec<ItemModel>,
     // users: Vec<user::Model>,
     // makers: Vec<maker::Model>,
-    project_type_list: Vec<StatusName>,
-    illust_status_list: Vec<StatusName>,
-    design_status_list: Vec<StatusName>,
     release_date: Option<String>,
     reservation_start_date: Option<String>,
     reservation_deadline: Option<String>,
     order_date: Option<String>,
     last_updated: String,
-    catalog_status_list: Vec<StatusName>,
-    announce_status_list: Vec<StatusName>,
 }
 
 #[derive(Debug, Deserialize, PartialEq, Serialize)]
@@ -91,7 +69,8 @@ pub struct EditItemPageProperty {
 pub fn edit_item(props: &EditItemPageProperty) -> Html {
     let items = use_state(|| vec![]);
     let get_url = format!(
-        "http://localhost:1123/api/item/{}",
+        "{}{}",
+        backend_url() + "/api/item/",
         decode(&props.title.clone()).expect("UTF-8")
     );
     let onclick = {

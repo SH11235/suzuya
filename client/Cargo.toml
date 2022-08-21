@@ -4,8 +4,6 @@ name = "client"
 version = "0.1.0"
 
 [dependencies]
-chrono="*"
-chrono-tz="*"
 reqwasm = "0.2"
 serde_json = "1"
 urlencoding="2.1.0"
