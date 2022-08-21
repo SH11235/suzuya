@@ -1,7 +1,7 @@
-use crate::components::select_box::SelectBox;
-use crate::components::text_box::TextBox;
-use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
+use crate::components::common::select_box::SelectBox;
+use crate::components::common::text_box::TextBox;
 use crate::settings::api::backend_url;
+use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use reqwasm::http::Request;
 use serde::{Deserialize, Serialize};
 use urlencoding::decode;
