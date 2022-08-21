@@ -75,7 +75,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     );
     let onclick = {
         let items = items.clone();
-        let post_url = format!("http://localhost:1123/item");
         Callback::from(move |_| {
             if items.len() > 0 {
                 let item: &GetItem = &items[0];
