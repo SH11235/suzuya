@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct ItemModel {
     pub id: i32,
     pub release_date: Option<String>,           // 発売日
@@ -26,7 +26,7 @@ pub struct ItemModel {
     pub remarks: Option<String>, // 備考
 }
 
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct GetItem {
     pub items: Vec<ItemModel>,
     // pub users: Vec<user::Model>,

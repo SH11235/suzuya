@@ -16,39 +16,41 @@ pub struct EditItemPageProperty {
 
 #[function_component(EditItem)]
 pub fn edit_item(props: &EditItemPageProperty) -> Html {
-    let items = use_state(|| vec![]);
+    let get_item = use_state(|| GetItem {
+        ..Default::default()
+    });
     let get_url = format!(
         "{}{}",
         backend_url() + "/api/item/",
         decode(&props.title.clone()).expect("UTF-8")
     );
     let onclick = {
-        let items = items.clone();
+        let get_item = get_item.clone();
         Callback::from(move |_| {
-            if items.len() > 0 {
-                let item: &GetItem = &items[0];
+            if get_item.items.len() > 0 {
+                let get_item = get_item.clone();
                 let post_item = PostItem {
-                    release_date: item.release_date.clone(),
-                    reservation_start_date: item.reservation_start_date.clone(),
-                    reservation_deadline: item.reservation_deadline.clone(),
-                    order_date: item.order_date.clone(),
-                    title: item.items[0].title.clone(),
-                    project_type: "item.project_type.clone()".to_string(), // TODO
-                    catalog_status: "item.catalog_status.clone()".to_string(), // TODO
-                    announcement_status: "item.announcement_status.clone()".to_string(), // TODO
-                    remarks: Some("item.remarks.clone()".to_string()),     // TODO
-                    items: item.items.clone(),
+                    release_date: get_item.release_date.clone(),
+                    reservation_start_date: get_item.reservation_start_date.clone(),
+                    reservation_deadline: get_item.reservation_deadline.clone(),
+                    order_date: get_item.order_date.clone(),
+                    title: get_item.items[0].title.clone(),
+                    project_type: "get_item.project_type.clone()".to_string(), // TODO
+                    catalog_status: "get_item.catalog_status.clone()".to_string(), // TODO
+                    announcement_status: "get_item.announcement_status.clone()".to_string(), // TODO
+                    remarks: Some("get_item.remarks.clone()".to_string()),     // TODO
+                    items: get_item.items.clone(),
                 };
-                web_sys::console::log_1(&JsValue::from_serde(&items[0]).unwrap());
+                web_sys::console::log_1(&JsValue::from_serde(&get_item.items[0]).unwrap());
                 web_sys::console::log_1(&JsValue::from_serde(&post_item).unwrap());
             }
         })
     };
     {
-        let items = items.clone();
+        let get_item = get_item.clone();
         use_effect_with_deps(
             move |_| {
-                let items = items.clone();
+                let get_item = get_item.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
                     let fetched_items: GetItem = client
@@ -60,7 +62,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .expect("Failed to parse items");
                     // debug
                     web_sys::console::log_1(&JsValue::from_serde(&fetched_items).unwrap());
-                    items.set(vec![fetched_items]);
+                    get_item.set(fetched_items);
                 });
                 || ()
             },
@@ -72,12 +74,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
       <div>
         <h1>{ "Edit Items" }</h1>
         {
-            if items.len() == 0 {
+            if get_item.items.len() == 0 {
                 html! {
                     <p>{ "Loading..." }</p>
                 }
             } else {
-                let item = &items[0].items[0];
+                let item = &get_item.items[0];
                 let release_date = parse_date(&item.release_date);
                 let reservation_start_date = parse_date(&item.reservation_start_date);
                 let reservation_deadline = parse_date(&item.reservation_deadline);
