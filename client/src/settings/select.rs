@@ -18,6 +18,21 @@ pub fn catalog_status_list() -> Vec<String> {
     ]
 }
 
+pub fn illust_status_list() -> Vec<String> {
+    vec![
+        String::from("未着手"),
+        String::from("素材提供待ち"),
+        String::from("ラフ作成中"),
+        String::from("ラフ監修中"),
+        String::from("イラスト納品待ち"),
+        String::from("線画作成中"),
+        String::from("線画監修中"),
+        String::from("着彩作成中"),
+        String::from("着彩監修中"),
+        String::from("完了"),
+     ]
+}
+
 pub fn announce_status_list() -> Vec<String> {
     vec![
         String::from("未着手"),

@@ -1,5 +1,6 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
+use crate::components::item_detail::ItemDetail;
 use crate::model::edit_item::{GetItem, PostItem};
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
@@ -99,7 +100,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "最終更新日：" } <span>{ parse_date_time(&item.last_updated) }</span>
                         <br/>
-                        { "ここにアイテム詳細が並ぶ" }
+                        <ItemDetail index={1} item_name={item.name.clone()}
+                            product_code={item.product_code.clone()} sku={item.sku.clone()} illust_status={item.illust_status.clone()} />
                         <br/>
                         { "カタログステータス：" }<SelectBox id="catalog_status" name="catalog_status" value={item.catalog_status.clone()} select_list={catalog_status_list()} />
                         <br/>
