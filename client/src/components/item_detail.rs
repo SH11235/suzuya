@@ -27,32 +27,30 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
         sku.to_string()
     };
 
-    let onchange = {
+    let text_box_onchange = {
         let get_item = props.get_item.clone();
         Callback::from(move |e: Event| {
             let input: HtmlInputElement = e.target_unchecked_into();
             let val: String = input.value();
             let name: String = input.name();
 
-            // // get_item.items
             web_sys::console::log_1(&JsValue::from_str(&val));
             web_sys::console::log_1(&JsValue::from_str(&name));
-            // get_item.set(input.value());
         })
     };
 
     html! {
         <>
             <div>{"アイテム"}{ props.index }
-                <TextBox onchange={onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}{}", "name", props.index) }
+                <TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}{}", "name", props.index) }
                     name={format!("{}{}", "name", props.index) } value={ props.item_name.clone() } />
             </div>
             <div>{"品番"}
-                <TextBox onchange={onchange.clone()} input_type="text" placeholder="品番" id={ format!("{}{}", "product_code", props.index) }
+                <TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="品番" id={ format!("{}{}", "product_code", props.index) }
                     name={format!("{}{}", "product_code", props.index) } value={ props.product_code.clone().unwrap_or("".to_string()) } />
             </div>
             <div>{"SKU"}
-                <TextBox onchange={onchange.clone()} input_type="text" placeholder="SKU" id={ format!("{}{}", "sku", props.index) }
+                <TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="SKU" id={ format!("{}{}", "sku", props.index) }
                     name={format!("{}{}", "sku", props.index) } value={ sku } />
             </div>
             <div>{"イラストステータス："}

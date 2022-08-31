@@ -9,7 +9,7 @@ pub struct SelectBoxProperty {
 }
 
 #[function_component(SelectBox)]
-pub fn input_text(props: &SelectBoxProperty) -> Html {
+pub fn select_box(props: &SelectBoxProperty) -> Html {
     html! {
       <select class="item-edit-input"
         id={ props.id.clone() } name={ props.name.clone() } >
