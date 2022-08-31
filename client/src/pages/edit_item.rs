@@ -74,7 +74,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         );
     }
 
-    let onchange = {
+    let text_box_onchange = {
         let get_item = get_item.clone();
         Callback::from(move |e: Event| {
             let input: HtmlInputElement = e.target_unchecked_into();
@@ -84,7 +84,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             match name {
                 "release_date" => {
                     let mut items = get_item.items.clone();
-                    items = items.iter()
+                    items = items
+                        .iter()
                         .map(|item| ItemModel {
                             release_date: Some(val.clone()),
                             ..item.clone()
@@ -97,24 +98,108 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date: get_item.order_date.clone(),
                         last_updated: get_item.last_updated.clone(),
-                    })
+                    });
+                }
+                "reservation_start_date" => {
+                    let mut items = get_item.items.clone();
+                    items = items
+                        .iter()
+                        .map(|item| ItemModel {
+                            reservation_start_date: Some(val.clone()),
+                            ..item.clone()
+                        })
+                        .collect();
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: Some(val),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
+                "reservation_deadline" => {
+                    let mut items = get_item.items.clone();
+                    items = items
+                        .iter()
+                        .map(|item| ItemModel {
+                            reservation_deadline: Some(val.clone()),
+                            ..item.clone()
+                        })
+                        .collect();
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: Some(val),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
+                "order_date" => {
+                    let mut items = get_item.items.clone();
+                    items = items
+                        .iter()
+                        .map(|item| ItemModel {
+                            order_date: Some(val.clone()),
+                            ..item.clone()
+                        })
+                        .collect();
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: Some(val),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
+                "title" => {
+                    let mut items = get_item.items.clone();
+                    items = items
+                        .iter()
+                        .map(|item| ItemModel {
+                            title: val.clone(),
+                            ..item.clone()
+                        })
+                        .collect();
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
+                "remarks" => {
+                    let mut items = get_item.items.clone();
+                    items = items
+                        .iter()
+                        .map(|item| ItemModel {
+                            remarks: Some(val.clone()),
+                            ..item.clone()
+                        })
+                        .collect();
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
                 }
                 _ => {
-                    todo!();
+                    web_sys::console::log_1(&JsValue::from_str("No defined state."));
+                    web_sys::console::log_1(&JsValue::from_str("name"));
+                    web_sys::console::log_1(&JsValue::from_str(name));
+                    web_sys::console::log_1(&JsValue::from_str("&val"));
+                    web_sys::console::log_1(&JsValue::from_str(&val));
                 }
             }
-
-            // get_item.items
-            // web_sys::console::log_1(&JsValue::from_str(&val));
-            // web_sys::console::log_1(&JsValue::from_str(name));
         })
     };
-    // function handleInputChange(e) {
-    //     const target = e.target;
-    //     const value = target.type === "checkbox" ? target.checked : target.value;
-    //     const name = target.name;
-    //     setValues({ ...values, [name]: value });
-    // }
 
     html! {
       <div>
@@ -134,15 +219,15 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     <>
                         <button {onclick}>{ "test button" }</button>
                         <br/>
-                        { "発売日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
+                        { "発売日：" }<TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
-                        { "案内日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
+                        { "案内日：" }<TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
                         <br/>
-                        { "締切日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
+                        { "締切日：" }<TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
                         <br/>
-                        { "発注日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
+                        { "発注日：" }<TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
                         <br/>
-                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
+                        { "タイトル：" }<TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
                         <br/>
                         { "案件：" }<SelectBox id="project_type" name="project_type" value={item.project_type.clone()} select_list={project_type_list()} />
                         <br/>
@@ -155,7 +240,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "告知：" }<SelectBox id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />
                         <br/>
-                        { "備考：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="title" value={item.remarks.clone().unwrap_or("".to_string())} />
+                        { "備考：" }<TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="title" value={item.remarks.clone().unwrap_or("".to_string())} />
                     </>
                 }
             }
