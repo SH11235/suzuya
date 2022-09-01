@@ -84,6 +84,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             match name {
                 "release_date" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -92,7 +94,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: Some(val),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -102,6 +106,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "reservation_start_date" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -110,7 +116,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: Some(val),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -120,6 +128,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "reservation_deadline" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -128,7 +138,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: Some(val),
@@ -138,6 +150,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "order_date" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -146,7 +160,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -156,6 +172,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "title" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -164,7 +182,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -174,6 +194,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "project_type" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -182,7 +204,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -192,6 +216,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "catalog_status" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -200,7 +226,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -210,6 +238,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "announcement_status" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -218,7 +248,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
@@ -228,6 +260,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
                 "remarks" => {
                     let mut items = get_item.items.clone();
+                    let users = get_item.users.clone();
+                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -236,7 +270,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         })
                         .collect();
                     get_item.set(GetItem {
-                        items: items,
+                        items,
+                        users,
+                        makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),

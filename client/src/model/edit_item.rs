@@ -26,11 +26,28 @@ pub struct ItemModel {
     pub remarks: Option<String>, // 備考
 }
 
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct UserModel {
+    pub id: i32,
+    pub name: String,
+    pub description: Option<String>,
+    pub deleted: bool,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct MakerModel {
+    pub id: i32,
+    pub code_name: String,
+    pub deleted: bool,
+}
+
 #[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct GetItem {
     pub items: Vec<ItemModel>,
-    // pub users: Vec<user::Model>,
-    // pub makers: Vec<maker::Model>,
+    pub users: Vec<UserModel>,
+    pub makers: Vec<MakerModel>,
     pub release_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
