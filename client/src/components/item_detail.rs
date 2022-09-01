@@ -40,7 +40,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             match name {
                 "name" => {
                     let mut items = get_item.items.clone();
-                    items[index].name = val;
+                    items[index - 1].name = val;
                     get_item.set(GetItem {
                         items: items,
                         release_date: get_item.release_date.clone(),
