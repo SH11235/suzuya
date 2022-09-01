@@ -340,6 +340,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                                 product_code={item.product_code.clone()}
                                                 sku={item.sku.clone()}
                                                 illust_status={item.illust_status.clone()}
+                                                pic_illust_id={item.pic_illust_id.clone()}
+                                                design_status={item.design_status.clone()}
+                                                pic_design_id={item.pic_design_id.clone()}
                                             />
                                         }
                                     }).collect::<Html>()

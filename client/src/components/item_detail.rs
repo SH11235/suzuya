@@ -1,7 +1,8 @@
 use crate::components::common::select_box::SelectBox;
+use crate::components::common::select_user_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
-use crate::model::edit_item::GetItem;
-use crate::settings::select::illust_status_list;
+use crate::model::edit_item::{GetItem, NameIdPair};
+use crate::settings::select::{design_status_list, illust_status_list};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 use yew::{
@@ -16,6 +17,9 @@ pub struct ItemDetailProperty {
     pub product_code: Option<String>,
     pub sku: Option<i32>,
     pub illust_status: String,
+    pub pic_illust_id: Option<i32>,
+    pub design_status: String,
+    pub pic_design_id: Option<i32>,
 }
 
 #[function_component(ItemDetail)]
@@ -26,6 +30,15 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     } else {
         sku.to_string()
     };
+
+    let users = props.get_item.users.clone();
+    let user_name_id_vec: Vec<NameIdPair> = users
+        .into_iter()
+        .map(|user| NameIdPair {
+            name: user.name.clone(),
+            id: user.id.clone(),
+        })
+        .collect();
 
     let onchange = {
         let get_item = props.get_item.clone();
@@ -132,41 +145,20 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "illust_status", props.index)} name={ format!("{}-{}", "illust_status", props.index)}
                     value={props.illust_status.clone()} select_list={illust_status_list()}/>
             </div>
+            <div>{"イラスト担当者"}
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_illust", props.index)} name={ format!("{}-{}", "pic_illust", props.index)}
+                    value={props.pic_illust_id.clone()} name_value_list={user_name_id_vec.clone()}/>
+            </div>
+            <div>{"デザインステータス"}
+                <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "design_status", props.index)} name={ format!("{}-{}", "design_status", props.index)}
+                    value={props.design_status.clone()} select_list={design_status_list()}/>
+            </div>
+            <div>{"デザイン担当者"}
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_design", props.index)} name={ format!("{}-{}", "pic_design", props.index)}
+                    value={props.pic_design_id.clone()} name_value_list={user_name_id_vec.clone()}/>
+            </div>
         </>
-    // <div>担当者
-    //     <select class="item-edit-input" name="pic_illust{{ loop.index }}" id="pic_illust{{ loop.index }}">
-    //         {% for user in users %}
-    //         {% if user.id == item.pic_illust_id %}
-    //         <option value="{{ user.id }}" selected>{{ user.name }}</option>
-    //         {% else %}
-    //         <option value="{{ user.id }}">{{ user.name }}</option>
-    //         {% endif %}
-    //         {% endfor %}
-    //     </select>
-    // </div>
-    // <div>デザインステータス
-    //     <select class="item-edit-input" name="design_status{{ loop.index }}"
-    //         id="design_status{{ loop.index }}">
-    //         {% for status in design_status_list %}
-    //         {% if status.name == item.design_status %}
-    //         <option value="{{ status.name }}" selected>{{ status.name }}</option>
-    //         {% else %}
-    //         <option value="{{ status.name }}">{{ status.name }}</option>
-    //         {% endif %}
-    //         {% endfor %}
-    //     </select>
-    // </div>
-    // <div>担当者
-    //     <select class="item-edit-input" name="pic_design{{ loop.index }}" id="pic_design{{ loop.index }}">
-    //         {% for user in users %}
-    //         {% if user.id == item.pic_design_id %}
-    //         <option value="{{ user.id }}" selected>{{ user.name }}</option>
-    //         {% else %}
-    //         <option value="{{ user.id }}">{{ user.name }}</option>
-    //         {% endif %}
-    //         {% endfor %}
-    //     </select>
-    // </div>
+
     // <div>メーカー
     //     <select class="item-edit-input" name="maker_code{{ loop.index }}" id="maker_code{{ loop.index }}">
     //         {% for maker in makers %}

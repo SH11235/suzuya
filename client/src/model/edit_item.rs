@@ -43,6 +43,12 @@ pub struct MakerModel {
     pub deleted: bool,
 }
 
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct NameIdPair {
+    pub name: String,
+    pub id: i32
+}
+
 #[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct GetItem {
     pub items: Vec<ItemModel>,
