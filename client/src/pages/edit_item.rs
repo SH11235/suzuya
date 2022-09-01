@@ -269,6 +269,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 let reservation_start_date = parse_date(&item.reservation_start_date);
                 let reservation_deadline = parse_date(&item.reservation_deadline);
                 let order_date = parse_date(&item.order_date);
+                let items = get_item.items.clone();
+                let mut index: usize = 0;
                 html! {
                     <>
                         <button {onclick}>{ "test button" }</button>
@@ -286,10 +288,31 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={item.project_type.clone()} select_list={project_type_list()} />
                         <br/>
                         { "最終更新日：" } <span>{ parse_date_time(&item.last_updated) }</span>
-                        <br/>
-                        <ItemDetail get_item={get_item.clone()} index={1} item_name={item.name.clone()}
-                            product_code={item.product_code.clone()} sku={item.sku.clone()} illust_status={item.illust_status.clone()} />
-                        <br/>
+                        <br/><br/>
+                        { "--------------------------------" }
+                        {
+                            html! {
+                                <>
+                                {
+                                    items.into_iter().map(|item| {
+                                        index += 1;
+                                        html! {
+                                            <ItemDetail 
+                                                get_item={get_item.clone()}
+                                                index={index}
+                                                item_name={item.name.clone()}
+                                                product_code={item.product_code.clone()}
+                                                sku={item.sku.clone()}
+                                                illust_status={item.illust_status.clone()}
+                                            />
+                                        }
+                                    }).collect::<Html>()
+                                }
+                                </>
+                            }
+                        }
+                        { "--------------------------------" }
+                        <br/><br/>
                         { "カタログステータス：" }<SelectBox onchange={onchange.clone()} id="catalog_status" name="catalog_status" value={item.catalog_status.clone()} select_list={catalog_status_list()} />
                         <br/>
                         { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />
