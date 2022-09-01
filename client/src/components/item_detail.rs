@@ -50,6 +50,43 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
+                "product_code" => {
+                    let mut items = get_item.items.clone();
+                    items[index - 1].product_code = Some(val);
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
+                "sku" => {
+                    let mut items = get_item.items.clone();
+                    let val: i32 = val.parse().unwrap();
+                    items[index - 1].sku = Some(val);
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
+                "illust_status" => {
+                    let mut items = get_item.items.clone();
+                    items[index - 1].illust_status = val;
+                    get_item.set(GetItem {
+                        items: items,
+                        release_date: get_item.release_date.clone(),
+                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        order_date: get_item.order_date.clone(),
+                        last_updated: get_item.last_updated.clone(),
+                    });
+                }
                 _ => {
                     web_sys::console::log_1(&JsValue::from_str("No defined state."));
                     web_sys::console::log_1(&JsValue::from_str("name"));
