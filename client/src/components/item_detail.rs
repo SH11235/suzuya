@@ -190,18 +190,5 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
         </>
 
-    // <div>ダブルチェック
-    //     <select class="item-edit-input" name="double_check_person{{ loop.index }}"
-    //         id="double_check_person{{ loop.index }}">
-    //         {% for user in users %}
-    //         {% if user.id == item.double_check_person_id %}
-    //         <option value="{{ user.id }}" selected>{{ user.name }}</option>
-    //         {% else %}
-    //         <option value="{{ user.id }}">{{ user.name }}</option>
-    //         {% endif %}
-    //         {% endfor %}
-    //     </select>
-    // </div>
-
     }
 }
