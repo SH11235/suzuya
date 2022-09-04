@@ -20,6 +20,9 @@ pub struct ItemDetailProperty {
     pub pic_illust_id: Option<i32>,
     pub design_status: String,
     pub pic_design_id: Option<i32>,
+    pub maker_id: Option<i32>,
+    pub retail_price: Option<i32>,
+    pub double_check_person_id: Option<i32>,
 }
 
 #[function_component(ItemDetail)]
@@ -39,6 +42,22 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             id: user.id.clone(),
         })
         .collect();
+
+    let makers = props.get_item.makers.clone();
+    let maker_name_id_vec: Vec<NameIdPair> = makers
+        .into_iter()
+        .map(|maker| NameIdPair {
+            name: maker.code_name.clone(),
+            id: maker.id.clone(),
+        })
+        .collect();
+
+        let retail_price = props.retail_price.clone().unwrap_or(0);
+        let retail_price = if retail_price == 0 {
+            "".to_string()
+        } else {
+            retail_price.to_string()
+        };
 
     let onchange = {
         let get_item = props.get_item.clone();
@@ -157,23 +176,20 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_design", props.index)} name={ format!("{}-{}", "pic_design", props.index)}
                     value={props.pic_design_id.clone()} name_value_list={user_name_id_vec.clone()}/>
             </div>
+            <div>{"メーカー"}
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "maker_code", props.index)} name={ format!("{}-{}", "maker_code", props.index)}
+                    value={props.maker_id.clone()} name_value_list={maker_name_id_vec.clone()}/>
+            </div>
+            <div>{"上代"}
+                <TextBox onchange={onchange.clone()} input_type="text" placeholder="上代" id={ format!("{}-{}", "retail_price", props.index) }
+                    name={format!("{}-{}", "retail_price", props.index) } value={ retail_price } />
+            </div>
+            <div>{"ダブルチェック"}
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
+                    value={props.double_check_person_id.clone()} name_value_list={user_name_id_vec.clone()}/>
+            </div>
         </>
 
-    // <div>メーカー
-    //     <select class="item-edit-input" name="maker_code{{ loop.index }}" id="maker_code{{ loop.index }}">
-    //         {% for maker in makers %}
-    //         {% if maker.id == item.maker_id %}
-    //         <option value="{{ maker.id }}" selected>{{ maker.code_name }}</option>
-    //         {% else %}
-    //         <option value="{{ maker.id }}">{{ maker.code_name }}</option>
-    //         {% endif %}
-    //         {% endfor %}
-    //     </select>
-    // </div>
-    // <div>上代
-    //     <input class="item-edit-input" type="text" placeholder="上代" name="retail_price{{ loop.index }}"
-    //         id="retail_price{{ loop.index }}" value="{{ item.retail_price }}" autofocus />
-    // </div>
     // <div>ダブルチェック
     //     <select class="item-edit-input" name="double_check_person{{ loop.index }}"
     //         id="double_check_person{{ loop.index }}">
