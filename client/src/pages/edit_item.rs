@@ -268,7 +268,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     };
 
     html! {
-      <div>
+      <div class="edit-item-page">
         <h1>{ "Edit Items" }</h1>
         {
             if get_item.items.len() == 0 {
@@ -300,11 +300,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={item.project_type.clone()} select_list={project_type_list()} />
                         <br/>
                         { "最終更新日：" } <span>{ parse_date_time(&item.last_updated) }</span>
-                        <br/><br/>
-                        { "--------------------------------" }
                         {
                             html! {
-                                <>
+                                <div class="item-detail-wrapper">
                                 {
                                     items.into_iter().map(|item| {
                                         index += 1;
@@ -326,11 +324,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                         }
                                     }).collect::<Html>()
                                 }
-                                </>
+                                </div>
                             }
                         }
-                        { "--------------------------------" }
-                        <br/><br/>
                         { "カタログステータス：" }<SelectBox onchange={onchange.clone()} id="catalog_status" name="catalog_status" value={item.catalog_status.clone()} select_list={catalog_status_list()} />
                         <br/>
                         { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />

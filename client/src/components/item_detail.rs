@@ -222,48 +222,48 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     };
 
     html! {
-        <>
-            <div>{"アイテム"}{ props.index }
+        <div class="item-wrapper">
+            <div class="input-warpper">{"アイテム"}{ props.index }
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}-{}", "name", props.index) }
                     name={format!("{}-{}", "name", props.index) } value={ props.item_name.clone() } />
             </div>
-            <div>{"品番"}
+            <div class="input-warpper">{"品番"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="品番" id={ format!("{}-{}", "product_code", props.index) }
                     name={format!("{}-{}", "product_code", props.index) } value={ props.product_code.clone().unwrap_or("".to_string()) } />
             </div>
-            <div>{"SKU"}
+            <div class="input-warpper">{"SKU"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="SKU" id={ format!("{}-{}", "sku", props.index) }
                     name={format!("{}-{}", "sku", props.index) } value={ sku } />
             </div>
-            <div>{"イラストステータス："}
+            <div class="input-warpper">{"イラストステータス："}
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "illust_status", props.index)} name={ format!("{}-{}", "illust_status", props.index)}
                     value={props.illust_status.clone()} select_list={illust_status_list()}/>
             </div>
-            <div>{"イラスト担当者"}
+            <div class="input-warpper">{"イラスト担当者"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_illust", props.index)} name={ format!("{}-{}", "pic_illust", props.index)}
                     value={props.pic_illust_id.clone()} name_value_list={user_name_id_vec.clone()}/>
             </div>
-            <div>{"デザインステータス"}
+            <div class="input-warpper">{"デザインステータス"}
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "design_status", props.index)} name={ format!("{}-{}", "design_status", props.index)}
                     value={props.design_status.clone()} select_list={design_status_list()}/>
             </div>
-            <div>{"デザイン担当者"}
+            <div class="input-warpper">{"デザイン担当者"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_design", props.index)} name={ format!("{}-{}", "pic_design", props.index)}
                     value={props.pic_design_id.clone()} name_value_list={user_name_id_vec.clone()}/>
             </div>
-            <div>{"メーカー"}
+            <div class="input-warpper">{"メーカー"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "maker_code", props.index)} name={ format!("{}-{}", "maker_code", props.index)}
                     value={props.maker_id.clone()} name_value_list={maker_name_id_vec.clone()}/>
             </div>
-            <div>{"上代"}
+            <div class="input-warpper">{"上代"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="上代" id={ format!("{}-{}", "retail_price", props.index) }
                     name={format!("{}-{}", "retail_price", props.index) } value={ retail_price } />
             </div>
-            <div>{"ダブルチェック"}
+            <div class="input-warpper">{"ダブルチェック"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
                     value={props.double_check_person_id.clone()} name_value_list={user_name_id_vec.clone()}/>
             </div>
-        </>
+        </div>
 
     }
 }
