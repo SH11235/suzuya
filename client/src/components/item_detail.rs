@@ -69,11 +69,12 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             let name = name_index[0];
             let index: usize = name_index[1].parse().unwrap();
 
+            let mut items = get_item.items.clone();
+            let users = get_item.users.clone();
+            let makers = get_item.makers.clone();
+
             match name {
                 "name" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items[index - 1].name = val;
                     get_item.set(GetItem {
                         items,
@@ -87,9 +88,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     });
                 }
                 "product_code" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items[index - 1].product_code = Some(val);
                     get_item.set(GetItem {
                         items,
@@ -103,9 +101,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     });
                 }
                 "sku" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     let val: i32 = val.parse().unwrap();
                     items[index - 1].sku = Some(val);
                     get_item.set(GetItem {
@@ -120,9 +115,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     });
                 }
                 "illust_status" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items[index - 1].illust_status = val;
                     get_item.set(GetItem {
                         items,

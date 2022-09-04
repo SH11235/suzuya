@@ -81,11 +81,11 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let val: String = input.value();
             let name: String = input.name();
             let name = name.as_str();
+            let mut items = get_item.items.clone();
+            let users = get_item.users.clone();
+            let makers = get_item.makers.clone();
             match name {
                 "release_date" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -105,9 +105,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "reservation_start_date" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -127,9 +124,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "reservation_deadline" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -149,9 +143,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "order_date" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -171,9 +162,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "title" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -193,9 +181,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "project_type" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -215,9 +200,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "catalog_status" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -237,9 +219,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "announcement_status" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -259,9 +238,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 "remarks" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items = items
                         .iter()
                         .map(|item| ItemModel {
@@ -333,7 +309,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                     items.into_iter().map(|item| {
                                         index += 1;
                                         html! {
-                                            <ItemDetail 
+                                            <ItemDetail
                                                 get_item={get_item.clone()}
                                                 index={index}
                                                 item_name={item.name.clone()}
