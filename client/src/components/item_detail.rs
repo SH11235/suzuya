@@ -69,11 +69,12 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             let name = name_index[0];
             let index: usize = name_index[1].parse().unwrap();
 
+            let mut items = get_item.items.clone();
+            let users = get_item.users.clone();
+            let makers = get_item.makers.clone();
+
             match name {
                 "name" => {
-                    let mut items = get_item.items.clone();
-                    let users = get_item.users.clone();
-                    let makers = get_item.makers.clone();
                     items[index - 1].name = val;
                     get_item.set(GetItem {
                         items,
