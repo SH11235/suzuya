@@ -267,6 +267,29 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         })
     };
 
+    let item_add_click = {
+        let get_item = get_item.clone();
+        Callback::from(move |_| {
+            let mut items = get_item.items.clone();
+            let users = get_item.users.clone();
+            let makers = get_item.makers.clone();
+            let new_item = ItemModel {
+                ..Default::default()
+            };
+            items.push(new_item);
+            get_item.set(GetItem {
+                items,
+                users,
+                makers,
+                release_date: get_item.release_date.clone(),
+                reservation_start_date: get_item.reservation_start_date.clone(),
+                reservation_deadline: get_item.reservation_deadline.clone(),
+                order_date: get_item.order_date.clone(),
+                last_updated: get_item.last_updated.clone(),
+            });
+        })
+    };
+
     html! {
       <div class="edit-item-page">
         <h1>{ "Edit Items" }</h1>
@@ -324,6 +347,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                         }
                                     }).collect::<Html>()
                                 }
+                                    <button onclick={item_add_click} class="item-add-button" id="item-add-button">
+                                        { "+" }
+                                    </button>
                                 </div>
                             }
                         }
