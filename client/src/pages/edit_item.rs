@@ -310,13 +310,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     <>
                         <button {onclick}>{ "test button" }</button>
                         <br/>
-                        { "発売日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
+                        { "発売日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
-                        { "案内日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
+                        { "案内日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
                         <br/>
-                        { "締切日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
+                        { "締切日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
                         <br/>
-                        { "発注日：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
+                        { "発注日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="order_date" name="order_date" value={order_date} />
                         <br/>
                         { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
                         <br/>
