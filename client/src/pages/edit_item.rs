@@ -1,7 +1,7 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item_detail::ItemDetail;
-use crate::model::edit_item::{GetItem, ItemModel, PostItem};
+use crate::model::edit_item::{GetItem, ItemModel};
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use reqwasm::http::Request;
@@ -28,28 +28,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         backend_url() + "/api/item/",
         decode(&props.title.clone()).expect("UTF-8")
     );
-    let onclick = {
-        let get_item = get_item.clone();
-        Callback::from(move |_| {
-            if get_item.items.len() > 0 {
-                let get_item = get_item.clone();
-                let post_item = PostItem {
-                    release_date: get_item.release_date.clone(),
-                    reservation_start_date: get_item.reservation_start_date.clone(),
-                    reservation_deadline: get_item.reservation_deadline.clone(),
-                    order_date: get_item.order_date.clone(),
-                    title: get_item.items[0].title.clone(),
-                    project_type: get_item.items[0].project_type.clone(),
-                    catalog_status: get_item.items[0].catalog_status.clone(),
-                    announcement_status: get_item.items[0].announcement_status.clone(),
-                    remarks: get_item.items[0].remarks.clone(),
-                    items: get_item.items.clone(),
-                };
-                web_sys::console::log_1(&JsValue::from_serde(&get_item.items[0]).unwrap());
-                web_sys::console::log_1(&JsValue::from_serde(&post_item).unwrap());
-            }
-        })
-    };
     {
         let get_item = get_item.clone();
         use_effect_with_deps(
@@ -308,8 +286,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 let mut index: usize = 0;
                 html! {
                     <>
-                        <button {onclick}>{ "test button" }</button>
-                        <br/>
                         { "発売日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
                         { "案内日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
@@ -359,6 +335,14 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />
                         <br/>
                         { "備考：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="remarks" value={item.remarks.clone().unwrap_or("".to_string())} />
+                        <br/>
+                        {
+                            html! {
+                                <button class="save-button" id="btn_submit">
+                                    { "保存" }
+                                </button>
+                            }
+                        }
                     </>
                 }
             }

@@ -27,6 +27,21 @@ pub struct ItemModel {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct PutItem {
+    pub id: i32,
+    pub name: String,
+    pub product_code: Option<String>,
+    pub sku: Option<i32>,
+    pub illust_status: String,
+    pub pic_illust_id: Option<i32>,
+    pub design_status: String,
+    pub pic_design_id: Option<i32>,
+    pub maker_id: Option<i32>,
+    pub retail_price: Option<i32>,
+    pub double_check_person_id: Option<i32>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct UserModel {
     pub id: i32,
     pub name: String,
@@ -69,7 +84,7 @@ pub struct PostItem {
     pub order_date: Option<String>,
     pub title: String,
     pub project_type: String,
-    pub items: Vec<ItemModel>,
+    pub items: Vec<PutItem>,
     pub catalog_status: String,
     pub announcement_status: String,
     pub remarks: Option<String>,

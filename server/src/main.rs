@@ -51,7 +51,7 @@ async fn main() -> std::io::Result<()> {
                     .iter()
                     .any(|env_origin| env_origin == origin)
             })
-            .allowed_methods(vec!["GET", "POST"])
+            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
             .allowed_headers(vec![
                 header::AUTHORIZATION,
                 header::ACCEPT,

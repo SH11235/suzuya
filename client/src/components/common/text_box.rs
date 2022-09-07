@@ -1,4 +1,4 @@
-use yew::{events::Event, function_component, html, Callback, Properties, TargetCast};
+use yew::{events::Event, function_component, html, Callback, Properties};
 
 #[derive(Properties, PartialEq)]
 pub struct EditItemProperty {

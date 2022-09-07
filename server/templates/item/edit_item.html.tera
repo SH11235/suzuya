@@ -209,7 +209,7 @@
             remarks,
         };
 
-        fetch('/item', {
+        fetch('/api/item', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'

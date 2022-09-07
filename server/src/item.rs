@@ -492,7 +492,7 @@ async fn api_edit_items(
     }))
 }
 
-#[put("/item")]
+#[put("/api/item")]
 async fn update_items(
     data: web::Data<AppState>,
     post_data: web::Json<JsonItems>,
