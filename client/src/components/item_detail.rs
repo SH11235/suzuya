@@ -11,6 +11,7 @@ use yew::{
 
 #[derive(Properties, PartialEq)]
 pub struct ItemDetailProperty {
+    pub id: i32,
     pub get_item: UseStateHandle<GetItem>,
     pub index: usize,
     pub item_name: String,
@@ -222,7 +223,11 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     };
 
     html! {
-        <div class="item-wrapper">
+        <div class="item-wrapper js-item">
+            <div style="display: none;" class="input-warpper">{"id"}{ props.index }
+                <TextBox onchange={onchange.clone()} input_type="text" placeholder="id" id={ format!("{}-{}", "id", props.index) }
+                    name={format!("{}-{}", "id", props.index) } value={ props.id.clone().to_string() } />
+            </div>
             <div class="input-warpper">{"アイテム"}{ props.index }
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}-{}", "name", props.index) }
                     name={format!("{}-{}", "name", props.index) } value={ props.item_name.clone() } />

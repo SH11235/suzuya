@@ -331,6 +331,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                         index += 1;
                                         html! {
                                             <ItemDetail
+                                                id={item.id.clone()}
                                                 get_item={get_item.clone()}
                                                 index={index}
                                                 item_name={item.name.clone()}
