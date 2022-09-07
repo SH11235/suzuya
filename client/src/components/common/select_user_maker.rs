@@ -12,23 +12,31 @@ pub struct SelectBoxProperty {
 
 #[function_component(SelectUserMaker)]
 pub fn select_user_maker(props: &SelectBoxProperty) -> Html {
+    let mut first_item = true;
     html! {
-      <select class="item-edit-input"
-        onchange = { props.onchange.clone() }
-        id={ props.id.clone() } name={ props.name.clone() } >
+        <select class="item-edit-input"
+            onchange = { props.onchange.clone() }
+            id={ props.id.clone() } name={ props.name.clone() } >
         {
-          props.name_value_list.clone().into_iter().map(|name_id_pair| {
-              if props.value.clone() == Some(name_id_pair.id) {
-                  html! {
-                      <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>
-                  }
-              } else {
-                  html! {
-                      <option value={ name_id_pair.id.clone().to_string() }>{ name_id_pair.name.clone() }</option>
-                  }
-              }
-          }).collect::<Html>()
+            props.name_value_list.clone().into_iter().map(|name_id_pair| {
+                if first_item && props.value.clone() == None {
+                    first_item = false;
+                    html! {
+                        <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>
+                    }
+                } else if props.value.clone() == Some(name_id_pair.id) {
+                    first_item = false;
+                    html! {
+                        <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>
+                    }
+                } else {
+                    first_item = false;
+                    html! {
+                        <option value={ name_id_pair.id.clone().to_string() }>{ name_id_pair.name.clone() }</option>
+                    }
+                }
+            }).collect::<Html>()
         }
-      </select>
+        </select>
     }
 }
