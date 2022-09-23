@@ -1,5 +1,5 @@
 use sea_orm::DatabaseConnection;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use tera::Tera;
 
 pub const DEFAULT_ITEMS_PER_PAGE: usize = 30;
@@ -10,13 +10,13 @@ pub struct AppState {
     pub conn: DatabaseConnection,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct StatusName {
     pub name: String,
     pub color: Color,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub enum Color {
     WHITE,
     PINK,

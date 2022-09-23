@@ -1,4 +1,6 @@
+use actix_cors::Cors;
 use actix_files::Files as Fs;
+use actix_web::http::header;
 use actix_web::{middleware, web, App, HttpServer};
 use entity::sea_orm;
 use listenfd::ListenFd;
@@ -39,10 +41,29 @@ async fn main() -> std::io::Result<()> {
     // create server and try to serve over socket if possible
     let mut listenfd = ListenFd::from_env();
     let mut server = HttpServer::new(move || {
+        let cors = Cors::default()
+            .allowed_origin_fn(|origin, _req_head| -> bool {
+                dotenv::dotenv().ok();
+                env::var("allowed_origin")
+                    .expect("allowed_origin must be set")
+                    .split(",")
+                    .collect::<Vec<&str>>()
+                    .iter()
+                    .any(|env_origin| env_origin == origin)
+            })
+            .allowed_methods(vec!["GET", "POST", "PUT", "DELETE"])
+            .allowed_headers(vec![
+                header::AUTHORIZATION,
+                header::ACCEPT,
+                header::CONTENT_TYPE,
+            ])
+            .supports_credentials()
+            .max_age(3600);
         App::new()
             .service(Fs::new("/static", "./static"))
             .app_data(web::Data::new(state.clone()))
             .wrap(middleware::Logger::default()) // enable logger
+            .wrap(cors)
             .configure(init)
     });
 
@@ -62,7 +83,8 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(item::item_list);
     cfg.service(item::new_item);
     cfg.service(item::create_items);
-    cfg.service(item::edit_items);
+    cfg.service(item::edit_items); // TODO 削除
+    cfg.service(item::api_edit_items);
     cfg.service(item::update_items);
 
     // maker

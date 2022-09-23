@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Suzuya</title>
+    <meta name="description" content="A merchandise management application." />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link data-trunk rel="scss" href="style.scss" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p&display=swap" rel="stylesheet">
+</head>
+
+<body></body>
+
+</html>
+
+<script>
+    window.addEventListener("load", () => {
+        addPutEvent();
+    });
+
+    const addPutEvent = () => {
+        let addEvent = setInterval(() => {
+            const btn_submit = document.getElementById("btn_submit");
+            if (btn_submit) {
+                btn_submit.addEventListener('click', (e) => postData(e));
+                clearInterval(addEvent);
+            }
+        }, 1000);
+    };
+
+    const getElement = (id) => {
+        return document.getElementById(id);
+    };
+
+    const postData = (e) => {
+        e.preventDefault();
+        const release_date = getElement("release_date").value;
+        const reservation_start_date = getElement("reservation_start_date").value;
+        const reservation_deadline = getElement("reservation_deadline").value;
+        const order_date = getElement("order_date").value;
+        const title = getElement("title").value;
+        const project_type = getElement("project_type").value;
+        const catalog_status = getElement("catalog_status").value;
+        const announcement_status = getElement("announcement_status").value;
+        const remarks = getElement("remarks").value;
+        const item_list = [];
+
+        const items = document.getElementsByClassName('js-item');
+        const itemNumber = items.length;
+
+        for (let i = 0; i < itemNumber; i++) {
+            let index = String(i + 1);
+            item_list.push({
+                id: Number(getElement("id-" + index).value),
+                name: getElement("name-" + index).value,
+                product_code: getElement("product_code-" + index).value,
+                sku: Number(getElement("sku-" + index).value),
+                illust_status: getElement("illust_status-" + index).value,
+                pic_illust_id: Number(getElement("pic_illust-" + index).value),
+                design_status: getElement("design_status-" + index).value,
+                pic_design_id: Number(getElement("pic_design-" + index).value),
+                maker_id: Number(getElement("maker_code-" + index).value),
+                retail_price: Number(getElement("retail_price-" + index).value),
+                double_check_person_id: Number(getElement("double_check_person-" + index).value)
+            });
+        }
+
+        const data = {
+            release_date: new Date(release_date),
+            reservation_start_date: new Date(reservation_start_date),
+            reservation_deadline: new Date(reservation_deadline),
+            order_date: new Date(order_date),
+            title,
+            project_type,
+            items: item_list,
+            catalog_status,
+            announcement_status,
+            remarks,
+        };
+
+        // TODO 環境設定
+        fetch('http://localhost:1123/api/item', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(_data => {
+                alert("登録に成功しました");
+            })
+            .catch((error) => {
+                alert("登録に失敗しました");
+                console.error(error);
+            });
+    };
+</script>
