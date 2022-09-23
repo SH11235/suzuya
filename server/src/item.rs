@@ -500,34 +500,78 @@ async fn update_items(
     let conn = &data.conn;
     let data = post_data.into_inner();
     let last_updated = Local::now();
-    for item in data.items.iter() {
-        item::ActiveModel {
-            id: Set(item.id),
-            release_date: Set(data.release_date),
-            reservation_start_date: Set(data.reservation_start_date),
-            reservation_deadline: Set(data.reservation_deadline),
-            order_date: Set(data.order_date),
-            title: Set(data.title.to_owned()),
-            project_type: Set(data.project_type.to_owned()),
-            last_updated: Set(last_updated.to_owned()),
-            name: Set(item.name.to_owned()),
-            product_code: Set(item.product_code.to_owned()),
-            sku: Set(item.sku.to_owned()),
-            illust_status: Set(item.illust_status.to_owned()),
-            pic_illust_id: Set(item.pic_illust_id.to_owned()),
-            design_status: Set(item.design_status.to_owned()),
-            pic_design_id: Set(item.pic_design_id.to_owned()),
-            maker_id: Set(item.maker_id.to_owned()),
-            retail_price: Set(item.retail_price.to_owned()),
-            double_check_person_id: Set(item.double_check_person_id.to_owned()),
-            catalog_status: Set(data.catalog_status.to_owned()),
-            announcement_status: Set(data.announcement_status.to_owned()),
-            remarks: Set(data.remarks.to_owned()),
-            ..Default::default()
-        }
-        .save(conn)
+    let title = data.title.clone();
+
+    let items = Item::find()
+        .order_by_asc(item::Column::Id)
+        .filter(item::Column::Title.eq(title))
+        .all(conn)
         .await
-        .expect("could not edit items");
+        .expect("could not find items by title.");
+
+    let item_ids: Vec<i32> = items.iter().map(|item| item.id).collect();
+
+    for item in data.items.iter() {
+        let item_id = &item.id;
+        if let Some(_id) = item_ids.iter().find(|e| e == &item_id) {
+            // idあり→UPDATE
+            item::ActiveModel {
+                id: Set(item.id),
+                release_date: Set(data.release_date),
+                reservation_start_date: Set(data.reservation_start_date),
+                reservation_deadline: Set(data.reservation_deadline),
+                order_date: Set(data.order_date),
+                title: Set(data.title.to_owned()),
+                project_type: Set(data.project_type.to_owned()),
+                last_updated: Set(last_updated.to_owned()),
+                name: Set(item.name.to_owned()),
+                product_code: Set(item.product_code.to_owned()),
+                sku: Set(item.sku.to_owned()),
+                illust_status: Set(item.illust_status.to_owned()),
+                pic_illust_id: Set(item.pic_illust_id.to_owned()),
+                design_status: Set(item.design_status.to_owned()),
+                pic_design_id: Set(item.pic_design_id.to_owned()),
+                maker_id: Set(item.maker_id.to_owned()),
+                retail_price: Set(item.retail_price.to_owned()),
+                double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                catalog_status: Set(data.catalog_status.to_owned()),
+                announcement_status: Set(data.announcement_status.to_owned()),
+                remarks: Set(data.remarks.to_owned()),
+                ..Default::default()
+            }
+            .save(conn)
+            .await
+            .expect("could not edit items");
+        } else {
+            // id無し→INSERT
+            item::ActiveModel {
+                id: Set(item.id),
+                release_date: Set(data.release_date),
+                reservation_start_date: Set(data.reservation_start_date),
+                reservation_deadline: Set(data.reservation_deadline),
+                order_date: Set(data.order_date),
+                title: Set(data.title.to_owned()),
+                project_type: Set(data.project_type.to_owned()),
+                last_updated: Set(last_updated.to_owned()),
+                name: Set(item.name.to_owned()),
+                product_code: Set(item.product_code.to_owned()),
+                sku: Set(item.sku.to_owned()),
+                illust_status: Set(item.illust_status.to_owned()),
+                pic_illust_id: Set(item.pic_illust_id.to_owned()),
+                design_status: Set(item.design_status.to_owned()),
+                pic_design_id: Set(item.pic_design_id.to_owned()),
+                maker_id: Set(item.maker_id.to_owned()),
+                retail_price: Set(item.retail_price.to_owned()),
+                double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                catalog_status: Set(data.catalog_status.to_owned()),
+                announcement_status: Set(data.announcement_status.to_owned()),
+                remarks: Set(data.remarks.to_owned()),
+                ..Default::default()
+            }
+            .insert(conn)
+            .await
+            .expect("failed to insert items");
+        }
     }
 
     Ok(HttpResponse::Ok().body("put ok"))
