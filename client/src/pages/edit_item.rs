@@ -35,13 +35,16 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 let get_item = get_item.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
-                    let fetched_items: GetItem = client
+                    let mut fetched_items: GetItem = client
                         .send()
                         .await
                         .expect("Failed to fetch items")
                         .json()
                         .await
                         .expect("Failed to parse items");
+                    fetched_items
+                        .items
+                        .sort_by(|a, b| a.product_code.cmp(&b.product_code));
                     // debug
                     web_sys::console::log_1(&JsValue::from_serde(&fetched_items).unwrap());
                     get_item.set(fetched_items);

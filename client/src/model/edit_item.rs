@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct ItemModel {
     pub id: i32,
     pub release_date: Option<String>,           // 発売日
@@ -41,7 +41,7 @@ pub struct PutItem {
     pub double_check_person_id: Option<i32>,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct UserModel {
     pub id: i32,
     pub name: String,
@@ -51,7 +51,7 @@ pub struct UserModel {
     pub updated_at: String,
 }
 
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct MakerModel {
     pub id: i32,
     pub code_name: String,
@@ -61,10 +61,10 @@ pub struct MakerModel {
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct NameIdPair {
     pub name: String,
-    pub id: i32
+    pub id: i32,
 }
 
-#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct GetItem {
     pub items: Vec<ItemModel>,
     pub users: Vec<UserModel>,
