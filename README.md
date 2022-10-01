@@ -42,8 +42,17 @@ sample data input
 PGPASSWORD=postgres psql -f ./sample_data.sql -p 8765 -U postgres -d suzuya -h localhost
 ```
 
-App start
+## Yew
 
-```sh
-cargo run
-```
+https://yew.rs/ja/docs/getting-started/introduction
+
+## App start
+
+- server
+  ```sh
+  cargo run --bin suzuya
+  ```
+- client
+  ```sh
+    trunc serve
+  ```
