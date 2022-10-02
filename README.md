@@ -50,9 +50,11 @@ https://yew.rs/ja/docs/getting-started/introduction
 
 - server
   ```sh
-  cargo run --bin suzuya
+    cd server
+    cargo run
   ```
 - client
   ```sh
+    cd client
     trunc serve
   ```
