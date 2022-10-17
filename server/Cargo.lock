@@ -958,7 +958,7 @@ dependencies = [
 name = "entity"
 version = "0.1.0"
 dependencies = [
- "sea-orm 0.7.1",
+ "sea-orm 0.9.1",
  "serde",
 ]
 
