@@ -20,6 +20,10 @@ impl MigrationTrait for Migration {
                             .default(Uuid::new_v4()),
                     )
                     .col(ColumnDef::new(Title::Name).string().not_null())
+                    .col(ColumnDef::new(Title::ReleaseDate).timestamp_with_time_zone())
+                    .col(ColumnDef::new(Title::ReservationStartDate).timestamp_with_time_zone())
+                    .col(ColumnDef::new(Title::ReservationDeadline).timestamp_with_time_zone())
+                    .col(ColumnDef::new(Title::OrderDate).timestamp_with_time_zone())
                     .col(
                         ColumnDef::new(Title::Deleted)
                             .boolean()
@@ -44,5 +48,9 @@ pub enum Title {
     Table,
     Id,
     Name,
+    ReleaseDate,
+    ReservationStartDate,
+    ReservationDeadline,
+    OrderDate,
     Deleted,
 }

@@ -22,10 +22,6 @@ impl MigrationTrait for Migration {
                             .primary_key()
                             .default(Uuid::new_v4()),
                     )
-                    .col(ColumnDef::new(Item::ReleaseDate).timestamp_with_time_zone())
-                    .col(ColumnDef::new(Item::ReservationStartDate).timestamp_with_time_zone())
-                    .col(ColumnDef::new(Item::ReservationDeadline).timestamp_with_time_zone())
-                    .col(ColumnDef::new(Item::OrderDate).timestamp_with_time_zone())
                     .col(ColumnDef::new(Item::TitleId).uuid().not_null())
                     .col(
                         ColumnDef::new(Item::ProjectType)
@@ -135,10 +131,6 @@ impl MigrationTrait for Migration {
 enum Item {
     Table,
     Id,
-    ReleaseDate,
-    ReservationStartDate,
-    ReservationDeadline,
-    OrderDate,
     TitleId,
     ProjectType,
     LastUpdated,

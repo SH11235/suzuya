@@ -9,6 +9,10 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
     pub name: String,
+    pub release_date: Option<DateTimeWithTimeZone>,
+    pub reservation_start_date: Option<DateTimeWithTimeZone>,
+    pub reservation_deadline: Option<DateTimeWithTimeZone>,
+    pub order_date: Option<DateTimeWithTimeZone>,
     pub deleted: bool,
 }
 
