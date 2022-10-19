@@ -1,36 +1,36 @@
 use crate::setting::AppState;
 use actix_web::{error, get, post, web, Error, HttpResponse, Result};
 use chrono::Local;
-use entity::user;
-use entity::user::Entity as User;
+use entity::worker;
+use entity::worker::Entity as Worker;
 use sea_orm::{entity::*, query::*};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-struct InputNewUser {
+struct InputNewWorker {
     name: String,
     description: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-struct UpdateUser {
+struct UpdateWorker {
     name: String,
     description: Option<String>,
 }
 
-#[get("/user")]
-async fn user_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+#[get("/worker")]
+async fn worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let conn = &data.conn;
-    let datas = User::find()
-        .order_by_asc(user::Column::Id)
-        .filter(user::Column::Deleted.eq(false))
+    let datas = Worker::find()
+        .order_by_asc(worker::Column::Id)
+        .filter(worker::Column::Deleted.eq(false))
         .all(conn)
         .await
         .expect("could not retrieve datas");
     let mut ctx = tera::Context::new();
     let h1 = "関係者";
-    let path = "user";
+    let path = "worker";
 
     #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
     struct ViewData {
@@ -43,15 +43,15 @@ async fn user_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 
     let view_datas = datas
         .iter()
-        .map(|user| ViewData {
-            id: user.id,
-            name: user.name.clone(),
-            description: user.description.clone(),
-            created_at: user
+        .map(|worker| ViewData {
+            id: worker.id,
+            name: worker.name.clone(),
+            description: worker.description.clone(),
+            created_at: worker
                 .created_at
                 .format("%Y年%m月%d日 <br> %H時%M分%S秒")
                 .to_string(),
-            updated_at: user
+            updated_at: worker
                 .updated_at
                 .format("%Y年%m月%d日 <br> %H時%M分%S秒")
                 .to_string(),
@@ -63,32 +63,32 @@ async fn user_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     ctx.insert("path", &path);
 
     let body = template
-        .render("user/user_list.html.tera", &ctx)
+        .render("worker/worker_list.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
-#[get("/new_user")]
-async fn new_user(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+#[get("/new_worker")]
+async fn new_worker(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
     let ctx = tera::Context::new();
     let body = template
-        .render("user/new_user.html.tera", &ctx)
+        .render("worker/new_worker.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
-#[post("/new_user")]
-async fn create_user(
+#[post("/new_worker")]
+async fn create_worker(
     data: web::Data<AppState>,
-    post_form: web::Form<InputNewUser>,
+    post_form: web::Form<InputNewWorker>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let form = post_form.into_inner();
 
     let date = Local::now();
 
-    user::ActiveModel {
+    worker::ActiveModel {
         name: Set(form.name.to_owned()),
         description: Set(form.description.to_owned()),
         created_at: Set(date),
@@ -97,47 +97,47 @@ async fn create_user(
     }
     .insert(conn)
     .await
-    .expect("could not insert user");
+    .expect("could not insert worker");
 
     Ok(HttpResponse::Found()
-        .append_header(("location", "/new_user"))
+        .append_header(("location", "/new_worker"))
         .finish())
 }
 
-#[get("/user/{id}")]
-async fn edit_user(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+#[get("/worker/{id}")]
+async fn edit_worker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let template = &data.templates;
 
-    let user: user::Model = User::find_by_id(id.into_inner())
+    let worker: worker::Model = Worker::find_by_id(id.into_inner())
         .one(conn)
         .await
-        .expect("could not find user")
+        .expect("could not find worker")
         .unwrap();
 
     let mut ctx = tera::Context::new();
-    let path = "user";
-    ctx.insert("user", &user);
+    let path = "worker";
+    ctx.insert("worker", &worker);
     ctx.insert("path", &path);
 
     let body = template
-        .render("user/edit_user.html.tera", &ctx)
+        .render("worker/edit_worker.html.tera", &ctx)
         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
-#[post("/user/{id}")]
-async fn update_user(
+#[post("/worker/{id}")]
+async fn update_worker(
     data: web::Data<AppState>,
     id: web::Path<i32>,
-    post_form: web::Form<UpdateUser>,
+    post_form: web::Form<UpdateWorker>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let form = post_form.into_inner();
 
     let date = Local::now();
 
-    user::ActiveModel {
+    worker::ActiveModel {
         id: Set(*id),
         name: Set(form.name.to_owned()),
         description: Set(form.description.to_owned()),
@@ -146,27 +146,27 @@ async fn update_user(
     }
     .save(conn)
     .await
-    .expect("could not edit user");
+    .expect("could not edit worker");
 
     Ok(HttpResponse::Found()
-        .append_header(("location", "/user"))
+        .append_header(("location", "/worker"))
         .finish())
 }
 
-#[post("/delete_user/{id}")]
-async fn delete_user(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+#[post("/delete_worker/{id}")]
+async fn delete_worker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    user::ActiveModel {
+    worker::ActiveModel {
         id: Set(*id),
         deleted: Set(true),
         ..Default::default()
     }
     .save(conn)
     .await
-    .expect("could not delete user");
+    .expect("could not delete worker");
 
     Ok(HttpResponse::Found()
-        .append_header(("location", "/user"))
+        .append_header(("location", "/worker"))
         .finish())
 }
