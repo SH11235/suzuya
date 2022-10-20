@@ -1,9 +1,8 @@
 use crate::setting::AppState;
 use actix_web::{error, get, post, web, Error, HttpResponse, Result};
-use chrono::Local;
 use entity::worker;
 use entity::worker::Entity as Worker;
-use sea_orm::{entity::*, query::*};
+use sea_orm::{entity::*, query::*, prelude::Uuid};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -34,11 +33,8 @@ async fn worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
 
     #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
     struct ViewData {
-        id: i32,
+        id: Uuid,
         name: String,
-        description: Option<String>,
-        created_at: String,
-        updated_at: String,
     }
 
     let view_datas = datas
@@ -46,15 +42,6 @@ async fn worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
         .map(|worker| ViewData {
             id: worker.id,
             name: worker.name.clone(),
-            description: worker.description.clone(),
-            created_at: worker
-                .created_at
-                .format("%Y年%m月%d日 <br> %H時%M分%S秒")
-                .to_string(),
-            updated_at: worker
-                .updated_at
-                .format("%Y年%m月%d日 <br> %H時%M分%S秒")
-                .to_string(),
         })
         .collect::<Vec<ViewData>>();
 
@@ -86,13 +73,9 @@ async fn create_worker(
     let conn = &data.conn;
     let form = post_form.into_inner();
 
-    let date = Local::now();
-
     worker::ActiveModel {
         name: Set(form.name.to_owned()),
-        description: Set(form.description.to_owned()),
-        created_at: Set(date),
-        updated_at: Set(date),
+        deleted: Set(false),
         ..Default::default()
     }
     .insert(conn)
@@ -105,7 +88,7 @@ async fn create_worker(
 }
 
 #[get("/worker/{id}")]
-async fn edit_worker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn edit_worker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let template = &data.templates;
 
@@ -129,20 +112,16 @@ async fn edit_worker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<Ht
 #[post("/worker/{id}")]
 async fn update_worker(
     data: web::Data<AppState>,
-    id: web::Path<i32>,
+    id: web::Path<Uuid>,
     post_form: web::Form<UpdateWorker>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let form = post_form.into_inner();
 
-    let date = Local::now();
-
     worker::ActiveModel {
         id: Set(*id),
         name: Set(form.name.to_owned()),
-        description: Set(form.description.to_owned()),
-        updated_at: Set(date),
-        ..Default::default()
+        deleted: Set(false),
     }
     .save(conn)
     .await
@@ -154,7 +133,7 @@ async fn update_worker(
 }
 
 #[post("/delete_worker/{id}")]
-async fn delete_worker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn delete_worker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
     worker::ActiveModel {
