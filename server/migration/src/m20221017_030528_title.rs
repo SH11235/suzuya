@@ -54,3 +54,47 @@ pub enum Title {
     OrderDate,
     Deleted,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::Title;
+    use sea_orm_migration::prelude::*;
+
+    #[test]
+    fn test() {
+        // test query string
+        let table = Table::create()
+            .table(Title::Table)
+            .if_not_exists()
+            .col(
+                ColumnDef::new(Title::Id).uuid().not_null().primary_key(), // .default(Uuid::new_v4()), // comment out for testing
+            )
+            .col(ColumnDef::new(Title::Name).string().not_null())
+            .col(ColumnDef::new(Title::ReleaseDate).timestamp_with_time_zone())
+            .col(ColumnDef::new(Title::ReservationStartDate).timestamp_with_time_zone())
+            .col(ColumnDef::new(Title::ReservationDeadline).timestamp_with_time_zone())
+            .col(ColumnDef::new(Title::OrderDate).timestamp_with_time_zone())
+            .col(
+                ColumnDef::new(Title::Deleted)
+                    .boolean()
+                    .not_null()
+                    .default(false),
+            )
+            .to_owned();
+        assert_eq!(
+            table.to_string(PostgresQueryBuilder),
+            [
+                r#"CREATE TABLE IF NOT EXISTS "title" ("#,
+                r#""id" uuid NOT NULL PRIMARY KEY,"#,
+                r#""name" varchar NOT NULL,"#,
+                r#""release_date" timestamp with time zone,"#,
+                r#""reservation_start_date" timestamp with time zone,"#,
+                r#""reservation_deadline" timestamp with time zone,"#,
+                r#""order_date" timestamp with time zone,"#,
+                r#""deleted" bool NOT NULL DEFAULT FALSE"#,
+                r#")"#,
+            ]
+            .join(" ")
+        );
+    }
+}
