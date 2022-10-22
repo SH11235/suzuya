@@ -84,7 +84,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -97,7 +97,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -111,7 +111,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -124,7 +124,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -138,7 +138,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -151,7 +151,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -165,7 +165,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -179,7 +179,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -193,7 +193,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }
@@ -207,7 +207,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date: get_item.order_date.clone(),
+                        order_date_to_maker: get_item.order_date_to_maker.clone(),
                         last_updated: get_item.last_updated.clone(),
                     });
                 }

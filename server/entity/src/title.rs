@@ -12,7 +12,7 @@ pub struct Model {
     pub release_date: Option<DateTimeWithTimeZone>,
     pub reservation_start_date: Option<DateTimeWithTimeZone>,
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
-    pub order_date: Option<DateTimeWithTimeZone>,
+    pub order_date_to_maker: Option<DateTimeWithTimeZone>,
     pub deleted: bool,
 }
 

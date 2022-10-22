@@ -90,7 +90,7 @@ mod tests {
                 r#""release_date" timestamp with time zone,"#,
                 r#""reservation_start_date" timestamp with time zone,"#,
                 r#""reservation_deadline" timestamp with time zone,"#,
-                r#""order_date" timestamp with time zone,"#,
+                r#""order_date_to_maker" timestamp with time zone,"#,
                 r#""deleted" bool NOT NULL DEFAULT FALSE"#,
                 r#")"#,
             ]

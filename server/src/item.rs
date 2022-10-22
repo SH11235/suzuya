@@ -30,7 +30,7 @@ struct SelectResult {
     release_date: Option<DateTime<Utc>>,
     reservation_start_date: Option<DateTime<Utc>>,
     reservation_deadline: Option<DateTime<Utc>>,
-    order_date: Option<DateTime<Utc>>,
+    order_date_to_maker: Option<DateTime<Utc>>,
     title: String,
     project_type: String,
     last_updated: DateTime<Utc>,
@@ -61,7 +61,7 @@ struct InputNewItem {
     release_date: Option<DateTime<Utc>>,
     reservation_start_date: Option<DateTime<Utc>>,
     reservation_deadline: Option<DateTime<Utc>>,
-    order_date: Option<DateTime<Utc>>,
+    order_date_to_maker: Option<DateTime<Utc>>,
     name_list: Vec<String>,
 }
 
@@ -70,7 +70,7 @@ struct JsonItems {
     release_date: Option<DateTime<Utc>>,
     reservation_start_date: Option<DateTime<Utc>>,
     reservation_deadline: Option<DateTime<Utc>>,
-    order_date: Option<DateTime<Utc>>,
+    order_date_to_maker: Option<DateTime<Utc>>,
     title_id: Uuid,
     title_name: String,
     project_type: String,
@@ -106,7 +106,7 @@ struct ItemEdit {
     release_date: Option<String>,
     reservation_start_date: Option<String>,
     reservation_deadline: Option<String>,
-    order_date: Option<String>,
+    order_date_to_maker: Option<String>,
     last_updated: String,
     catalog_status_list: Vec<StatusName>,
     announce_status_list: Vec<StatusName>,
@@ -147,7 +147,7 @@ async fn item_list(
             "items"."release_date",
             "items"."reservation_start_date",
             "items"."reservation_deadline",
-            "items"."order_date",
+            "items"."order_date_to_maker",
             "items"."title",
             "items"."project_type",
             "items"."last_updated",
@@ -198,7 +198,7 @@ async fn item_list(
         release_date: Option<String>,
         reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
         reservation_deadline: Option<String>,   // 予約締切日
-        order_date: Option<String>,             // メーカーへの発注日
+        order_date_to_maker: Option<String>,             // メーカーへの発注日
         title: String,
         project_type: String,
         last_updated: String, // 最終更新日（ステータス変更時）
@@ -242,8 +242,8 @@ async fn item_list(
                     None
                 }
             },
-            order_date: {
-                if let Some(date) = item.order_date {
+            order_date_to_maker: {
+                if let Some(date) = item.order_date_to_maker {
                     Some(date_to_string(&date))
                 } else {
                     None
@@ -415,8 +415,8 @@ async fn api_edit_items(
         Some(reservation_deadline) => Some(reservation_deadline.format("%Y/%m/%d").to_string()),
         None => None,
     };
-    let order_date: Option<String> = match title.order_date {
-        Some(order_date) => Some(order_date.format("%Y/%m/%d").to_string()),
+    let order_date_to_maker: Option<String> = match title.order_date_to_maker {
+        Some(order_date_to_maker) => Some(order_date_to_maker.format("%Y/%m/%d").to_string()),
         None => None,
     };
     let last_updated = items[0]
@@ -434,7 +434,7 @@ async fn api_edit_items(
         release_date,
         reservation_start_date,
         reservation_deadline,
-        order_date,
+        order_date_to_maker,
         last_updated,
         catalog_status_list,
         announce_status_list,
@@ -480,8 +480,8 @@ async fn update_items(
             )),
             None => Set(None),
         },
-        order_date: match put_data.order_date {
-            Some(order_date) => Set(Some(order_date.with_timezone(&FixedOffset::east(9 * 3600)))),
+        order_date_to_maker: match put_data.order_date_to_maker {
+            Some(order_date_to_maker) => Set(Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))),
             None => Set(None),
         },
         deleted: Set(false),
