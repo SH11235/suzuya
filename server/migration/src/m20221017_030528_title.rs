@@ -23,7 +23,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Title::ReleaseDate).timestamp_with_time_zone())
                     .col(ColumnDef::new(Title::ReservationStartDate).timestamp_with_time_zone())
                     .col(ColumnDef::new(Title::ReservationDeadline).timestamp_with_time_zone())
-                    .col(ColumnDef::new(Title::OrderDate).timestamp_with_time_zone())
+                    .col(ColumnDef::new(Title::OrderDateToMaker).timestamp_with_time_zone())
                     .col(
                         ColumnDef::new(Title::Deleted)
                             .boolean()
@@ -51,7 +51,7 @@ pub enum Title {
     ReleaseDate,
     ReservationStartDate,
     ReservationDeadline,
-    OrderDate,
+    OrderDateToMaker,
     Deleted,
 }
 
@@ -73,7 +73,7 @@ mod tests {
             .col(ColumnDef::new(Title::ReleaseDate).timestamp_with_time_zone())
             .col(ColumnDef::new(Title::ReservationStartDate).timestamp_with_time_zone())
             .col(ColumnDef::new(Title::ReservationDeadline).timestamp_with_time_zone())
-            .col(ColumnDef::new(Title::OrderDate).timestamp_with_time_zone())
+            .col(ColumnDef::new(Title::OrderDateToMaker).timestamp_with_time_zone())
             .col(
                 ColumnDef::new(Title::Deleted)
                     .boolean()
