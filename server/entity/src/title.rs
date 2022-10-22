@@ -4,11 +4,15 @@ use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Deserialize, Serialize)]
-#[sea_orm(table_name = "maker")]
+#[sea_orm(table_name = "title")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: Uuid,
-    pub code_name: String,
+    pub name: String,
+    pub release_date: Option<DateTimeWithTimeZone>,
+    pub reservation_start_date: Option<DateTimeWithTimeZone>,
+    pub reservation_deadline: Option<DateTimeWithTimeZone>,
+    pub order_date_to_maker: Option<DateTimeWithTimeZone>,
     pub deleted: bool,
 }
 

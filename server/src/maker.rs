@@ -2,7 +2,7 @@ use crate::setting::AppState;
 use actix_web::{error, get, post, web, Error, HttpResponse, Result};
 use entity::maker;
 use entity::maker::Entity as Maker;
-use sea_orm::{entity::*, query::*};
+use sea_orm::{entity::*, query::*, prelude::Uuid};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -72,7 +72,7 @@ async fn create_maker(
 }
 
 #[get("/maker/{id}")]
-async fn edit_maker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<HttpResponse, Error> {
+async fn edit_maker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let template = &data.templates;
 
@@ -96,7 +96,7 @@ async fn edit_maker(data: web::Data<AppState>, id: web::Path<i32>) -> Result<Htt
 #[post("/maker/{id}")]
 async fn update_maker(
     data: web::Data<AppState>,
-    id: web::Path<i32>,
+    id: web::Path<Uuid>,
     post_form: web::Form<UpdateMaker>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
@@ -119,7 +119,7 @@ async fn update_maker(
 #[post("/delete_maker/{id}")]
 async fn delete_maker(
     data: web::Data<AppState>,
-    id: web::Path<i32>,
+    id: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 

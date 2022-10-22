@@ -2,12 +2,12 @@ use actix_cors::Cors;
 use actix_files::Files as Fs;
 use actix_web::http::header;
 use actix_web::{middleware, web, App, HttpServer};
-use entity::sea_orm;
+use sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use std::env;
 use suzuya::setting::AppState;
-use suzuya::{item, maker, user};
+use suzuya::{item, maker, worker};
 use tera::Tera;
 
 #[actix_web::main]
@@ -83,7 +83,6 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(item::item_list);
     cfg.service(item::new_item);
     cfg.service(item::create_items);
-    cfg.service(item::edit_items); // TODO 削除
     cfg.service(item::api_edit_items);
     cfg.service(item::update_items);
 
@@ -95,11 +94,11 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(maker::update_maker);
     cfg.service(maker::delete_maker);
 
-    // user
-    cfg.service(user::user_list);
-    cfg.service(user::new_user);
-    cfg.service(user::create_user);
-    cfg.service(user::edit_user);
-    cfg.service(user::update_user);
-    cfg.service(user::delete_user);
+    // worker
+    cfg.service(worker::worker_list);
+    cfg.service(worker::new_worker);
+    cfg.service(worker::create_worker);
+    cfg.service(worker::edit_worker);
+    cfg.service(worker::update_worker);
+    cfg.service(worker::delete_worker);
 }

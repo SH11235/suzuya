@@ -30,8 +30,11 @@ features = [
     "runtime-actix-native-tls",
     "sqlx-postgres",
 ]
-version = "^0.7.0"
+version = "^0.9"
 
 [dependencies.tracing-subscriber]
 features = ["env-filter"]
 version = "0.3"
+
+[dev-dependencies]
+tokio = { version = "1.20.0", features = ["macros", "rt"] }

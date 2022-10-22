@@ -6,7 +6,7 @@ pub struct ItemModel {
     pub release_date: Option<String>,           // 発売日
     pub reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
     pub reservation_deadline: Option<String>,   // 予約締切日
-    pub order_date: Option<String>,             // メーカーへの発注日
+    pub order_date_to_maker: Option<String>,             // メーカーへの発注日
     pub title: String,
     pub project_type: String,
     pub last_updated: String, // 最終更新日（ステータス変更時）
@@ -72,7 +72,7 @@ pub struct GetItem {
     pub release_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
-    pub order_date: Option<String>,
+    pub order_date_to_maker: Option<String>,
     pub last_updated: String,
 }
 
@@ -81,7 +81,7 @@ pub struct PostItem {
     pub release_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
-    pub order_date: Option<String>,
+    pub order_date_to_maker: Option<String>,
     pub title: String,
     pub project_type: String,
     pub items: Vec<PutItem>,

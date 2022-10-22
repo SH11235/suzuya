@@ -42,7 +42,7 @@
         const release_date = getElement("release_date").value;
         const reservation_start_date = getElement("reservation_start_date").value;
         const reservation_deadline = getElement("reservation_deadline").value;
-        const order_date = getElement("order_date").value;
+        const order_date_to_maker = getElement("order_date_to_maker").value;
         const title = getElement("title").value;
         const project_type = getElement("project_type").value;
         const catalog_status = getElement("catalog_status").value;
@@ -74,7 +74,7 @@
             release_date: new Date(release_date),
             reservation_start_date: new Date(reservation_start_date),
             reservation_deadline: new Date(reservation_deadline),
-            order_date: new Date(order_date),
+            order_date_to_maker: new Date(order_date_to_maker),
             title,
             project_type,
             items: item_list,
