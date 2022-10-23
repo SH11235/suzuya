@@ -43,7 +43,8 @@
         const reservation_start_date = getElement("reservation_start_date").value;
         const reservation_deadline = getElement("reservation_deadline").value;
         const order_date_to_maker = getElement("order_date_to_maker").value;
-        const title = getElement("title").value;
+        const title_id = location.pathname.split("/")[2];
+        const title_name = getElement("title").value;
         const project_type = getElement("project_type").value;
         const catalog_status = getElement("catalog_status").value;
         const announcement_status = getElement("announcement_status").value;
@@ -56,7 +57,7 @@
         for (let i = 0; i < itemNumber; i++) {
             let index = String(i + 1);
             item_list.push({
-                id: Number(getElement("id-" + index).value),
+                id: getElement("id-" + index).value,
                 name: getElement("name-" + index).value,
                 product_code: getElement("product_code-" + index).value,
                 sku: Number(getElement("sku-" + index).value),
@@ -75,7 +76,8 @@
             reservation_start_date: new Date(reservation_start_date),
             reservation_deadline: new Date(reservation_deadline),
             order_date_to_maker: new Date(order_date_to_maker),
-            title,
+            title_id,
+            title_name,
             project_type,
             items: item_list,
             catalog_status,
