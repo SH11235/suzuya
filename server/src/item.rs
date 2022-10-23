@@ -11,7 +11,7 @@ use entity::maker::Entity as Maker;
 use entity::title::Entity as Title;
 use entity::worker::Entity as Worker;
 use entity::{item, maker, title, worker};
-use sea_orm::prelude::{DateTimeWithTimeZone, Uuid};
+use sea_orm::prelude::{DateTimeUtc, DateTimeWithTimeZone, Uuid};
 use sea_orm::{entity::*, query::*};
 use sea_orm::{DbBackend, FromQueryResult};
 use serde::{Deserialize, Serialize};
@@ -26,7 +26,7 @@ struct ItemListQuery {
 
 #[derive(Debug, FromQueryResult)]
 struct SelectResult {
-    id: i32,
+    id: Uuid,
     release_date: Option<DateTime<Utc>>,
     reservation_start_date: Option<DateTime<Utc>>,
     reservation_deadline: Option<DateTime<Utc>>,
@@ -66,10 +66,10 @@ struct InputNewItem {
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 struct JsonItems {
-    release_date: Option<DateTime<Utc>>,
-    reservation_start_date: Option<DateTime<Utc>>,
-    reservation_deadline: Option<DateTime<Utc>>,
-    order_date_to_maker: Option<DateTime<Utc>>,
+    release_date: Option<DateTimeUtc>,
+    reservation_start_date: Option<DateTimeUtc>,
+    reservation_deadline: Option<DateTimeUtc>,
+    order_date_to_maker: Option<DateTimeUtc>,
     title_id: Uuid,
     title_name: String,
     project_type: String,
@@ -192,7 +192,7 @@ async fn item_list(
         .expect("could not retrieve datas");
     #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
     struct ViewData {
-        id: i32,
+        id: Uuid,
         release_date: Option<String>,
         reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
         reservation_deadline: Option<String>,   // 予約締切日
@@ -399,22 +399,10 @@ async fn api_edit_items(
     let catalog_status_list = catalog_status_list();
     let announce_status_list = announce_status_list();
 
-    let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
-        Some(release_date) => Some(release_date),
-        None => None,
-    };
-    let reservation_start_date: Option<DateTimeWithTimeZone> = match title.reservation_start_date {
-        Some(reservation_start_date) => Some(reservation_start_date),
-        None => None,
-    };
-    let reservation_deadline: Option<DateTimeWithTimeZone> = match title.reservation_deadline {
-        Some(reservation_deadline) => Some(reservation_deadline),
-        None => None,
-    };
-    let order_date_to_maker: Option<DateTimeWithTimeZone> = match title.order_date_to_maker {
-        Some(order_date_to_maker) => Some(order_date_to_maker),
-        None => None,
-    };
+    let release_date: Option<DateTimeWithTimeZone> = title.release_date;
+    let reservation_start_date: Option<DateTimeWithTimeZone> = title.reservation_start_date;
+    let reservation_deadline: Option<DateTimeWithTimeZone> = title.reservation_deadline;
+    let order_date_to_maker: Option<DateTimeWithTimeZone> = title.order_date_to_maker;
 
     Ok(HttpResponse::Ok().json(ItemEdit {
         items: items,
@@ -440,6 +428,11 @@ async fn update_items(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let put_data = post_data.into_inner();
+    println!(
+        "{:?}",
+        "====================================put_data===================================="
+    );
+    println!("{:?}", put_data);
     let title_id = put_data.title_id.clone();
 
     // title_id存在確認
@@ -454,27 +447,21 @@ async fn update_items(
         id: Set(title_id),
         name: Set(put_data.title_name),
         release_date: match put_data.release_date {
-            Some(release_date) => Set(Some(
-                release_date.with_timezone(&FixedOffset::east(9 * 3600)),
-            )),
+            Some(release_date) => Set(Some(utc_date_time_to_jst(&release_date))),
             None => Set(None),
         },
         reservation_start_date: match put_data.reservation_start_date {
-            Some(reservation_start_date) => Set(Some(
-                reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)),
-            )),
+            Some(reservation_start_date) => {
+                Set(Some(utc_date_time_to_jst(&reservation_start_date)))
+            }
             None => Set(None),
         },
         reservation_deadline: match put_data.reservation_deadline {
-            Some(reservation_deadline) => Set(Some(
-                reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)),
-            )),
+            Some(reservation_deadline) => Set(Some(utc_date_time_to_jst(&reservation_deadline))),
             None => Set(None),
         },
         order_date_to_maker: match put_data.order_date_to_maker {
-            Some(order_date_to_maker) => Set(Some(
-                order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)),
-            )),
+            Some(order_date_to_maker) => Set(Some(utc_date_time_to_jst(&order_date_to_maker))),
             None => Set(None),
         },
         deleted: Set(false),
@@ -551,7 +538,7 @@ async fn update_items(
 
 fn date_to_string(date_time: &DateTime<Utc>) -> String {
     // format document https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html
-    let date_time_japan = date_time.with_timezone(&FixedOffset::east(9 * 3600));
+    let date_time_japan = utc_date_time_to_jst(date_time);
     let day_format = date_time_japan.format("%w").to_string(); // Sunday = 0, Monday = 1, ..., Saturday = 6.
     let day_jp = match &*day_format {
         "0" => "(日)",
@@ -565,6 +552,10 @@ fn date_to_string(date_time: &DateTime<Utc>) -> String {
     };
     let month_date = date_time_japan.format("%m/%d").to_string();
     format!("{}{}", month_date, day_jp)
+}
+
+fn utc_date_time_to_jst(date_time: &DateTime<Utc>) -> DateTime<FixedOffset> {
+    date_time.with_timezone(&FixedOffset::east(9 * 3600))
 }
 
 #[cfg(test)]
