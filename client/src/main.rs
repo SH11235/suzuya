@@ -1,5 +1,7 @@
-use pages::edit_item::EditItem;
 use pages::home::Home;
+use pages::item::{edit_item::EditItem, item_list::ItemList};
+use pages::maker::maker_list::MakerList;
+use pages::worker::worker_list::WorkerList;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
@@ -12,8 +14,14 @@ mod settings;
 pub enum Route {
     #[at("/")]
     Home,
+    #[at("/maker_list")]
+    MakerList,
     #[at("/edit_item/:title_id")]
     EditItem { title_id: String },
+    #[at("/worker_list")]
+    WorkerList,
+    #[at("/item_list")]
+    ItemList,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -33,10 +41,19 @@ fn switch(routes: &Route) -> Html {
         Route::Home => {
             html! { <Home/> }
         }
+        Route::ItemList => {
+            html! { <ItemList/> }
+        }
+        Route::MakerList => {
+            html! { <MakerList/> }
+        }
         Route::EditItem { title_id } => {
             html! {
                 <EditItem title_id={ title_id.clone() }/>
             }
+        }
+        Route::WorkerList => {
+            html! { <WorkerList/> }
         }
         Route::NotFound => html! { <h1>{ "404" }</h1> },
     }
