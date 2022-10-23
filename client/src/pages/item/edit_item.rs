@@ -77,6 +77,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "reservation_start_date" => {
@@ -89,6 +90,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: Some(val),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "reservation_deadline" => {
@@ -101,6 +103,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: Some(val),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "order_date_to_maker" => {
@@ -113,6 +116,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: Some(val),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "title" => {
@@ -126,16 +130,10 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "project_type" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            project_type: val.clone(),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
                         title,
@@ -145,6 +143,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: val.clone(),
                     });
                 }
                 "catalog_status" => {
@@ -164,6 +163,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "announcement_status" => {
@@ -183,6 +183,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "remarks" => {
@@ -202,6 +203,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 _ => {
@@ -235,6 +237,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 reservation_start_date: get_item.reservation_start_date.clone(),
                 reservation_deadline: get_item.reservation_deadline.clone(),
                 order_date_to_maker: get_item.order_date_to_maker.clone(),
+                project_type: get_item.project_type.clone(),
             });
         })
     };
@@ -250,6 +253,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             } else {
                 let item = &get_item.items[0];
                 let title = &get_item.title;
+                let project_type = &get_item.project_type;
                 let release_date = parse_date(&get_item.release_date);
                 let reservation_start_date = parse_date(&get_item.reservation_start_date);
                 let reservation_deadline = parse_date(&get_item.reservation_deadline);
@@ -268,7 +272,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={title.clone()} />
                         <br/>
-                        { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={item.project_type.clone()} select_list={project_type_list()} />
+                        { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={project_type.clone()} select_list={project_type_list()} />
                         <br/>
                         {
                             html! {

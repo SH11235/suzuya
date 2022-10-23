@@ -73,15 +73,15 @@ struct JsonItems {
     title_id: Uuid,
     title_name: String,
     project_type: String,
-    items: Vec<Items>,
+    items: Vec<RequestItems>,
     catalog_status: String,
     announcement_status: String,
     remarks: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-struct Items {
-    id: Uuid,
+struct RequestItems {
+    id: Option<Uuid>,
     name: String,
     product_code: Option<String>,
     sku: Option<i32>,
@@ -107,6 +107,7 @@ struct ItemEdit {
     reservation_deadline: Option<DateTimeWithTimeZone>,
     order_date_to_maker: Option<DateTimeWithTimeZone>,
     title: String,
+    project_type: String,
     catalog_status_list: Vec<StatusName>,
     announce_status_list: Vec<StatusName>,
 }
@@ -371,6 +372,7 @@ async fn api_edit_items(
         .unwrap();
 
     let title_name = title.name;
+    let project_type = title.project_type;
 
     let items = Item::find()
         .order_by_asc(item::Column::Id)
@@ -416,6 +418,7 @@ async fn api_edit_items(
         reservation_deadline,
         order_date_to_maker,
         title: title_name,
+        project_type,
         catalog_status_list,
         announce_status_list,
     }))
@@ -428,11 +431,6 @@ async fn update_items(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let put_data = post_data.into_inner();
-    println!(
-        "{:?}",
-        "====================================put_data===================================="
-    );
-    println!("{:?}", put_data);
     let title_id = put_data.title_id.clone();
 
     // title_id存在確認
@@ -471,64 +469,63 @@ async fn update_items(
     .await
     .expect("could not update title.");
 
-    let items = Item::find()
-        .order_by_asc(item::Column::Id)
-        .filter(item::Column::TitleId.eq(title_id))
-        .all(conn)
-        .await
-        .expect("could not find items by title.");
-
-    let item_ids: Vec<Uuid> = items.iter().map(|item| item.id).collect();
-
     for item in put_data.items.iter() {
         let item_id = &item.id;
 
-        if let Some(_id) = item_ids.iter().find(|e| e == &item_id) {
-            // idあり→UPDATE
-            item::ActiveModel {
-                id: Set(item.id),
-                title_id: Set(put_data.title_id.to_owned()),
-                name: Set(item.name.to_owned()),
-                product_code: Set(item.product_code.to_owned()),
-                sku: Set(item.sku.to_owned()),
-                illust_status: Set(item.illust_status.to_owned()),
-                pic_illust_id: Set(item.pic_illust_id.to_owned()),
-                design_status: Set(item.design_status.to_owned()),
-                pic_design_id: Set(item.pic_design_id.to_owned()),
-                maker_id: Set(item.maker_id.to_owned()),
-                retail_price: Set(item.retail_price.to_owned()),
-                double_check_person_id: Set(item.double_check_person_id.to_owned()),
-                catalog_status: Set(put_data.catalog_status.to_owned()),
-                announcement_status: Set(put_data.announcement_status.to_owned()),
-                remarks: Set(put_data.remarks.to_owned()),
-                ..Default::default()
+        match item_id {
+            Some(item_id) => {
+                // item_id存在確認
+                Item::find_by_id(*item_id)
+                    .one(conn)
+                    .await
+                    .expect("could not find item.");
+                // idあり→UPDATE
+                item::ActiveModel {
+                    id: Set(*item_id),
+                    title_id: Set(put_data.title_id.to_owned()),
+                    name: Set(item.name.to_owned()),
+                    product_code: Set(item.product_code.to_owned()),
+                    sku: Set(item.sku.to_owned()),
+                    illust_status: Set(item.illust_status.to_owned()),
+                    pic_illust_id: Set(item.pic_illust_id.to_owned()),
+                    design_status: Set(item.design_status.to_owned()),
+                    pic_design_id: Set(item.pic_design_id.to_owned()),
+                    maker_id: Set(item.maker_id),
+                    retail_price: Set(item.retail_price.to_owned()),
+                    double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                    catalog_status: Set(put_data.catalog_status.to_owned()),
+                    announcement_status: Set(put_data.announcement_status.to_owned()),
+                    remarks: Set(put_data.remarks.to_owned()),
+                    ..Default::default()
+                }
+                .save(conn)
+                .await
+                .expect("could not edit items");
             }
-            .save(conn)
-            .await
-            .expect("could not edit items");
-        } else {
-            // id無し→INSERT
-            item::ActiveModel {
-                id: Set(item.id),
-                title_id: Set(put_data.title_id.to_owned()),
-                name: Set(item.name.to_owned()),
-                product_code: Set(item.product_code.to_owned()),
-                sku: Set(item.sku.to_owned()),
-                illust_status: Set(item.illust_status.to_owned()),
-                pic_illust_id: Set(item.pic_illust_id.to_owned()),
-                design_status: Set(item.design_status.to_owned()),
-                pic_design_id: Set(item.pic_design_id.to_owned()),
-                maker_id: Set(item.maker_id.to_owned()),
-                retail_price: Set(item.retail_price.to_owned()),
-                double_check_person_id: Set(item.double_check_person_id.to_owned()),
-                catalog_status: Set(put_data.catalog_status.to_owned()),
-                announcement_status: Set(put_data.announcement_status.to_owned()),
-                remarks: Set(put_data.remarks.to_owned()),
-                ..Default::default()
+            None => {
+                // id無し→INSERT
+                item::ActiveModel {
+                    id: Set(Uuid::new_v4()),
+                    title_id: Set(put_data.title_id.to_owned()),
+                    name: Set(item.name.to_owned()),
+                    product_code: Set(item.product_code.to_owned()),
+                    sku: Set(item.sku.to_owned()),
+                    illust_status: Set(item.illust_status.to_owned()),
+                    pic_illust_id: Set(item.pic_illust_id.to_owned()),
+                    design_status: Set(item.design_status.to_owned()),
+                    pic_design_id: Set(item.pic_design_id.to_owned()),
+                    maker_id: Set(item.maker_id.to_owned()),
+                    retail_price: Set(item.retail_price.to_owned()),
+                    double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                    catalog_status: Set(put_data.catalog_status.to_owned()),
+                    announcement_status: Set(put_data.announcement_status.to_owned()),
+                    remarks: Set(put_data.remarks.to_owned()),
+                    ..Default::default()
+                }
+                .insert(conn)
+                .await
+                .expect("failed to insert items");
             }
-            .insert(conn)
-            .await
-            .expect("failed to insert items");
         }
     }
 

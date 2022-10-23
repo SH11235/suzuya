@@ -1,5 +1,5 @@
 use crate::components::common::select_box::SelectBox;
-use crate::components::common::select_user_maker::SelectUserMaker;
+use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
 use crate::model::edit_item::{GetItem, NameOptionIdPair};
 use crate::settings::select::{design_status_list, illust_status_list};
@@ -98,6 +98,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "product_code" => {
@@ -111,6 +112,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "sku" => {
@@ -125,6 +127,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "illust_status" => {
@@ -138,6 +141,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "pic_illust" => {
@@ -151,6 +155,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "design_status" => {
@@ -164,6 +169,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "pic_design" => {
@@ -177,6 +183,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "maker_code" => {
@@ -190,6 +197,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "retail_price" => {
@@ -204,6 +212,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 "double_check_person" => {
@@ -217,6 +226,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        project_type: get_item.project_type.clone(),
                     });
                 }
                 _ => {

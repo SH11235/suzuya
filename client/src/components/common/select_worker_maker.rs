@@ -22,7 +22,7 @@ pub fn select_user_maker(props: &SelectBoxProperty) -> Html {
                 if first_item && props.value.clone() == None {
                     first_item = false;
                     html! {
-                        <option value={ name_id_pair.id.clone() } selected=true>{ name_id_pair.name.clone() }</option>
+                        <option value={ "" } selected=true>{ name_id_pair.name.clone() }</option>
                     }
                 } else if props.value.clone() == name_id_pair.id.clone() {
                     first_item = false;

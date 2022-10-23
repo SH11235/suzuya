@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct ItemModel {
     pub id: String,
-    pub project_type: String,
     pub name: String,
     pub product_code: Option<String>,
     pub sku: Option<i32>, // 種類数
@@ -65,6 +64,7 @@ pub struct GetItem {
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
+    pub project_type: String,
     pub title: String,
 }
 
