@@ -19,9 +19,12 @@
 </html>
 
 <script>
-    window.addEventListener("load", () => {
-        addPutEvent();
-    });
+    const page = location.pathname.split("/")[1];
+    if (page === "edit_item") {
+        window.addEventListener("load", () => {
+            addPutEvent();
+        });
+    }
 
     const addPutEvent = () => {
         let addEvent = setInterval(() => {
