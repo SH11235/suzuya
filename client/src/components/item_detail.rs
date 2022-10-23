@@ -1,7 +1,7 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_user_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
-use crate::model::edit_item::{GetItem, NameIdPair};
+use crate::model::edit_item::{GetItem, NameOptionIdPair};
 use crate::settings::select::{design_status_list, illust_status_list};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
@@ -36,29 +36,40 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     };
 
     let workers = props.get_item.workers.clone();
-    let user_name_id_vec: Vec<NameIdPair> = workers
+    let mut worker_name_id_vec: Vec<NameOptionIdPair> = workers
         .into_iter()
-        .map(|user| NameIdPair {
-            name: user.name.clone(),
-            id: user.id.clone(),
+        .map(|worker| NameOptionIdPair {
+            name: worker.name.clone(),
+            id: Some(worker.id.clone()),
         })
         .collect();
+    worker_name_id_vec.sort_by(|a, b| a.name.cmp(&b.name));
+    let mut worker_list = vec![NameOptionIdPair {
+        name: "未定".to_string(),
+        id: None,
+    }];
+    worker_list.extend(worker_name_id_vec);
 
     let makers = props.get_item.makers.clone();
-    let maker_name_id_vec: Vec<NameIdPair> = makers
+    let mut maker_name_id_vec: Vec<NameOptionIdPair> = makers
         .into_iter()
-        .map(|maker| NameIdPair {
+        .map(|maker| NameOptionIdPair {
             name: maker.code_name.clone(),
-            id: maker.id.clone(),
+            id: Some(maker.id.clone()),
         })
         .collect();
-
-        let retail_price = props.retail_price.clone().unwrap_or(0);
-        let retail_price = if retail_price == 0 {
-            "".to_string()
-        } else {
-            retail_price.to_string()
-        };
+    maker_name_id_vec.sort_by(|a, b| a.name.cmp(&b.name));
+    let mut maker_list = vec![NameOptionIdPair {
+        name: "未定".to_string(),
+        id: None,
+    }];
+    maker_list.extend(maker_name_id_vec);
+    let retail_price = props.retail_price.clone().unwrap_or(0);
+    let retail_price = if retail_price == 0 {
+        "".to_string()
+    } else {
+        retail_price.to_string()
+    };
 
     let onchange = {
         let get_item = props.get_item.clone();
@@ -243,7 +254,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
             <div class="input-warpper">{"イラスト担当者"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_illust", props.index)} name={ format!("{}-{}", "pic_illust", props.index)}
-                    value={props.pic_illust_id.clone()} name_value_list={user_name_id_vec.clone()}/>
+                    value={props.pic_illust_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
             <div class="input-warpper">{"デザインステータス"}
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "design_status", props.index)} name={ format!("{}-{}", "design_status", props.index)}
@@ -251,11 +262,11 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
             <div class="input-warpper">{"デザイン担当者"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_design", props.index)} name={ format!("{}-{}", "pic_design", props.index)}
-                    value={props.pic_design_id.clone()} name_value_list={user_name_id_vec.clone()}/>
+                    value={props.pic_design_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
             <div class="input-warpper">{"メーカー"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "maker_code", props.index)} name={ format!("{}-{}", "maker_code", props.index)}
-                    value={props.maker_id.clone()} name_value_list={maker_name_id_vec.clone()}/>
+                    value={props.maker_id.clone()} name_value_list={maker_list.clone()}/>
             </div>
             <div class="input-warpper">{"上代"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="上代" id={ format!("{}-{}", "retail_price", props.index) }
@@ -263,7 +274,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
             <div class="input-warpper">{"ダブルチェック"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
-                    value={props.double_check_person_id.clone()} name_value_list={user_name_id_vec.clone()}/>
+                    value={props.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
         </div>
 

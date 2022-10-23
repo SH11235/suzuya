@@ -1,4 +1,4 @@
-use crate::model::edit_item::NameIdPair;
+use crate::model::edit_item::NameOptionIdPair;
 use yew::{events::Event, function_component, html, Callback, Html, Properties};
 
 #[derive(Properties, PartialEq)]
@@ -6,7 +6,7 @@ pub struct SelectBoxProperty {
     pub onchange: Callback<Event>,
     pub id: String,
     pub name: String,
-    pub name_value_list: Vec<NameIdPair>,
+    pub name_value_list: Vec<NameOptionIdPair>,
     pub value: Option<String>,
 }
 
@@ -22,17 +22,17 @@ pub fn select_user_maker(props: &SelectBoxProperty) -> Html {
                 if first_item && props.value.clone() == None {
                     first_item = false;
                     html! {
-                        <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>
+                        <option value={ name_id_pair.id.clone() } selected=true>{ name_id_pair.name.clone() }</option>
                     }
-                } else if props.value.clone() == Some(name_id_pair.id.clone()) {
+                } else if props.value.clone() == name_id_pair.id.clone() {
                     first_item = false;
                     html! {
-                        <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>
+                        <option value={ name_id_pair.id.clone() } selected=true>{ name_id_pair.name.clone() }</option>
                     }
                 } else {
                     first_item = false;
                     html! {
-                        <option value={ name_id_pair.id.clone().to_string() }>{ name_id_pair.name.clone() }</option>
+                        <option value={ name_id_pair.id.clone() }>{ name_id_pair.name.clone() }</option>
                     }
                 }
             }).collect::<Html>()

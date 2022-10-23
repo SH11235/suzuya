@@ -51,9 +51,9 @@ pub struct MakerModel {
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
-pub struct NameIdPair {
+pub struct NameOptionIdPair {
     pub name: String,
-    pub id: String,
+    pub id: Option<String>,
 }
 
 #[derive(Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
