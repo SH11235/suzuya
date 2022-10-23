@@ -29,11 +29,6 @@ impl MigrationTrait for Migration {
                             .default("デフォルト")
                             .not_null(),
                     )
-                    .col(
-                        ColumnDef::new(Item::LastUpdated)
-                            .timestamp_with_time_zone()
-                            .not_null(),
-                    )
                     .col(ColumnDef::new(Item::Name).string().not_null())
                     .col(ColumnDef::new(Item::ProductCode).string())
                     .col(ColumnDef::new(Item::Sku).integer())
@@ -133,7 +128,6 @@ enum Item {
     Id,
     TitleId,
     ProjectType,
-    LastUpdated,
     Name,
     ProductCode,
     Sku,
@@ -173,11 +167,6 @@ mod tests {
                 ColumnDef::new(Item::ProjectType)
                     .string()
                     .default("デフォルト")
-                    .not_null(),
-            )
-            .col(
-                ColumnDef::new(Item::LastUpdated)
-                    .timestamp_with_time_zone()
                     .not_null(),
             )
             .col(ColumnDef::new(Item::Name).string().not_null())
@@ -257,7 +246,6 @@ mod tests {
                 r#""id" uuid NOT NULL PRIMARY KEY,"#,
                 r#""title_id" uuid NOT NULL,"#,
                 r#""project_type" varchar DEFAULT 'デフォルト' NOT NULL,"#,
-                r#""last_updated" timestamp with time zone NOT NULL,"#,
                 r#""name" varchar NOT NULL,"#,
                 r#""product_code" varchar,"#,
                 r#""sku" integer,"#,

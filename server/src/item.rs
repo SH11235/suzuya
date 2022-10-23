@@ -11,7 +11,7 @@ use entity::maker::Entity as Maker;
 use entity::title::Entity as Title;
 use entity::worker::Entity as Worker;
 use entity::{item, maker, title, worker};
-use sea_orm::prelude::Uuid;
+use sea_orm::prelude::{DateTimeWithTimeZone, Uuid};
 use sea_orm::{entity::*, query::*};
 use sea_orm::{DbBackend, FromQueryResult};
 use serde::{Deserialize, Serialize};
@@ -33,7 +33,6 @@ struct SelectResult {
     order_date_to_maker: Option<DateTime<Utc>>,
     title: String,
     project_type: String,
-    last_updated: DateTime<Utc>,
     name: String,
     product_code: Option<String>,
     sku: Option<i32>,
@@ -103,11 +102,11 @@ struct ItemEdit {
     project_type_list: Vec<StatusName>,
     illust_status_list: Vec<StatusName>,
     design_status_list: Vec<StatusName>,
-    release_date: Option<String>,
-    reservation_start_date: Option<String>,
-    reservation_deadline: Option<String>,
-    order_date_to_maker: Option<String>,
-    last_updated: String,
+    release_date: Option<DateTimeWithTimeZone>,
+    reservation_start_date: Option<DateTimeWithTimeZone>,
+    reservation_deadline: Option<DateTimeWithTimeZone>,
+    order_date_to_maker: Option<DateTimeWithTimeZone>,
+    title: String,
     catalog_status_list: Vec<StatusName>,
     announce_status_list: Vec<StatusName>,
 }
@@ -150,7 +149,6 @@ async fn item_list(
             "items"."order_date_to_maker",
             "items"."title",
             "items"."project_type",
-            "items"."last_updated",
             "items"."name",
             "items"."product_code",
             "items"."sku",
@@ -198,10 +196,9 @@ async fn item_list(
         release_date: Option<String>,
         reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
         reservation_deadline: Option<String>,   // 予約締切日
-        order_date_to_maker: Option<String>,             // メーカーへの発注日
+        order_date_to_maker: Option<String>,    // メーカーへの発注日
         title: String,
         project_type: String,
-        last_updated: String, // 最終更新日（ステータス変更時）
         name: String,
         product_code: Option<String>,
         sku: Option<i32>, // 種類数
@@ -251,7 +248,6 @@ async fn item_list(
             },
             title: item.title.clone(),
             project_type: item.project_type.clone(),
-            last_updated: date_to_string(&item.last_updated),
             name: item.name.clone(),
             product_code: item.product_code.clone(),
             sku: item.sku,
@@ -344,13 +340,11 @@ async fn create_items(
     .expect("could not insert title.");
 
     // item登録
-    let last_updated_jp = Utc::now().with_timezone(&FixedOffset::east(9 * 3600));
     let title_id = title.id;
     for item_name in name_list.iter() {
         item::ActiveModel {
             title_id: Set(title_id),
             name: Set(item_name.to_string()),
-            last_updated: Set(last_updated_jp),
             ..Default::default()
         }
         .insert(conn)
@@ -376,12 +370,14 @@ async fn api_edit_items(
         .expect("could not find title.")
         .unwrap();
 
+    let title_name = title.name;
+
     let items = Item::find()
         .order_by_asc(item::Column::Id)
         .filter(item::Column::TitleId.eq(title_id.to_owned()))
         .all(conn)
         .await
-        .expect("could not find items by title.");
+        .expect("could not find items by title_id.");
 
     let workers = Worker::find()
         .order_by_asc(worker::Column::Id)
@@ -403,26 +399,22 @@ async fn api_edit_items(
     let catalog_status_list = catalog_status_list();
     let announce_status_list = announce_status_list();
 
-    let release_date: Option<String> = match title.release_date {
-        Some(release_date) => Some(release_date.format("%Y/%m/%d").to_string()),
+    let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
+        Some(release_date) => Some(release_date),
         None => None,
     };
-    let reservation_start_date: Option<String> = match title.reservation_start_date {
-        Some(reservation_start_date) => Some(reservation_start_date.format("%Y/%m/%d").to_string()),
+    let reservation_start_date: Option<DateTimeWithTimeZone> = match title.reservation_start_date {
+        Some(reservation_start_date) => Some(reservation_start_date),
         None => None,
     };
-    let reservation_deadline: Option<String> = match title.reservation_deadline {
-        Some(reservation_deadline) => Some(reservation_deadline.format("%Y/%m/%d").to_string()),
+    let reservation_deadline: Option<DateTimeWithTimeZone> = match title.reservation_deadline {
+        Some(reservation_deadline) => Some(reservation_deadline),
         None => None,
     };
-    let order_date_to_maker: Option<String> = match title.order_date_to_maker {
-        Some(order_date_to_maker) => Some(order_date_to_maker.format("%Y/%m/%d").to_string()),
+    let order_date_to_maker: Option<DateTimeWithTimeZone> = match title.order_date_to_maker {
+        Some(order_date_to_maker) => Some(order_date_to_maker),
         None => None,
     };
-    let last_updated = items[0]
-        .last_updated
-        .format("%Y/%m/%d %H:%M:%S")
-        .to_string();
 
     Ok(HttpResponse::Ok().json(ItemEdit {
         items: items,
@@ -435,7 +427,7 @@ async fn api_edit_items(
         reservation_start_date,
         reservation_deadline,
         order_date_to_maker,
-        last_updated,
+        title: title_name,
         catalog_status_list,
         announce_status_list,
     }))
@@ -448,7 +440,6 @@ async fn update_items(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let put_data = post_data.into_inner();
-    let last_updated = Utc::now().with_timezone(&FixedOffset::east(9 * 3600));
     let title_id = put_data.title_id.clone();
 
     // title_id存在確認
@@ -481,7 +472,9 @@ async fn update_items(
             None => Set(None),
         },
         order_date_to_maker: match put_data.order_date_to_maker {
-            Some(order_date_to_maker) => Set(Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))),
+            Some(order_date_to_maker) => Set(Some(
+                order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)),
+            )),
             None => Set(None),
         },
         deleted: Set(false),
@@ -508,7 +501,6 @@ async fn update_items(
                 id: Set(item.id),
                 title_id: Set(put_data.title_id.to_owned()),
                 project_type: Set(put_data.project_type.to_owned()),
-                last_updated: Set(last_updated.to_owned()),
                 name: Set(item.name.to_owned()),
                 product_code: Set(item.product_code.to_owned()),
                 sku: Set(item.sku.to_owned()),
@@ -533,7 +525,6 @@ async fn update_items(
                 id: Set(item.id),
                 title_id: Set(put_data.title_id.to_owned()),
                 project_type: Set(put_data.project_type.to_owned()),
-                last_updated: Set(last_updated.to_owned()),
                 name: Set(item.name.to_owned()),
                 product_code: Set(item.product_code.to_owned()),
                 sku: Set(item.sku.to_owned()),

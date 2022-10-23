@@ -9,7 +9,6 @@ pub struct Model {
     pub id: Uuid,
     pub title_id: Uuid,
     pub project_type: String,
-    pub last_updated: DateTimeWithTimeZone,
     pub name: String,
     pub product_code: Option<String>,
     pub sku: Option<i32>,
