@@ -108,6 +108,9 @@ struct ItemEdit {
     order_date_to_maker: Option<DateTimeWithTimeZone>,
     title: String,
     project_type: String,
+    catalog_status: String,
+    announcement_status: String,
+    remarks: Option<String>,
     catalog_status_list: Vec<StatusName>,
     announce_status_list: Vec<StatusName>,
 }
@@ -373,6 +376,9 @@ async fn api_edit_items(
 
     let title_name = title.name;
     let project_type = title.project_type;
+    let catalog_status = title.catalog_status;
+    let announcement_status = title.announcement_status;
+    let remarks = title.remarks;
 
     let items = Item::find()
         .order_by_asc(item::Column::Id)
@@ -419,6 +425,9 @@ async fn api_edit_items(
         order_date_to_maker,
         title: title_name,
         project_type,
+        catalog_status,
+        announcement_status,
+        remarks,
         catalog_status_list,
         announce_status_list,
     }))
@@ -463,6 +472,9 @@ async fn update_items(
             None => Set(None),
         },
         project_type: Set(put_data.project_type),
+        catalog_status: Set(put_data.catalog_status),
+        announcement_status: Set(put_data.announcement_status),
+        remarks: Set(put_data.remarks),
         deleted: Set(false),
     }
     .update(conn)
@@ -493,9 +505,6 @@ async fn update_items(
                     maker_id: Set(item.maker_id),
                     retail_price: Set(item.retail_price.to_owned()),
                     double_check_person_id: Set(item.double_check_person_id.to_owned()),
-                    catalog_status: Set(put_data.catalog_status.to_owned()),
-                    announcement_status: Set(put_data.announcement_status.to_owned()),
-                    remarks: Set(put_data.remarks.to_owned()),
                     ..Default::default()
                 }
                 .save(conn)
@@ -517,9 +526,6 @@ async fn update_items(
                     maker_id: Set(item.maker_id.to_owned()),
                     retail_price: Set(item.retail_price.to_owned()),
                     double_check_person_id: Set(item.double_check_person_id.to_owned()),
-                    catalog_status: Set(put_data.catalog_status.to_owned()),
-                    announcement_status: Set(put_data.announcement_status.to_owned()),
-                    remarks: Set(put_data.remarks.to_owned()),
                     ..Default::default()
                 }
                 .insert(conn)

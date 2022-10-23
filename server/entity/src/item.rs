@@ -18,9 +18,6 @@ pub struct Model {
     pub maker_id: Option<Uuid>,
     pub retail_price: Option<i32>,
     pub double_check_person_id: Option<Uuid>,
-    pub catalog_status: String,
-    pub announcement_status: String,
-    pub remarks: Option<String>,
     pub deleted: bool,
 }
 

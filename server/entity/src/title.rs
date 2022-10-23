@@ -14,6 +14,9 @@ pub struct Model {
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
     pub order_date_to_maker: Option<DateTimeWithTimeZone>,
     pub project_type: String,
+    pub catalog_status: String,
+    pub announcement_status: String,
+    pub remarks: Option<String>,
     pub deleted: bool,
 }
 

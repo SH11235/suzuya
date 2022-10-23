@@ -44,19 +44,6 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Item::RetailPrice).integer())
                     .col(ColumnDef::new(Item::DoubleCheckPersonId).uuid())
                     .col(
-                        ColumnDef::new(Item::CatalogStatus)
-                            .string()
-                            .default("未着手")
-                            .not_null(),
-                    )
-                    .col(
-                        ColumnDef::new(Item::AnnouncementStatus)
-                            .string()
-                            .default("未着手")
-                            .not_null(),
-                    )
-                    .col(ColumnDef::new(Item::Remarks).string())
-                    .col(
                         ColumnDef::new(Item::Deleted)
                             .boolean()
                             .not_null()
@@ -131,9 +118,6 @@ enum Item {
     MakerId,
     RetailPrice,
     DoubleCheckPersonId,
-    CatalogStatus,
-    AnnouncementStatus,
-    Remarks,
     Deleted,
 }
 
@@ -176,19 +160,6 @@ mod tests {
             .col(ColumnDef::new(Item::MakerId).uuid())
             .col(ColumnDef::new(Item::RetailPrice).integer())
             .col(ColumnDef::new(Item::DoubleCheckPersonId).uuid())
-            .col(
-                ColumnDef::new(Item::CatalogStatus)
-                    .string()
-                    .default("未着手")
-                    .not_null(),
-            )
-            .col(
-                ColumnDef::new(Item::AnnouncementStatus)
-                    .string()
-                    .default("未着手")
-                    .not_null(),
-            )
-            .col(ColumnDef::new(Item::Remarks).string())
             .col(
                 ColumnDef::new(Item::Deleted)
                     .boolean()
@@ -242,9 +213,6 @@ mod tests {
                 r#""maker_id" uuid,"#,
                 r#""retail_price" integer,"#,
                 r#""double_check_person_id" uuid,"#,
-                r#""catalog_status" varchar DEFAULT '未着手' NOT NULL,"#,
-                r#""announcement_status" varchar DEFAULT '未着手' NOT NULL,"#,
-                r#""remarks" varchar,"#,
                 r#""deleted" bool NOT NULL DEFAULT FALSE,"#,
                 r#"CONSTRAINT "item_title_id_fkey" FOREIGN KEY ("title_id") REFERENCES "title" ("id"),"#,
                 r#"CONSTRAINT "item_maker_id_fkey" FOREIGN KEY ("maker_id") REFERENCES "maker" ("id"),"#,

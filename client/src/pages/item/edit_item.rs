@@ -78,6 +78,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "reservation_start_date" => {
@@ -91,6 +94,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "reservation_deadline" => {
@@ -104,6 +110,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: Some(val),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "order_date_to_maker" => {
@@ -117,6 +126,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: Some(val),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "title" => {
@@ -131,6 +143,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "project_type" => {
@@ -144,16 +159,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: val.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "catalog_status" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            catalog_status: val.clone(),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
                         title,
@@ -164,16 +175,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: val.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "announcement_status" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            announcement_status: val.clone(),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
                         title,
@@ -184,16 +191,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: val.clone(),
+                        remarks: get_item.remarks.clone(),
                     });
                 }
                 "remarks" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            remarks: Some(val.clone()),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
                         title,
@@ -204,6 +207,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
                         project_type: get_item.project_type.clone(),
+                        catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: Some(val.clone()),
                     });
                 }
                 _ => {
@@ -238,6 +244,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 reservation_deadline: get_item.reservation_deadline.clone(),
                 order_date_to_maker: get_item.order_date_to_maker.clone(),
                 project_type: get_item.project_type.clone(),
+                catalog_status: get_item.catalog_status.clone(),
+                        announcement_status: get_item.announcement_status.clone(),
+                        remarks: get_item.remarks.clone(),
             });
         })
     };
@@ -252,8 +261,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
             } else {
                 let item = &get_item.items[0];
-                let title = &get_item.title;
-                let project_type = &get_item.project_type;
                 let release_date = parse_date(&get_item.release_date);
                 let reservation_start_date = parse_date(&get_item.reservation_start_date);
                 let reservation_deadline = parse_date(&get_item.reservation_deadline);
@@ -270,9 +277,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "発注日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="order_date_to_maker" name="order_date_to_maker" value={order_date_to_maker} />
                         <br/>
-                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={title.clone()} />
+                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={get_item.title.clone()} />
                         <br/>
-                        { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={project_type.clone()} select_list={project_type_list()} />
+                        { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={get_item.project_type.clone()} select_list={project_type_list()} />
                         <br/>
                         {
                             html! {
@@ -305,11 +312,11 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                 </div>
                             }
                         }
-                        { "カタログステータス：" }<SelectBox onchange={onchange.clone()} id="catalog_status" name="catalog_status" value={item.catalog_status.clone()} select_list={catalog_status_list()} />
+                        { "カタログステータス：" }<SelectBox onchange={onchange.clone()} id="catalog_status" name="catalog_status" value={get_item.catalog_status.clone()} select_list={catalog_status_list()} />
                         <br/>
-                        { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={item.announcement_status.clone()} select_list={announce_status_list()} />
+                        { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={get_item.announcement_status.clone()} select_list={announce_status_list()} />
                         <br/>
-                        { "備考：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="remarks" value={item.remarks.clone().unwrap_or("".to_string())} />
+                        { "備考：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="remarks" value={get_item.remarks.clone().unwrap_or("".to_string())} />
                         <br/>
                         {
                             html! {

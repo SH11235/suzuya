@@ -14,9 +14,6 @@ pub struct ItemModel {
     pub maker_id: Option<String>,      // from maker
     pub retail_price: Option<i32>,     // 上代
     pub double_check_person_id: Option<String>, // from user 社員名
-    pub catalog_status: String,
-    pub announcement_status: String,
-    pub remarks: Option<String>, // 備考
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
@@ -65,6 +62,9 @@ pub struct GetItem {
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
     pub project_type: String,
+    pub catalog_status: String,
+    pub announcement_status: String,
+    pub remarks: Option<String>,
     pub title: String,
 }
 

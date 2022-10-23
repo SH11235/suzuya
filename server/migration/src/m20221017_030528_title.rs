@@ -31,6 +31,19 @@ impl MigrationTrait for Migration {
                             .not_null(),
                     )
                     .col(
+                        ColumnDef::new(Title::CatalogStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
+                    .col(
+                        ColumnDef::new(Title::AnnouncementStatus)
+                            .string()
+                            .default("未着手")
+                            .not_null(),
+                    )
+                    .col(ColumnDef::new(Title::Remarks).string())
+                    .col(
                         ColumnDef::new(Title::Deleted)
                             .boolean()
                             .not_null()
@@ -59,6 +72,9 @@ pub enum Title {
     ReservationDeadline,
     OrderDateToMaker,
     ProjectType,
+    CatalogStatus,
+    AnnouncementStatus,
+    Remarks,
     Deleted,
 }
 
@@ -88,6 +104,19 @@ mod tests {
                     .not_null(),
             )
             .col(
+                ColumnDef::new(Title::CatalogStatus)
+                    .string()
+                    .default("未着手")
+                    .not_null(),
+            )
+            .col(
+                ColumnDef::new(Title::AnnouncementStatus)
+                    .string()
+                    .default("未着手")
+                    .not_null(),
+            )
+            .col(ColumnDef::new(Title::Remarks).string())
+            .col(
                 ColumnDef::new(Title::Deleted)
                     .boolean()
                     .not_null()
@@ -105,6 +134,9 @@ mod tests {
                 r#""reservation_deadline" timestamp with time zone,"#,
                 r#""order_date_to_maker" timestamp with time zone,"#,
                 r#""project_type" varchar DEFAULT 'デフォルト' NOT NULL,"#,
+                r#""catalog_status" varchar DEFAULT '未着手' NOT NULL,"#,
+                r#""announcement_status" varchar DEFAULT '未着手' NOT NULL,"#,
+                r#""remarks" varchar,"#,
                 r#""deleted" bool NOT NULL DEFAULT FALSE"#,
                 r#")"#,
             ]
