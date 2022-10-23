@@ -7,7 +7,7 @@ pub struct SelectBoxProperty {
     pub id: String,
     pub name: String,
     pub name_value_list: Vec<NameIdPair>,
-    pub value: Option<i32>,
+    pub value: Option<String>,
 }
 
 #[function_component(SelectUserMaker)]
@@ -24,7 +24,7 @@ pub fn select_user_maker(props: &SelectBoxProperty) -> Html {
                     html! {
                         <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>
                     }
-                } else if props.value.clone() == Some(name_id_pair.id) {
+                } else if props.value.clone() == Some(name_id_pair.id.clone()) {
                     first_item = false;
                     html! {
                         <option value={ name_id_pair.id.clone().to_string() } selected=true>{ name_id_pair.name.clone() }</option>

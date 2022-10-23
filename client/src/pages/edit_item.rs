@@ -15,7 +15,7 @@ use yew::{
 
 #[derive(Properties, PartialEq)]
 pub struct EditItemPageProperty {
-    pub title: String,
+    pub title_id: String,
 }
 
 #[function_component(EditItem)]
@@ -26,7 +26,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     let get_url = format!(
         "{}{}",
         backend_url() + "/api/item/",
-        decode(&props.title.clone()).expect("UTF-8")
+        decode(&props.title_id.clone()).expect("UTF-8")
     );
     {
         let get_item = get_item.clone();
@@ -63,102 +63,69 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let name: String = input.name();
             let name = name.as_str();
             let mut items = get_item.items.clone();
-            let users = get_item.users.clone();
+            let title = get_item.title.clone();
+            let workers = get_item.workers.clone();
             let makers = get_item.makers.clone();
             match name {
                 "release_date" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            release_date: Some(val.clone()),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: Some(val),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "reservation_start_date" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            reservation_start_date: Some(val.clone()),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: Some(val),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "reservation_deadline" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            reservation_deadline: Some(val.clone()),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: Some(val),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "order_date_to_maker" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            order_date_to_maker: Some(val.clone()),
-                            ..item.clone()
-                        })
-                        .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: Some(val),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "title" => {
-                    items = items
-                        .iter()
-                        .map(|item| ItemModel {
-                            title: val.clone(),
-                            ..item.clone()
-                        })
-                        .collect();
+                    let title = val.clone();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "project_type" => {
@@ -171,13 +138,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "catalog_status" => {
@@ -190,13 +157,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "announcement_status" => {
@@ -209,13 +176,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "remarks" => {
@@ -228,13 +195,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .collect();
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 _ => {
@@ -252,7 +219,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         let get_item = get_item.clone();
         Callback::from(move |_| {
             let mut items = get_item.items.clone();
-            let users = get_item.users.clone();
+            let title = get_item.title.clone();
+            let workers = get_item.workers.clone();
             let makers = get_item.makers.clone();
             let new_item = ItemModel {
                 ..Default::default()
@@ -260,13 +228,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             items.push(new_item);
             get_item.set(GetItem {
                 items,
-                users,
+                title,
+                workers,
                 makers,
                 release_date: get_item.release_date.clone(),
                 reservation_start_date: get_item.reservation_start_date.clone(),
                 reservation_deadline: get_item.reservation_deadline.clone(),
                 order_date_to_maker: get_item.order_date_to_maker.clone(),
-                last_updated: get_item.last_updated.clone(),
             });
         })
     };
@@ -281,10 +249,11 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 }
             } else {
                 let item = &get_item.items[0];
-                let release_date = parse_date(&item.release_date);
-                let reservation_start_date = parse_date(&item.reservation_start_date);
-                let reservation_deadline = parse_date(&item.reservation_deadline);
-                let order_date_to_maker = parse_date(&item.order_date_to_maker);
+                let title = &get_item.title;
+                let release_date = parse_date(&get_item.release_date);
+                let reservation_start_date = parse_date(&get_item.reservation_start_date);
+                let reservation_deadline = parse_date(&get_item.reservation_deadline);
+                let order_date_to_maker = parse_date(&get_item.order_date_to_maker);
                 let items = get_item.items.clone();
                 let mut index: usize = 0;
                 html! {
@@ -297,11 +266,10 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "発注日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="order_date_to_maker" name="order_date_to_maker" value={order_date_to_maker} />
                         <br/>
-                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={item.title.clone()} />
+                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={title.clone()} />
                         <br/>
                         { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={item.project_type.clone()} select_list={project_type_list()} />
                         <br/>
-                        { "最終更新日：" } <span>{ parse_date_time(&item.last_updated) }</span>
                         {
                             html! {
                                 <div class="item-detail-wrapper">
@@ -362,7 +330,8 @@ fn parse_date(date: &Option<String>) -> String {
 }
 
 fn parse_date_time(date: &String) -> String {
+    web_sys::console::log_1(&JsValue::from_str(&date));
+    let date = date.replace("/", "-");
     let date_str = &date[0..10];
-    let time = &date[11..19];
-    format!("{} {}", date_str, time)
+    format!("{}", date_str)
 }

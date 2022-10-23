@@ -11,19 +11,19 @@ use yew::{
 
 #[derive(Properties, PartialEq)]
 pub struct ItemDetailProperty {
-    pub id: i32,
+    pub id: String,
     pub get_item: UseStateHandle<GetItem>,
     pub index: usize,
     pub item_name: String,
     pub product_code: Option<String>,
     pub sku: Option<i32>,
     pub illust_status: String,
-    pub pic_illust_id: Option<i32>,
+    pub pic_illust_id: Option<String>,
     pub design_status: String,
-    pub pic_design_id: Option<i32>,
-    pub maker_id: Option<i32>,
+    pub pic_design_id: Option<String>,
+    pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
-    pub double_check_person_id: Option<i32>,
+    pub double_check_person_id: Option<String>,
 }
 
 #[function_component(ItemDetail)]
@@ -35,8 +35,8 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
         sku.to_string()
     };
 
-    let users = props.get_item.users.clone();
-    let user_name_id_vec: Vec<NameIdPair> = users
+    let workers = props.get_item.workers.clone();
+    let user_name_id_vec: Vec<NameIdPair> = workers
         .into_iter()
         .map(|user| NameIdPair {
             name: user.name.clone(),
@@ -71,7 +71,8 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             let index: usize = name_index[1].parse().unwrap();
 
             let mut items = get_item.items.clone();
-            let users = get_item.users.clone();
+            let title = get_item.title.clone();
+            let workers = get_item.workers.clone();
             let makers = get_item.makers.clone();
 
             match name {
@@ -79,26 +80,26 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     items[index - 1].name = val;
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "product_code" => {
                     items[index - 1].product_code = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "sku" => {
@@ -106,81 +107,78 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     items[index - 1].sku = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "illust_status" => {
                     items[index - 1].illust_status = val;
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "pic_illust" => {
-                    let val: i32 = val.parse().unwrap();
                     items[index - 1].pic_illust_id = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "design_status" => {
                     items[index - 1].design_status = val;
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "pic_design" => {
-                    let val: i32 = val.parse().unwrap();
                     items[index - 1].pic_design_id = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "maker_code" => {
-                    let val: i32 = val.parse().unwrap();
                     items[index - 1].maker_id = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "retail_price" => {
@@ -188,27 +186,26 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     items[index - 1].retail_price = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 "double_check_person" => {
-                    let val: i32 = val.parse().unwrap();
                     items[index - 1].double_check_person_id = Some(val);
                     get_item.set(GetItem {
                         items,
-                        users,
+                        title,
+                        workers,
                         makers,
                         release_date: get_item.release_date.clone(),
                         reservation_start_date: get_item.reservation_start_date.clone(),
                         reservation_deadline: get_item.reservation_deadline.clone(),
                         order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        last_updated: get_item.last_updated.clone(),
                     });
                 }
                 _ => {
