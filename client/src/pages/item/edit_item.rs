@@ -62,7 +62,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let val: String = input.value();
             let name: String = input.name();
             let name = name.as_str();
-            let mut items = get_item.items.clone();
+            let items = get_item.items.clone();
             let title = get_item.title.clone();
             let workers = get_item.workers.clone();
             let makers = get_item.makers.clone();
@@ -260,7 +260,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     <p>{ "Loading..." }</p>
                 }
             } else {
-                let item = &get_item.items[0];
                 let release_date = parse_date(&get_item.release_date);
                 let reservation_start_date = parse_date(&get_item.reservation_start_date);
                 let reservation_deadline = parse_date(&get_item.reservation_deadline);
