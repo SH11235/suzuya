@@ -25,6 +25,12 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Title::ReservationDeadline).timestamp_with_time_zone())
                     .col(ColumnDef::new(Title::OrderDateToMaker).timestamp_with_time_zone())
                     .col(
+                        ColumnDef::new(Title::ProjectType)
+                            .string()
+                            .default("デフォルト")
+                            .not_null(),
+                    )
+                    .col(
                         ColumnDef::new(Title::Deleted)
                             .boolean()
                             .not_null()
@@ -52,6 +58,7 @@ pub enum Title {
     ReservationStartDate,
     ReservationDeadline,
     OrderDateToMaker,
+    ProjectType,
     Deleted,
 }
 
@@ -75,6 +82,12 @@ mod tests {
             .col(ColumnDef::new(Title::ReservationDeadline).timestamp_with_time_zone())
             .col(ColumnDef::new(Title::OrderDateToMaker).timestamp_with_time_zone())
             .col(
+                ColumnDef::new(Title::ProjectType)
+                    .string()
+                    .default("デフォルト")
+                    .not_null(),
+            )
+            .col(
                 ColumnDef::new(Title::Deleted)
                     .boolean()
                     .not_null()
@@ -91,6 +104,7 @@ mod tests {
                 r#""reservation_start_date" timestamp with time zone,"#,
                 r#""reservation_deadline" timestamp with time zone,"#,
                 r#""order_date_to_maker" timestamp with time zone,"#,
+                r#""project_type" varchar DEFAULT 'デフォルト' NOT NULL,"#,
                 r#""deleted" bool NOT NULL DEFAULT FALSE"#,
                 r#")"#,
             ]

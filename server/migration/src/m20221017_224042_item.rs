@@ -23,12 +23,6 @@ impl MigrationTrait for Migration {
                             .default(Uuid::new_v4()),
                     )
                     .col(ColumnDef::new(Item::TitleId).uuid().not_null())
-                    .col(
-                        ColumnDef::new(Item::ProjectType)
-                            .string()
-                            .default("デフォルト")
-                            .not_null(),
-                    )
                     .col(ColumnDef::new(Item::Name).string().not_null())
                     .col(ColumnDef::new(Item::ProductCode).string())
                     .col(ColumnDef::new(Item::Sku).integer())
@@ -127,7 +121,6 @@ enum Item {
     Table,
     Id,
     TitleId,
-    ProjectType,
     Name,
     ProductCode,
     Sku,
@@ -163,12 +156,6 @@ mod tests {
                 ColumnDef::new(Item::Id).uuid().not_null().primary_key(), // .default(Uuid::new_v4()),
             )
             .col(ColumnDef::new(Item::TitleId).uuid().not_null())
-            .col(
-                ColumnDef::new(Item::ProjectType)
-                    .string()
-                    .default("デフォルト")
-                    .not_null(),
-            )
             .col(ColumnDef::new(Item::Name).string().not_null())
             .col(ColumnDef::new(Item::ProductCode).string())
             .col(ColumnDef::new(Item::Sku).integer())
@@ -245,7 +232,6 @@ mod tests {
                 r#"CREATE TABLE IF NOT EXISTS "item" ("#,
                 r#""id" uuid NOT NULL PRIMARY KEY,"#,
                 r#""title_id" uuid NOT NULL,"#,
-                r#""project_type" varchar DEFAULT 'デフォルト' NOT NULL,"#,
                 r#""name" varchar NOT NULL,"#,
                 r#""product_code" varchar,"#,
                 r#""sku" integer,"#,

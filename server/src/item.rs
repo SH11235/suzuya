@@ -464,6 +464,7 @@ async fn update_items(
             Some(order_date_to_maker) => Set(Some(utc_date_time_to_jst(&order_date_to_maker))),
             None => Set(None),
         },
+        project_type: Set(put_data.project_type),
         deleted: Set(false),
     }
     .update(conn)
@@ -487,7 +488,6 @@ async fn update_items(
             item::ActiveModel {
                 id: Set(item.id),
                 title_id: Set(put_data.title_id.to_owned()),
-                project_type: Set(put_data.project_type.to_owned()),
                 name: Set(item.name.to_owned()),
                 product_code: Set(item.product_code.to_owned()),
                 sku: Set(item.sku.to_owned()),
@@ -511,7 +511,6 @@ async fn update_items(
             item::ActiveModel {
                 id: Set(item.id),
                 title_id: Set(put_data.title_id.to_owned()),
-                project_type: Set(put_data.project_type.to_owned()),
                 name: Set(item.name.to_owned()),
                 product_code: Set(item.product_code.to_owned()),
                 sku: Set(item.sku.to_owned()),
