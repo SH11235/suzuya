@@ -1,7 +1,7 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
-use crate::model::edit_item::{GetItem, NameOptionIdPair};
+use crate::model::edit_item::{GetItemInfoByTitleId, NameOptionIdPair};
 use crate::settings::select::{design_status_list, illust_status_list};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
@@ -12,7 +12,7 @@ use yew::{
 #[derive(Properties, PartialEq)]
 pub struct ItemDetailProperty {
     pub id: String,
-    pub get_item: UseStateHandle<GetItem>,
+    pub get_info_by_title_id: UseStateHandle<GetItemInfoByTitleId>,
     pub index: usize,
     pub item_name: String,
     pub product_code: Option<String>,
@@ -35,7 +35,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
         sku.to_string()
     };
 
-    let workers = props.get_item.workers.clone();
+    let workers = props.get_info_by_title_id.workers.clone();
     let mut worker_name_id_vec: Vec<NameOptionIdPair> = workers
         .into_iter()
         .map(|worker| NameOptionIdPair {
@@ -50,7 +50,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     }];
     worker_list.extend(worker_name_id_vec);
 
-    let makers = props.get_item.makers.clone();
+    let makers = props.get_info_by_title_id.makers.clone();
     let mut maker_name_id_vec: Vec<NameOptionIdPair> = makers
         .into_iter()
         .map(|maker| NameOptionIdPair {
@@ -72,7 +72,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     };
 
     let onchange = {
-        let get_item = props.get_item.clone();
+        let get_info_by_title_id = props.get_info_by_title_id.clone();
         Callback::from(move |e: Event| {
             let input: HtmlInputElement = e.target_unchecked_into();
             let val: String = input.value();
@@ -81,182 +81,182 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             let name = name_index[0];
             let index: usize = name_index[1].parse().unwrap();
 
-            let mut items = get_item.items.clone();
-            let title = get_item.title.clone();
-            let workers = get_item.workers.clone();
-            let makers = get_item.makers.clone();
+            let mut items = get_info_by_title_id.items.clone();
+            let title = get_info_by_title_id.title.clone();
+            let workers = get_info_by_title_id.workers.clone();
+            let makers = get_info_by_title_id.makers.clone();
 
             match name {
                 "name" => {
                     items[index - 1].name = val;
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "product_code" => {
                     items[index - 1].product_code = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "sku" => {
                     let val: i32 = val.parse().unwrap();
                     items[index - 1].sku = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "illust_status" => {
                     items[index - 1].illust_status = val;
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "pic_illust" => {
                     items[index - 1].pic_illust_id = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "design_status" => {
                     items[index - 1].design_status = val;
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "pic_design" => {
                     items[index - 1].pic_design_id = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "maker_code" => {
                     items[index - 1].maker_id = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "retail_price" => {
                     let val: i32 = val.parse().unwrap();
                     items[index - 1].retail_price = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "double_check_person" => {
                     items[index - 1].double_check_person_id = Some(val);
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 _ => {

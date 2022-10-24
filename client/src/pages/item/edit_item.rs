@@ -1,7 +1,7 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item_detail::ItemDetail;
-use crate::model::edit_item::{GetItem, ItemModel};
+use crate::model::edit_item::{GetItemInfoByTitleId, ItemModel};
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use reqwasm::http::Request;
@@ -20,7 +20,7 @@ pub struct EditItemPageProperty {
 
 #[function_component(EditItem)]
 pub fn edit_item(props: &EditItemPageProperty) -> Html {
-    let get_item = use_state(|| GetItem {
+    let get_info_by_title_id = use_state(|| GetItemInfoByTitleId {
         ..Default::default()
     });
     let get_url = format!(
@@ -29,13 +29,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         decode(&props.title_id.clone()).expect("UTF-8")
     );
     {
-        let get_item = get_item.clone();
+        let get_info_by_title_id = get_info_by_title_id.clone();
         use_effect_with_deps(
             move |_| {
-                let get_item = get_item.clone();
+                let get_info_by_title_id = get_info_by_title_id.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
-                    let mut fetched_items: GetItem = client
+                    let mut fetched_items: GetItemInfoByTitleId = client
                         .send()
                         .await
                         .expect("Failed to fetch items")
@@ -47,7 +47,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .sort_by(|a, b| a.product_code.cmp(&b.product_code));
                     // debug
                     web_sys::console::log_1(&JsValue::from_serde(&fetched_items).unwrap());
-                    get_item.set(fetched_items);
+                    get_info_by_title_id.set(fetched_items);
                 });
                 || ()
             },
@@ -56,159 +56,159 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     }
 
     let onchange = {
-        let get_item = get_item.clone();
+        let get_info_by_title_id = get_info_by_title_id.clone();
         Callback::from(move |e: Event| {
             let input: HtmlInputElement = e.target_unchecked_into();
             let val: String = input.value();
             let name: String = input.name();
             let name = name.as_str();
-            let items = get_item.items.clone();
-            let title = get_item.title.clone();
-            let workers = get_item.workers.clone();
-            let makers = get_item.makers.clone();
+            let items = get_info_by_title_id.items.clone();
+            let title = get_info_by_title_id.title.clone();
+            let workers = get_info_by_title_id.workers.clone();
+            let makers = get_info_by_title_id.makers.clone();
             match name {
                 "release_date" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
                         release_date: Some(val),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "reservation_start_date" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
                         reservation_start_date: Some(val),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "reservation_deadline" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
                         reservation_deadline: Some(val),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "order_date_to_maker" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
                         order_date_to_maker: Some(val),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "title" => {
                     let title = val.clone();
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "project_type" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
                         project_type: val.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "catalog_status" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
                         catalog_status: val.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "announcement_status" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
                         announcement_status: val.clone(),
-                        remarks: get_item.remarks.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
                     });
                 }
                 "remarks" => {
-                    get_item.set(GetItem {
+                    get_info_by_title_id.set(GetItemInfoByTitleId {
                         items,
                         title,
                         workers,
                         makers,
-                        release_date: get_item.release_date.clone(),
-                        reservation_start_date: get_item.reservation_start_date.clone(),
-                        reservation_deadline: get_item.reservation_deadline.clone(),
-                        order_date_to_maker: get_item.order_date_to_maker.clone(),
-                        project_type: get_item.project_type.clone(),
-                        catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
+                        release_date: get_info_by_title_id.release_date.clone(),
+                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                        project_type: get_info_by_title_id.project_type.clone(),
+                        catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
                         remarks: Some(val.clone()),
                     });
                 }
@@ -224,29 +224,29 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     };
 
     let item_add_click = {
-        let get_item = get_item.clone();
+        let get_info_by_title_id = get_info_by_title_id.clone();
         Callback::from(move |_| {
-            let mut items = get_item.items.clone();
-            let title = get_item.title.clone();
-            let workers = get_item.workers.clone();
-            let makers = get_item.makers.clone();
+            let mut items = get_info_by_title_id.items.clone();
+            let title = get_info_by_title_id.title.clone();
+            let workers = get_info_by_title_id.workers.clone();
+            let makers = get_info_by_title_id.makers.clone();
             let new_item = ItemModel {
                 ..Default::default()
             };
             items.push(new_item);
-            get_item.set(GetItem {
+            get_info_by_title_id.set(GetItemInfoByTitleId {
                 items,
                 title,
                 workers,
                 makers,
-                release_date: get_item.release_date.clone(),
-                reservation_start_date: get_item.reservation_start_date.clone(),
-                reservation_deadline: get_item.reservation_deadline.clone(),
-                order_date_to_maker: get_item.order_date_to_maker.clone(),
-                project_type: get_item.project_type.clone(),
-                catalog_status: get_item.catalog_status.clone(),
-                        announcement_status: get_item.announcement_status.clone(),
-                        remarks: get_item.remarks.clone(),
+                release_date: get_info_by_title_id.release_date.clone(),
+                reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
+                reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
+                order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
+                project_type: get_info_by_title_id.project_type.clone(),
+                catalog_status: get_info_by_title_id.catalog_status.clone(),
+                        announcement_status: get_info_by_title_id.announcement_status.clone(),
+                        remarks: get_info_by_title_id.remarks.clone(),
             });
         })
     };
@@ -255,16 +255,16 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
       <div class="edit-item-page">
         <h1>{ "Edit Items" }</h1>
         {
-            if get_item.items.len() == 0 {
+            if get_info_by_title_id.items.len() == 0 {
                 html! {
                     <p>{ "Loading..." }</p>
                 }
             } else {
-                let release_date = parse_date(&get_item.release_date);
-                let reservation_start_date = parse_date(&get_item.reservation_start_date);
-                let reservation_deadline = parse_date(&get_item.reservation_deadline);
-                let order_date_to_maker = parse_date(&get_item.order_date_to_maker);
-                let items = get_item.items.clone();
+                let release_date = parse_date(&get_info_by_title_id.release_date);
+                let reservation_start_date = parse_date(&get_info_by_title_id.reservation_start_date);
+                let reservation_deadline = parse_date(&get_info_by_title_id.reservation_deadline);
+                let order_date_to_maker = parse_date(&get_info_by_title_id.order_date_to_maker);
+                let items = get_info_by_title_id.items.clone();
                 let mut index: usize = 0;
                 html! {
                     <>
@@ -276,9 +276,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         { "発注日：" }<TextBox onchange={onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="order_date_to_maker" name="order_date_to_maker" value={order_date_to_maker} />
                         <br/>
-                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={get_item.title.clone()} />
+                        { "タイトル：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={get_info_by_title_id.title.clone()} />
                         <br/>
-                        { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={get_item.project_type.clone()} select_list={project_type_list()} />
+                        { "案件：" }<SelectBox onchange={onchange.clone()} id="project_type" name="project_type" value={get_info_by_title_id.project_type.clone()} select_list={project_type_list()} />
                         <br/>
                         {
                             html! {
@@ -289,7 +289,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                         html! {
                                             <ItemDetail
                                                 id={item.id.clone()}
-                                                get_item={get_item.clone()}
+                                                get_info_by_title_id={get_info_by_title_id.clone()}
                                                 index={index}
                                                 item_name={item.name.clone()}
                                                 product_code={item.product_code.clone()}
@@ -311,11 +311,11 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                 </div>
                             }
                         }
-                        { "カタログステータス：" }<SelectBox onchange={onchange.clone()} id="catalog_status" name="catalog_status" value={get_item.catalog_status.clone()} select_list={catalog_status_list()} />
+                        { "カタログステータス：" }<SelectBox onchange={onchange.clone()} id="catalog_status" name="catalog_status" value={get_info_by_title_id.catalog_status.clone()} select_list={catalog_status_list()} />
                         <br/>
-                        { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={get_item.announcement_status.clone()} select_list={announce_status_list()} />
+                        { "告知：" }<SelectBox onchange={onchange.clone()} id="announcement_status" name="announcement_status" value={get_info_by_title_id.announcement_status.clone()} select_list={announce_status_list()} />
                         <br/>
-                        { "備考：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="remarks" value={get_item.remarks.clone().unwrap_or("".to_string())} />
+                        { "備考：" }<TextBox onchange={onchange.clone()} input_type="text" placeholder="備考" id="remarks" name="remarks" value={get_info_by_title_id.remarks.clone().unwrap_or("".to_string())} />
                         <br/>
                         {
                             html! {
