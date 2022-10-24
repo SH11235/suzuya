@@ -1,7 +1,8 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item_detail::ItemDetail;
-use crate::model::edit_item::{GetItemInfoByTitleId, ItemModel};
+use crate::model::common::ItemModel;
+use crate::model::item_page::GetItemInfoByTitleId;
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use reqwasm::http::Request;
@@ -245,8 +246,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
                 project_type: get_info_by_title_id.project_type.clone(),
                 catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
+                announcement_status: get_info_by_title_id.announcement_status.clone(),
+                remarks: get_info_by_title_id.remarks.clone(),
             });
         })
     };

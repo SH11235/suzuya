@@ -1,7 +1,8 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
-use crate::model::edit_item::{GetItemInfoByTitleId, NameOptionIdPair};
+use crate::model::common::NameOptionIdPair;
+use crate::model::item_page::GetItemInfoByTitleId;
 use crate::settings::select::{design_status_list, illust_status_list};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;

@@ -1,4 +1,4 @@
-use crate::model::edit_item::NameOptionIdPair;
+use crate::model::common::NameOptionIdPair;
 use yew::{events::Event, function_component, html, Callback, Html, Properties};
 
 #[derive(Properties, PartialEq)]
