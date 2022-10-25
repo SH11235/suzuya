@@ -27,6 +27,7 @@ html {
 
   .item-detail-wrapper {
     display: flex;
+
     .item-wrapper {
       border-top: solid 2px #5989cf;
       border-bottom: solid 2px #5989cf;
@@ -34,6 +35,7 @@ html {
       margin-right: 10px;
       margin-bottom: 10px;
     }
+
     .input-warpper {
       margin: 3px 0;
     }
@@ -50,4 +52,17 @@ html {
     border: 2px dashed #000;
     border-radius: 50px 50px 50px 50px;
   }
+}
+
+.worker-list-page,
+.maker-list-page {
+  padding: 0 4%;
+
+  th,
+  td {
+    width: 200px;
+    text-align: center;
+    border: 1px solid #E1E1E1;
+  }
+
 }
