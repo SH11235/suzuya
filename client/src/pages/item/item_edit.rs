@@ -19,7 +19,7 @@ pub struct EditItemPageProperty {
     pub title_id: String,
 }
 
-#[function_component(EditItem)]
+#[function_component(ItemEdit)]
 pub fn edit_item(props: &EditItemPageProperty) -> Html {
     let get_info_by_title_id = use_state(|| GetItemInfoByTitleId {
         ..Default::default()

@@ -1,5 +1,5 @@
 use pages::home::Home;
-use pages::item::{edit_item::EditItem, item_list::ItemList};
+use pages::item::{item_edit::ItemEdit, item_list::ItemList};
 use pages::maker::maker_list::MakerList;
 use pages::worker::worker_list::WorkerList;
 use yew::prelude::*;
@@ -16,8 +16,8 @@ pub enum Route {
     Home,
     #[at("/maker_list")]
     MakerList,
-    #[at("/edit_item/:title_id")]
-    EditItem { title_id: String },
+    #[at("/item_edit/:title_id")]
+    ItemEdit { title_id: String },
     #[at("/worker_list")]
     WorkerList,
     #[at("/item_list")]
@@ -47,9 +47,9 @@ fn switch(routes: &Route) -> Html {
         Route::MakerList => {
             html! { <MakerList/> }
         }
-        Route::EditItem { title_id } => {
+        ItemRoute::Edit { title_id } => {
             html! {
-                <EditItem title_id={ title_id.clone() }/>
+                <ItemEdit title_id={ title_id.clone() }/>
             }
         }
         Route::WorkerList => {
