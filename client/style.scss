@@ -11,19 +11,19 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+.common-input {
+  width: 225px;
+  height: 30px;
+  padding: 6px 10px;
+  background-color: #fff;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
 .edit-item-page {
   padding: 0 4%;
-
-  .item-edit-input {
-    width: 225px;
-    height: 30px;
-    padding: 6px 10px;
-    background-color: #fff;
-    border: 1px solid #d1d1d1;
-    border-radius: 4px;
-    box-shadow: none;
-    box-sizing: border-box;
-  }
 
   .item-detail-wrapper {
     display: flex;
