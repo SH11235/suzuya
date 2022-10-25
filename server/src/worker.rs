@@ -55,6 +55,19 @@ async fn worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
+#[get("/api/worker_list")]
+async fn api_worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let datas = Worker::find()
+        .order_by_asc(worker::Column::Name)
+        .filter(worker::Column::Deleted.eq(false))
+        .all(conn)
+        .await
+        .expect("could not retrieve datas");
+
+    Ok(HttpResponse::Ok().json(datas))
+}
+
 #[get("/new_worker")]
 async fn new_worker(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;

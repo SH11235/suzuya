@@ -38,6 +38,19 @@ async fn maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
+#[get("/api/maker_list")]
+async fn api_maker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let datas = Maker::find()
+        .filter(maker::Column::Deleted.eq(false))
+        .order_by_asc(maker::Column::CodeName)
+        .all(conn)
+        .await
+        .expect("could not retrieve datas");
+
+    Ok(HttpResponse::Ok().json(datas))
+}
+
 #[get("/new_maker")]
 async fn new_maker(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let template = &data.templates;
