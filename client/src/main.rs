@@ -16,12 +16,12 @@ pub enum Route {
     Home,
     #[at("/maker_list")]
     MakerList,
+    #[at("/item_list")]
+    ItemList,
     #[at("/item_edit/:title_id")]
     ItemEdit { title_id: String },
     #[at("/worker_list")]
     WorkerList,
-    #[at("/item_list")]
-    ItemList,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -44,13 +44,13 @@ fn switch(routes: &Route) -> Html {
         Route::ItemList => {
             html! { <ItemList/> }
         }
-        Route::MakerList => {
-            html! { <MakerList/> }
-        }
-        ItemRoute::Edit { title_id } => {
+        Route::ItemEdit { title_id } => {
             html! {
                 <ItemEdit title_id={ title_id.clone() }/>
             }
+        }
+        Route::MakerList => {
+            html! { <MakerList/> }
         }
         Route::WorkerList => {
             html! { <WorkerList/> }

@@ -1,18 +1,25 @@
+use crate::components::common::text_box::TextBox;
+use crate::components::maker_save_button::SaveButton;
+use crate::model::maker_page::MakerState;
 use crate::{model::common::MakerModel, settings::api::backend_url};
 use reqwasm::http::Request;
-use wasm_bindgen::JsValue;
-use yew::{function_component, html, use_effect_with_deps, use_state};
+use wasm_bindgen::{JsCast, JsValue};
+use web_sys::{HtmlBaseElement, HtmlInputElement, MouseEvent};
+use yew::{
+    events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
+    Properties, TargetCast,
+};
 
 #[function_component(MakerList)]
 pub fn home() -> Html {
-    let get_maker_list = use_state(|| vec![]);
+    let makers_state = use_state(|| vec![]);
     let get_url = format!("{}{}", backend_url(), "/api/maker_list");
     let mut index: usize = 0;
     {
-        let get_maker_list = get_maker_list.clone();
+        let makers_state = makers_state.clone();
         use_effect_with_deps(
             move |_| {
-                let get_maker_list = get_maker_list.clone();
+                let makers_state = makers_state.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
                     let mut fetched_items: Vec<MakerModel> = client
@@ -23,13 +30,48 @@ pub fn home() -> Html {
                         .await
                         .expect("Failed to parse items");
                     fetched_items.sort_by(|a, b| a.code_name.cmp(&b.code_name));
-                    get_maker_list.set(fetched_items);
+                    let makers = fetched_items
+                        .iter()
+                        .map(|maker| MakerState {
+                            id: maker.id.clone(),
+                            code_name: maker.code_name.clone(),
+                            is_changed: false,
+                        })
+                        .collect::<Vec<MakerState>>();
+                    makers_state.set(makers);
                 });
                 || ()
             },
             (),
         );
     }
+
+    // idが一致する要素のis_changedをtrueにしてsetする
+    let text_box_onchange = {
+        let makers_state = makers_state.clone();
+        Callback::from(move |e: Event| {
+            let input: HtmlInputElement = e.target_unchecked_into();
+            let id = input.id();
+            let val: String = input.value();
+            let mut new_makers = vec![];
+            for maker_state in makers_state.iter() {
+                if maker_state.id == id {
+                    new_makers.push(MakerState {
+                        id: maker_state.id.clone(),
+                        code_name: val.clone(),
+                        is_changed: true,
+                    });
+                } else {
+                    new_makers.push(MakerState {
+                        id: maker_state.id.clone(),
+                        code_name: maker_state.code_name.clone(),
+                        is_changed: maker_state.is_changed,
+                    });
+                }
+            }
+            makers_state.set(new_makers);
+        })
+    };
     html! {
         <div class="maker-list-page">
             <h1>{ "メーカーリスト" }</h1>
@@ -40,12 +82,16 @@ pub fn home() -> Html {
                         <th>{ "コード" }</th>
                     </tr>
             {
-                for get_maker_list.iter().map(|maker| {
+                for makers_state.iter().map(|maker| {
                     index += 1;
                     html! {
                         <tr>
                             <td>{ index }</td>
-                            <td>{ &maker.code_name }</td>
+                            <td>
+                                <TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="id" id={ maker.id.clone() }
+                                    name={format!("{}-{}", "index", index) } value={ maker.code_name.clone() } />
+                                <SaveButton input_id={ maker.id.clone() } makers_state_handle={ makers_state.clone() } is_changed={ maker.is_changed } />
+                            </td>
                         </tr>
                     }
                 })
