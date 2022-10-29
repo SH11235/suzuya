@@ -126,22 +126,6 @@ async fn edit_maker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<Ht
     Ok(HttpResponse::Ok().content_type("text/html").body(body))
 }
 
-#[get("/api/maker/{id}")]
-async fn api_maker_edit(
-    data: web::Data<AppState>,
-    id: web::Path<Uuid>,
-) -> Result<HttpResponse, Error> {
-    let conn = &data.conn;
-
-    let maker: maker::Model = Maker::find_by_id(id.into_inner())
-        .one(conn)
-        .await
-        .expect("could not find maker")
-        .unwrap();
-
-    Ok(HttpResponse::Ok().json(maker))
-}
-
 #[post("/maker/{id}")]
 async fn update_maker(
     data: web::Data<AppState>,
