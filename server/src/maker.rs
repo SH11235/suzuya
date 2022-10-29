@@ -179,7 +179,7 @@ async fn api_update_maker(
     }
     .save(conn)
     .await
-    .expect("could not edit maker");
+    .expect("could not update maker");
 
     Ok(HttpResponse::Ok().finish())
 }
