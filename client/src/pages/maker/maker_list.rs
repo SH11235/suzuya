@@ -1,5 +1,6 @@
 use crate::components::common::text_box::TextBox;
 use crate::components::maker_save_button::SaveButton;
+use crate::components::maker_delete_button::DeleteButton;
 use crate::model::maker_page::MakerState;
 use crate::{model::common::MakerModel, settings::api::backend_url};
 use reqwasm::http::Request;
@@ -91,6 +92,7 @@ pub fn home() -> Html {
                                 <TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="id" id={ maker.id.clone() }
                                     name={format!("{}-{}", "index", index) } value={ maker.code_name.clone() } />
                                 <SaveButton input_id={ maker.id.clone() } makers_state_handle={ makers_state.clone() } is_changed={ maker.is_changed } />
+                                <DeleteButton input_id={ maker.id.clone() } makers_state_handle={ makers_state.clone() } />
                             </td>
                         </tr>
                     }
