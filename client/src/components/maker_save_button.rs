@@ -89,6 +89,15 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
                 .unwrap();
             input.value()
         };
+        // maker_codeが空の場合はアラートを出す
+        if maker_code == "" {
+            let error_message = "メーカーコードを入力してください";
+            web_sys::window()
+                .unwrap()
+                .alert_with_message(&error_message)
+                .unwrap();
+            return;
+        }
         wasm_bindgen_futures::spawn_local(async move {
             let post_url = format!("{}{}", backend_url(), "/api/new_maker");
             let client = Request::post(&post_url)
@@ -128,6 +137,10 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             } else {
                 // responseが200以外の場合はエラーを出す
                 let error_message = format!("Failed to update maker: {}", post_response.status());
+                web_sys::window()
+                    .unwrap()
+                    .alert_with_message(&error_message)
+                    .unwrap();
                 let error_message = JsValue::from_str(&error_message);
                 web_sys::console::error_1(&error_message);
             }
