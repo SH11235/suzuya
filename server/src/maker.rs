@@ -1,5 +1,5 @@
 use crate::setting::AppState;
-use actix_web::{delete, error, get, post, put, web, Error, HttpResponse, Result};
+use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
 use entity::maker;
 use entity::maker::Entity as Maker;
 use sea_orm::{entity::*, prelude::Uuid, query::*};
