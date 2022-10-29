@@ -29,7 +29,7 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                 let client = Request::delete(&delete_url);
                 let delete_response = client.send().await.expect("Failed to delete maker");
                 // responseが200以外の場合はエラーを出す
-                if delete_response.status() != 200 {
+                if delete_response.status() == 200 {
                     let mut new_makers = vec![];
                     for maker_state in makers_state.iter() {
                         if maker_state.id != id {
