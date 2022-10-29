@@ -221,7 +221,5 @@ async fn api_delete_maker(
     .await
     .expect("could not delete maker");
 
-    Ok(HttpResponse::Found()
-        .append_header(("location", "/maker"))
-        .finish())
+    Ok(HttpResponse::Ok().finish())
 }
