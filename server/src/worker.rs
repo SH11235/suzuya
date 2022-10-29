@@ -15,44 +15,6 @@ struct UpdateWorker {
     name: String,
 }
 
-#[get("/worker")]
-async fn worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let template = &data.templates;
-    let conn = &data.conn;
-    let datas = Worker::find()
-        .order_by_asc(worker::Column::Id)
-        .filter(worker::Column::Deleted.eq(false))
-        .all(conn)
-        .await
-        .expect("could not retrieve datas");
-    let mut ctx = tera::Context::new();
-    let h1 = "関係者";
-    let path = "worker";
-
-    #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-    struct ViewData {
-        id: Uuid,
-        name: String,
-    }
-
-    let view_datas = datas
-        .iter()
-        .map(|worker| ViewData {
-            id: worker.id,
-            name: worker.name.clone(),
-        })
-        .collect::<Vec<ViewData>>();
-
-    ctx.insert("datas", &view_datas);
-    ctx.insert("h1", &h1);
-    ctx.insert("path", &path);
-
-    let body = template
-        .render("worker/worker_list.html.tera", &ctx)
-        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(body))
-}
-
 #[get("/api/worker_list")]
 async fn api_worker_list(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
