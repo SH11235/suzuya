@@ -101,12 +101,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     // worker
     cfg.service(worker::worker_list);
     cfg.service(worker::api_worker_list);
-    cfg.service(worker::new_worker);
-    cfg.service(worker::create_worker);
     cfg.service(worker::api_create_worker);
-    cfg.service(worker::edit_worker);
-    cfg.service(worker::update_worker);
     cfg.service(worker::api_update_worker);
-    cfg.service(worker::delete_worker);
     cfg.service(worker::api_delete_worker);
 }

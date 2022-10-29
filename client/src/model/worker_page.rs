@@ -1,9 +1,14 @@
 use serde::{Deserialize, Serialize};
 
-use super::common::WorkerModel;
+#[derive(Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
+pub struct WorkerState {
+    pub id: String,
+    pub name: String,
+    pub is_changed: bool,
+    pub is_saved: bool,
+}
 
-// // Response for GET /api/worker_list
-// #[derive(Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
-// pub struct GetWorkerInfo {
-//     pub workers: Vec<WorkerModel>,
-// }
+#[derive(Debug, Serialize)]
+pub struct PutWorkerRequest {
+    pub name: String,
+}

@@ -11,7 +11,7 @@ use yew::{
 };
 
 #[function_component(MakerList)]
-pub fn home() -> Html {
+pub fn maker_list() -> Html {
     let makers_state = use_state(|| vec![]);
     let get_url = format!("{}{}", backend_url(), "/api/maker_list");
     let mut index: usize = 0;
