@@ -1,10 +1,8 @@
 use reqwasm::http::Request;
 use wasm_bindgen::JsCast;
 use wasm_bindgen::JsValue;
-use web_sys::MouseEvent;
-use yew::{function_component, html, Callback, Html, Properties, UseStateHandle};
+use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
-use crate::model::common::MakerModel;
 use crate::model::maker_page::MakerState;
 use crate::model::maker_page::PutMakerRequest;
 use crate::settings::api::backend_url;

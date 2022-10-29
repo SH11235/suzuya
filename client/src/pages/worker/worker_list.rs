@@ -1,6 +1,5 @@
 use crate::{model::common::WorkerModel, settings::api::backend_url};
 use reqwasm::http::Request;
-use wasm_bindgen::JsValue;
 use yew::{function_component, html, use_effect_with_deps, use_state};
 
 #[function_component(WorkerList)]

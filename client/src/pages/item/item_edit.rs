@@ -46,8 +46,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     fetched_items
                         .items
                         .sort_by(|a, b| a.product_code.cmp(&b.product_code));
-                    // debug
-                    web_sys::console::log_1(&JsValue::from_serde(&fetched_items).unwrap());
                     get_info_by_title_id.set(fetched_items);
                 });
                 || ()
@@ -338,11 +336,4 @@ fn parse_date(date: &Option<String>) -> String {
         Some(date) => (&date[0..10]).to_string(),
         None => "".to_string(),
     }
-}
-
-fn parse_date_time(date: &String) -> String {
-    web_sys::console::log_1(&JsValue::from_str(&date));
-    let date = date.replace("/", "-");
-    let date_str = &date[0..10];
-    format!("{}", date_str)
 }

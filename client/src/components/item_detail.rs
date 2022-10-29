@@ -7,7 +7,7 @@ use crate::settings::select::{design_status_list, illust_status_list};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 use yew::{
-    events::Event, function_component, html, Callback, Html, Properties, TargetCast, UseStateHandle,
+    events::Event, function_component, html, Callback, Properties, TargetCast, UseStateHandle,
 };
 
 #[derive(Properties, PartialEq)]

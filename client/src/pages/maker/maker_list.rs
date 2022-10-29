@@ -1,14 +1,12 @@
 use crate::components::common::text_box::TextBox;
-use crate::components::maker_save_button::SaveButton;
 use crate::components::maker_delete_button::DeleteButton;
+use crate::components::maker_save_button::SaveButton;
 use crate::model::maker_page::MakerState;
 use crate::{model::common::MakerModel, settings::api::backend_url};
 use reqwasm::http::Request;
-use wasm_bindgen::{JsCast, JsValue};
-use web_sys::{HtmlBaseElement, HtmlInputElement, MouseEvent};
+use web_sys::HtmlInputElement;
 use yew::{
-    events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
-    Properties, TargetCast,
+    events::Event, function_component, html, use_effect_with_deps, use_state, Callback, TargetCast,
 };
 
 #[function_component(MakerList)]
