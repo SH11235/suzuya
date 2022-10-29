@@ -13,17 +13,20 @@ pub struct DeleteButtonProperty {
 
 #[function_component(DeleteButton)]
 pub fn delete_button(props: &DeleteButtonProperty) -> Html {
-    let id = props.input_id.clone();
-    let makers_state = props.makers_state_handle.clone();
-    let delete_onclick = Callback::from(move |_| {
+    let id_for_db = props.input_id.clone();
+    let id_for_view = props.input_id.clone();
+    let makers_state_for_db = props.makers_state_handle.clone();
+    let makers_state_for_view = props.makers_state_handle.clone();
+    let target_maker = props.makers_state_handle.iter().find(|maker| maker.id == props.input_id).unwrap();
+    let delete_from_db = Callback::from(move |_| {
         // confirmを出す
         let confirm = web_sys::window()
             .unwrap()
             .confirm_with_message("本当に消しますか？")
             .unwrap();
         if confirm {
-            let id = id.clone();
-            let makers_state = makers_state.clone();
+            let id = id_for_db.clone();
+            let makers_state = makers_state_for_db.clone();
             wasm_bindgen_futures::spawn_local(async move {
                 let delete_url = format!("{}{}{}", backend_url(), "/api/delete_maker/", id);
                 let client = Request::delete(&delete_url);
@@ -37,6 +40,7 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                                 id: maker_state.id.clone(),
                                 code_name: maker_state.code_name.clone(),
                                 is_changed: maker_state.is_changed,
+                                is_saved: maker_state.is_saved,
                             });
                         }
                     }
@@ -50,7 +54,31 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
             });
         }
     });
-    html! {
-        <button onclick={ delete_onclick }>{ "削除" }</button>
+
+    let delete_from_view = Callback::from(move |_| {
+        let id = id_for_view.clone();
+        let makers_state = makers_state_for_view.clone();
+        let mut new_makers = vec![];
+        for maker_state in makers_state.iter() {
+            if maker_state.id != id {
+                new_makers.push(MakerState {
+                    id: maker_state.id.clone(),
+                    code_name: maker_state.code_name.clone(),
+                    is_changed: maker_state.is_changed,
+                    is_saved: maker_state.is_saved,
+                });
+            }
+        }
+        makers_state.set(new_makers);
+    });
+
+    if target_maker.is_saved {
+        html! {
+            <button onclick={ delete_from_db }>{ "削除" }</button>
+        }
+    } else {
+        html! {
+            <button onclick={ delete_from_view }>{ "削除" }</button>
+        }
     }
 }

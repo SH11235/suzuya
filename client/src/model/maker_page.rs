@@ -5,6 +5,7 @@ pub struct MakerState {
     pub id: String,
     pub code_name: String,
     pub is_changed: bool,
+    pub is_saved: bool,
 }
 
 #[derive(Debug, Serialize)]

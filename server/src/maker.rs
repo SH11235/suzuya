@@ -84,6 +84,26 @@ async fn create_maker(
         .finish())
 }
 
+#[post("/api/new_maker")]
+async fn api_create_maker(
+    data: web::Data<AppState>,
+    request_body: web::Json<InputNewMaker>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let uuid = Uuid::new_v4();
+
+    maker::ActiveModel {
+        id: Set(uuid.clone()),
+        code_name: Set(request_body.code_name.to_owned()),
+        ..Default::default()
+    }
+    .insert(conn)
+    .await
+    .expect("could not insert maker");
+
+    Ok(HttpResponse::Created().json(uuid))
+}
+
 #[get("/maker/{id}")]
 async fn edit_maker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<HttpResponse, Error> {
     let conn = &data.conn;

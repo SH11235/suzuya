@@ -1,6 +1,7 @@
 use crate::components::common::text_box::TextBox;
 use crate::components::maker_delete_button::DeleteButton;
 use crate::components::maker_save_button::SaveButton;
+use crate::components::maker_add_button::AddButton;
 use crate::model::maker_page::MakerState;
 use crate::{model::common::MakerModel, settings::api::backend_url};
 use reqwasm::http::Request;
@@ -35,6 +36,7 @@ pub fn home() -> Html {
                             id: maker.id.clone(),
                             code_name: maker.code_name.clone(),
                             is_changed: false,
+                            is_saved: true,
                         })
                         .collect::<Vec<MakerState>>();
                     makers_state.set(makers);
@@ -59,12 +61,14 @@ pub fn home() -> Html {
                         id: maker_state.id.clone(),
                         code_name: val.clone(),
                         is_changed: true,
+                        is_saved: maker_state.is_saved,
                     });
                 } else {
                     new_makers.push(MakerState {
                         id: maker_state.id.clone(),
                         code_name: maker_state.code_name.clone(),
                         is_changed: maker_state.is_changed,
+                        is_saved: maker_state.is_saved,
                     });
                 }
             }
@@ -89,7 +93,7 @@ pub fn home() -> Html {
                             <td>
                                 <TextBox onchange={text_box_onchange.clone()} input_type="text" placeholder="id" id={ maker.id.clone() }
                                     name={format!("{}-{}", "index", index) } value={ maker.code_name.clone() } />
-                                <SaveButton input_id={ maker.id.clone() } makers_state_handle={ makers_state.clone() } is_changed={ maker.is_changed } />
+                                <SaveButton input_id={ maker.id.clone() } makers_state_handle={ makers_state.clone() } is_changed={ maker.is_changed } is_saved={ maker.is_saved } />
                                 <DeleteButton input_id={ maker.id.clone() } makers_state_handle={ makers_state.clone() } />
                             </td>
                         </tr>
@@ -98,9 +102,7 @@ pub fn home() -> Html {
             }
                 </tbody>
             </table>
-            <a href="/">
-                <input type="button" value="メーカー追加" />
-            </a>
+            <AddButton makers_state_handle={ makers_state.clone() } />
         </div>
     }
 }
