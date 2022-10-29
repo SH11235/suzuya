@@ -1,7 +1,7 @@
 use crate::components::common::text_box::TextBox;
-use crate::components::maker_delete_button::DeleteButton;
-use crate::components::maker_save_button::SaveButton;
-use crate::components::maker_add_button::AddButton;
+use crate::components::maker::maker_delete_button::DeleteButton;
+use crate::components::maker::maker_save_button::SaveButton;
+use crate::components::maker::maker_add_button::AddButton;
 use crate::model::maker_page::MakerState;
 use crate::{model::common::MakerModel, settings::api::backend_url};
 use reqwasm::http::Request;
