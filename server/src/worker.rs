@@ -1,8 +1,8 @@
 use crate::setting::AppState;
-use actix_web::{error, get, post, web, Error, HttpResponse, Result};
+use actix_web::{error, get, post, put, web, Error, HttpResponse, Result};
 use entity::worker;
 use entity::worker::Entity as Worker;
-use sea_orm::{entity::*, query::*, prelude::Uuid};
+use sea_orm::{entity::*, prelude::Uuid, query::*};
 use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -100,8 +100,31 @@ async fn create_worker(
         .finish())
 }
 
+#[post("/api/new_worker")]
+async fn api_create_worker(
+    data: web::Data<AppState>,
+    request_body: web::Json<InputNewWorker>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+    let uuid = Uuid::new_v4();
+
+    worker::ActiveModel {
+        id: Set(uuid.clone()),
+        name: Set(request_body.name.to_owned()),
+        deleted: Set(false),
+    }
+    .insert(conn)
+    .await
+    .expect("could not insert worker");
+
+    Ok(HttpResponse::Created().json(uuid))
+}
+
 #[get("/worker/{id}")]
-async fn edit_worker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<HttpResponse, Error> {
+async fn edit_worker(
+    data: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let template = &data.templates;
 
@@ -145,8 +168,31 @@ async fn update_worker(
         .finish())
 }
 
+#[put("/api/worker/{id}")]
+async fn api_update_worker(
+    data: web::Data<AppState>,
+    id: web::Path<Uuid>,
+    request_body: web::Json<UpdateWorker>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    worker::ActiveModel {
+        id: Set(*id),
+        name: Set(request_body.name.to_owned()),
+        deleted: Set(false),
+    }
+    .save(conn)
+    .await
+    .expect("could not update worker");
+
+    Ok(HttpResponse::Ok().finish())
+}
+
 #[post("/delete_worker/{id}")]
-async fn delete_worker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result<HttpResponse, Error> {
+async fn delete_worker(
+    data: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
     worker::ActiveModel {
@@ -161,4 +207,23 @@ async fn delete_worker(data: web::Data<AppState>, id: web::Path<Uuid>) -> Result
     Ok(HttpResponse::Found()
         .append_header(("location", "/worker"))
         .finish())
+}
+
+#[post("/api/delete_worker/{id}")]
+async fn api_delete_worker(
+    data: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    worker::ActiveModel {
+        id: Set(*id),
+        deleted: Set(true),
+        ..Default::default()
+    }
+    .save(conn)
+    .await
+    .expect("could not delete worker");
+
+    Ok(HttpResponse::Ok().finish())
 }
