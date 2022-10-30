@@ -1,13 +1,12 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item::item_detail::ItemDetail;
-use crate::model::common::{ItemModel, NameOptionIdPair};
-use crate::model::item_page::{GetItemInfoByTitleId, ItemState, TitleState, TitleInfo};
+use crate::model::common::NameOptionIdPair;
+use crate::model::item_page::{GetItemInfoByTitleId, ItemState, TitleInfo, TitleState};
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
 use reqwasm::http::Request;
 use urlencoding::decode;
-use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
@@ -69,7 +68,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         remarks: fetched_items.remarks,
                         title: fetched_items.title,
                     });
-                    let mut items = fetched_items
+                    let items = fetched_items
                         .items
                         .iter()
                         .map(|item| ItemState {
@@ -124,18 +123,18 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let name = name.as_str();
             // nameをenumに変換する
             let name = match name {
-                "title" => TitleInfo::title,
-                "release_date" => TitleInfo::release_date,
-                "reservation_start_date" => TitleInfo::reservation_start_date,
-                "reservation_deadline" => TitleInfo::reservation_deadline,
-                "order_date_to_maker" => TitleInfo::order_date_to_maker,
-                "project_type" => TitleInfo::project_type,
-                "catalog_status" => TitleInfo::catalog_status,
-                "announcement_status" => TitleInfo::announcement_status,
-                "remarks" => TitleInfo::remarks,
+                "title" => TitleInfo::Title,
+                "release_date" => TitleInfo::ReleaseDate,
+                "reservation_start_date" => TitleInfo::ReservationStartDate,
+                "reservation_deadline" => TitleInfo::ReservationDeadline,
+                "order_date_to_maker" => TitleInfo::OrderDateToMaker,
+                "project_type" => TitleInfo::ProjectType,
+                "catalog_status" => TitleInfo::CatalogStatus,
+                "announcement_status" => TitleInfo::AnnouncementStatus,
+                "remarks" => TitleInfo::Remarks,
                 _ => {
                     panic!("nameがTitleInfoのどれともmatchしない");
-                },
+                }
             };
 
             let title_state = title_state.clone();
@@ -151,62 +150,62 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 announcement_status: title_state.announcement_status.clone(),
                 remarks: title_state.remarks.clone(),
             };
-            
+
             match name {
-                TitleInfo::title => {
+                TitleInfo::Title => {
                     title_state.set(TitleState {
                         title: val,
                         ..original_title_state
                     });
-                },
-                TitleInfo::release_date => {
+                }
+                TitleInfo::ReleaseDate => {
                     title_state.set(TitleState {
                         release_date: Some(val),
                         ..original_title_state
                     });
-                },
-                TitleInfo::reservation_start_date => {
+                }
+                TitleInfo::ReservationStartDate => {
                     title_state.set(TitleState {
                         reservation_start_date: Some(val),
                         ..original_title_state
                     });
-                },
-                TitleInfo::reservation_deadline => {
+                }
+                TitleInfo::ReservationDeadline => {
                     title_state.set(TitleState {
                         reservation_deadline: Some(val),
                         ..original_title_state
                     });
-                },
-                TitleInfo::order_date_to_maker => {
+                }
+                TitleInfo::OrderDateToMaker => {
                     title_state.set(TitleState {
                         order_date_to_maker: Some(val),
                         ..original_title_state
                     });
-                },
-                TitleInfo::project_type => {
+                }
+                TitleInfo::ProjectType => {
                     title_state.set(TitleState {
                         project_type: val,
                         ..original_title_state
                     });
-                },
-                TitleInfo::catalog_status => {
+                }
+                TitleInfo::CatalogStatus => {
                     title_state.set(TitleState {
                         catalog_status: val,
                         ..original_title_state
                     });
-                },
-                TitleInfo::announcement_status => {
+                }
+                TitleInfo::AnnouncementStatus => {
                     title_state.set(TitleState {
                         announcement_status: val,
                         ..original_title_state
                     });
-                },
-                TitleInfo::remarks => {
+                }
+                TitleInfo::Remarks => {
                     title_state.set(TitleState {
                         remarks: Some(val),
                         ..original_title_state
                     });
-                },
+                }
             }
         })
     };

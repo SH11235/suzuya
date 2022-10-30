@@ -92,13 +92,13 @@ pub struct TitleState {
 }
 
 pub enum TitleInfo {
-    title,
-    release_date,
-    reservation_start_date,
-    reservation_deadline,
-    order_date_to_maker,
-    project_type,
-    catalog_status,
-    announcement_status,
-    remarks,
+    Title,
+    ReleaseDate,
+    ReservationStartDate,
+    ReservationDeadline,
+    OrderDateToMaker,
+    ProjectType,
+    CatalogStatus,
+    AnnouncementStatus,
+    Remarks,
 }
