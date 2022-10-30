@@ -1,6 +1,6 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
-use crate::components::item_detail::ItemDetail;
+use crate::components::item::item_detail::ItemDetail;
 use crate::model::common::{ItemModel, NameOptionIdPair};
 use crate::model::item_page::{GetItemInfoByTitleId, ItemState, TitleState, TitleInfo};
 use crate::settings::api::backend_url;
