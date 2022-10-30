@@ -80,11 +80,12 @@ async fn main() -> std::io::Result<()> {
 
 pub fn init(cfg: &mut web::ServiceConfig) {
     // item
-    cfg.service(item::item_list);
-    cfg.service(item::new_item);
-    cfg.service(item::create_items);
-    cfg.service(item::api_edit_items);
-    cfg.service(item::update_items);
+    cfg.service(item::api_item_list);
+    // cfg.service(item::new_item);
+    // cfg.service(item::create_items);
+    cfg.service(item::api_item_edit_page);
+    cfg.service(item::api_update_items);
+    cfg.service(item::api_delete_item);
 
     // maker
     cfg.service(maker::api_maker_list);

@@ -1,5 +1,5 @@
 use crate::setting::AppState;
-use actix_web::{error, get, post, put, web, Error, HttpResponse, Result, delete};
+use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
 use entity::worker;
 use entity::worker::Entity as Worker;
 use sea_orm::{entity::*, prelude::Uuid, query::*};
