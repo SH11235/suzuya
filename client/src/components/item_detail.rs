@@ -1,8 +1,8 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
-use crate::model::common::NameOptionIdPair;
-use crate::model::item_page::GetItemInfoByTitleId;
+use crate::model::common::{MakerModel, NameOptionIdPair, WorkerModel};
+use crate::model::item_page::{ItemInfo, ItemState};
 use crate::settings::select::{design_status_list, illust_status_list};
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
@@ -12,60 +12,36 @@ use yew::{
 
 #[derive(Properties, PartialEq)]
 pub struct ItemDetailProperty {
-    pub id: String,
-    pub get_info_by_title_id: UseStateHandle<GetItemInfoByTitleId>,
+    pub items_state_handle: UseStateHandle<Vec<ItemState>>,
+    pub item_info: ItemState,
     pub index: usize,
-    pub item_name: String,
-    pub product_code: Option<String>,
-    pub sku: Option<i32>,
-    pub illust_status: String,
-    pub pic_illust_id: Option<String>,
-    pub design_status: String,
-    pub pic_design_id: Option<String>,
-    pub maker_id: Option<String>,
-    pub retail_price: Option<i32>,
-    pub double_check_person_id: Option<String>,
+    pub workers: Vec<NameOptionIdPair>,
+    pub makers: Vec<NameOptionIdPair>,
 }
 
 #[function_component(ItemDetail)]
 pub fn item_detail(props: &ItemDetailProperty) -> Html {
-    let sku = props.sku.clone().unwrap_or(0);
+    let workers = props.workers.clone();
+    let mut worker_list = vec![NameOptionIdPair {
+        name: "未定".to_string(),
+        id: None,
+    }];
+    worker_list.extend(workers);
+
+    let makers = props.makers.clone();
+    let mut maker_list = vec![NameOptionIdPair {
+        name: "未定".to_string(),
+        id: None,
+    }];
+    maker_list.extend(makers);
+
+    let sku = props.item_info.sku.clone().unwrap_or(0);
     let sku = if sku == 0 {
         "".to_string()
     } else {
         sku.to_string()
     };
-
-    let workers = props.get_info_by_title_id.workers.clone();
-    let mut worker_name_id_vec: Vec<NameOptionIdPair> = workers
-        .into_iter()
-        .map(|worker| NameOptionIdPair {
-            name: worker.name.clone(),
-            id: Some(worker.id.clone()),
-        })
-        .collect();
-    worker_name_id_vec.sort_by(|a, b| a.name.cmp(&b.name));
-    let mut worker_list = vec![NameOptionIdPair {
-        name: "未定".to_string(),
-        id: None,
-    }];
-    worker_list.extend(worker_name_id_vec);
-
-    let makers = props.get_info_by_title_id.makers.clone();
-    let mut maker_name_id_vec: Vec<NameOptionIdPair> = makers
-        .into_iter()
-        .map(|maker| NameOptionIdPair {
-            name: maker.code_name.clone(),
-            id: Some(maker.id.clone()),
-        })
-        .collect();
-    maker_name_id_vec.sort_by(|a, b| a.name.cmp(&b.name));
-    let mut maker_list = vec![NameOptionIdPair {
-        name: "未定".to_string(),
-        id: None,
-    }];
-    maker_list.extend(maker_name_id_vec);
-    let retail_price = props.retail_price.clone().unwrap_or(0);
+    let retail_price = props.item_info.retail_price.clone().unwrap_or(0);
     let retail_price = if retail_price == 0 {
         "".to_string()
     } else {
@@ -73,201 +49,81 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     };
 
     let onchange = {
-        let get_info_by_title_id = props.get_info_by_title_id.clone();
+        let items_state = props.items_state_handle.clone();
         Callback::from(move |e: Event| {
             let input: HtmlInputElement = e.target_unchecked_into();
             let val: String = input.value();
             let name_index: String = input.name();
             let name_index = name_index.as_str().split("-").collect::<Vec<&str>>();
             let name = name_index[0];
+            let name = match name {
+                "name" => ItemInfo::Name,
+                "product_code" => ItemInfo::ProductCode,
+                "sku" => ItemInfo::Sku,
+                "illust_status" => ItemInfo::IllustStatus,
+                "pic_illust_id" => ItemInfo::PicIllustId,
+                "design_status" => ItemInfo::DesignStatus,
+                "pic_design_id" => ItemInfo::PicDesignId,
+                "maker_code" => ItemInfo::MakerId,
+                "retail_price" => ItemInfo::RetailPrice,
+                "double_check_person_id" => ItemInfo::DoubleCheckPersonId,
+                _ => {
+                    panic!("Unexpected name: {}", name);
+                }
+            };
             let index: usize = name_index[1].parse().unwrap();
 
-            let mut items = get_info_by_title_id.items.clone();
-            let title = get_info_by_title_id.title.clone();
-            let workers = get_info_by_title_id.workers.clone();
-            let makers = get_info_by_title_id.makers.clone();
+            let mut original_items = vec![];
+            items_state.iter().for_each(|item| {
+                original_items.push(ItemState {
+                    id: item.id.clone(),
+                    name: item.name.clone(),
+                    product_code: item.product_code.clone(),
+                    sku: item.sku.clone(),
+                    illust_status: item.illust_status.clone(),
+                    pic_illust_id: item.pic_illust_id.clone(),
+                    design_status: item.design_status.clone(),
+                    pic_design_id: item.pic_design_id.clone(),
+                    maker_id: item.maker_id.clone(),
+                    retail_price: item.retail_price.clone(),
+                    double_check_person_id: item.double_check_person_id.clone(),
+                    is_saved: item.is_saved.clone(),
+                })
+            });
 
             match name {
-                "name" => {
-                    items[index - 1].name = val;
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::Name => {
+                    original_items[index - 1].name = val;
                 }
-                "product_code" => {
-                    items[index - 1].product_code = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::ProductCode => {
+                    original_items[index - 1].product_code = Some(val);
                 }
-                "sku" => {
-                    let val: i32 = val.parse().unwrap();
-                    items[index - 1].sku = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::Sku => {
+                    original_items[index - 1].sku = Some(val.parse().unwrap());
                 }
-                "illust_status" => {
-                    items[index - 1].illust_status = val;
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::IllustStatus => {
+                    original_items[index - 1].illust_status = val;
                 }
-                "pic_illust" => {
-                    items[index - 1].pic_illust_id = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::PicIllustId => {
+                    original_items[index - 1].pic_illust_id = Some(val);
                 }
-                "design_status" => {
-                    items[index - 1].design_status = val;
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::DesignStatus => {
+                    original_items[index - 1].design_status = val;
                 }
-                "pic_design" => {
-                    items[index - 1].pic_design_id = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::PicDesignId => {
+                    original_items[index - 1].pic_design_id = Some(val);
                 }
-                "maker_code" => {
-                    items[index - 1].maker_id = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::MakerId => {
+                    original_items[index - 1].maker_id = Some(val);
                 }
-                "retail_price" => {
-                    let val: i32 = val.parse().unwrap();
-                    items[index - 1].retail_price = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
+                ItemInfo::RetailPrice => {
+                    original_items[index - 1].retail_price = Some(val.parse().unwrap());
                 }
-                "double_check_person" => {
-                    items[index - 1].double_check_person_id = Some(val);
-                    get_info_by_title_id.set(GetItemInfoByTitleId {
-                        items,
-                        title,
-                        workers,
-                        makers,
-                        release_date: get_info_by_title_id.release_date.clone(),
-                        reservation_start_date: get_info_by_title_id.reservation_start_date.clone(),
-                        reservation_deadline: get_info_by_title_id.reservation_deadline.clone(),
-                        order_date_to_maker: get_info_by_title_id.order_date_to_maker.clone(),
-                        project_type: get_info_by_title_id.project_type.clone(),
-                        catalog_status: get_info_by_title_id.catalog_status.clone(),
-                        announcement_status: get_info_by_title_id.announcement_status.clone(),
-                        remarks: get_info_by_title_id.remarks.clone(),
-                    });
-                }
-                _ => {
-                    web_sys::console::log_1(&JsValue::from_str("No defined state."));
-                    web_sys::console::log_1(&JsValue::from_str("name"));
-                    web_sys::console::log_1(&JsValue::from_str(name));
-                    web_sys::console::log_1(&JsValue::from_str("&val"));
-                    web_sys::console::log_1(&JsValue::from_str(&val));
+                ItemInfo::DoubleCheckPersonId => {
+                    original_items[index - 1].double_check_person_id = Some(val);
                 }
             }
+            items_state.set(original_items);
         })
     };
 
@@ -275,15 +131,15 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
         <div class="item-wrapper js-item">
             <div style="display: none;" class="input-warpper">{"id"}{ props.index }
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="id" id={ format!("{}-{}", "id", props.index) }
-                    name={format!("{}-{}", "id", props.index) } value={ props.id.clone().to_string() } />
+                    name={format!("{}-{}", "id", props.index) } value={ props.item_info.id.clone().to_string() } />
             </div>
             <div class="input-warpper">{"アイテム"}{ props.index }
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}-{}", "name", props.index) }
-                    name={format!("{}-{}", "name", props.index) } value={ props.item_name.clone() } />
+                    name={format!("{}-{}", "name", props.index) } value={ props.item_info.name.clone() } />
             </div>
             <div class="input-warpper">{"品番"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="品番" id={ format!("{}-{}", "product_code", props.index) }
-                    name={format!("{}-{}", "product_code", props.index) } value={ props.product_code.clone().unwrap_or("".to_string()) } />
+                    name={format!("{}-{}", "product_code", props.index) } value={ props.item_info.product_code.clone().unwrap_or("".to_string()) } />
             </div>
             <div class="input-warpper">{"SKU"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="SKU" id={ format!("{}-{}", "sku", props.index) }
@@ -291,23 +147,23 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
             <div class="input-warpper">{"イラストステータス："}
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "illust_status", props.index)} name={ format!("{}-{}", "illust_status", props.index)}
-                    value={props.illust_status.clone()} select_list={illust_status_list()}/>
+                    value={props.item_info.illust_status.clone()} select_list={illust_status_list()}/>
             </div>
             <div class="input-warpper">{"イラスト担当者"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_illust", props.index)} name={ format!("{}-{}", "pic_illust", props.index)}
-                    value={props.pic_illust_id.clone()} name_value_list={worker_list.clone()}/>
+                    value={props.item_info.pic_illust_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
             <div class="input-warpper">{"デザインステータス"}
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "design_status", props.index)} name={ format!("{}-{}", "design_status", props.index)}
-                    value={props.design_status.clone()} select_list={design_status_list()}/>
+                    value={props.item_info.design_status.clone()} select_list={design_status_list()}/>
             </div>
             <div class="input-warpper">{"デザイン担当者"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_design", props.index)} name={ format!("{}-{}", "pic_design", props.index)}
-                    value={props.pic_design_id.clone()} name_value_list={worker_list.clone()}/>
+                    value={props.item_info.pic_design_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
             <div class="input-warpper">{"メーカー"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "maker_code", props.index)} name={ format!("{}-{}", "maker_code", props.index)}
-                    value={props.maker_id.clone()} name_value_list={maker_list.clone()}/>
+                    value={props.item_info.maker_id.clone()} name_value_list={maker_list.clone()}/>
             </div>
             <div class="input-warpper">{"上代"}
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="上代" id={ format!("{}-{}", "retail_price", props.index) }
@@ -315,7 +171,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
             <div class="input-warpper">{"ダブルチェック"}
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
-                    value={props.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+                    value={props.item_info.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
         </div>
 
