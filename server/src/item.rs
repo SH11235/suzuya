@@ -1,143 +1,34 @@
-use std::fmt::Debug;
-
+use crate::model::item::{
+    ItemEdit, ItemListQuery, ItemsPutRequest, SelectResult, ViewData, YearMonthList,
+};
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState, StatusName, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
 };
-use actix_web::{error, get, post, put, web, Error, HttpResponse, Result};
+use actix_web::{delete, error, get, post, put, web, Error, HttpResponse, Result};
 use chrono::{DateTime, FixedOffset, Utc};
 use entity::item::Entity as Item;
 use entity::maker::Entity as Maker;
 use entity::title::Entity as Title;
 use entity::worker::Entity as Worker;
 use entity::{item, maker, title, worker};
-use sea_orm::prelude::{DateTimeUtc, DateTimeWithTimeZone, Uuid};
+use sea_orm::prelude::{DateTimeWithTimeZone, Uuid};
+use sea_orm::DbBackend;
 use sea_orm::{entity::*, query::*};
-use sea_orm::{DbBackend, FromQueryResult};
-use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize)]
-struct ItemListQuery {
-    year: Option<String>,
-    month: Option<String>,
-    page: Option<usize>,
-    items_per_page: Option<usize>,
-}
-
-#[derive(Debug, FromQueryResult)]
-struct SelectResult {
-    id: Uuid,
-    release_date: Option<DateTime<Utc>>,
-    reservation_start_date: Option<DateTime<Utc>>,
-    reservation_deadline: Option<DateTime<Utc>>,
-    order_date_to_maker: Option<DateTime<Utc>>,
-    title: String,
-    project_type: String,
-    name: String,
-    product_code: Option<String>,
-    sku: Option<i32>,
-    illust_status: String,
-    pic_illust: Option<String>,
-    design_status: String,
-    pic_design: Option<String>,
-    maker_code: Option<String>,
-    retail_price: Option<i32>,
-    double_check_person: Option<String>,
-    catalog_status: String,
-    announcement_status: String,
-    remarks: Option<String>,
-}
-
-#[derive(Debug, FromQueryResult, Serialize)]
-struct YearMonthList {
-    yyyymm: String,
-    year: String,
-    month: String,
-}
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-struct InputNewItem {
-    title: String,
-    release_date: Option<DateTime<Utc>>,
-    reservation_start_date: Option<DateTime<Utc>>,
-    reservation_deadline: Option<DateTime<Utc>>,
-    order_date_to_maker: Option<DateTime<Utc>>,
-    name_list: Vec<String>,
-}
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-struct JsonItems {
-    release_date: Option<DateTimeUtc>,
-    reservation_start_date: Option<DateTimeUtc>,
-    reservation_deadline: Option<DateTimeUtc>,
-    order_date_to_maker: Option<DateTimeUtc>,
-    title_id: Uuid,
-    title_name: String,
-    project_type: String,
-    items: Vec<RequestItems>,
-    catalog_status: String,
-    announcement_status: String,
-    remarks: Option<String>,
-}
-
-#[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-struct RequestItems {
-    id: Option<Uuid>,
-    name: String,
-    product_code: Option<String>,
-    sku: Option<i32>,
-    illust_status: String,
-    pic_illust_id: Option<Uuid>,
-    design_status: String,
-    pic_design_id: Option<Uuid>,
-    maker_id: Option<Uuid>,
-    retail_price: Option<i32>,
-    double_check_person_id: Option<Uuid>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct ItemEdit {
-    items: Vec<item::Model>,
-    workers: Vec<worker::Model>,
-    makers: Vec<maker::Model>,
-    project_type_list: Vec<StatusName>,
-    illust_status_list: Vec<StatusName>,
-    design_status_list: Vec<StatusName>,
-    release_date: Option<DateTimeWithTimeZone>,
-    reservation_start_date: Option<DateTimeWithTimeZone>,
-    reservation_deadline: Option<DateTimeWithTimeZone>,
-    order_date_to_maker: Option<DateTimeWithTimeZone>,
-    title: String,
-    project_type: String,
-    catalog_status: String,
-    announcement_status: String,
-    remarks: Option<String>,
-    catalog_status_list: Vec<StatusName>,
-    announce_status_list: Vec<StatusName>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct DateInfo {
-    year: i32,
-    month: u32,
-    day: u32,
-    hour: u32,
-    minute: u32,
-    second: u32,
-}
-
-#[get("/item")]
-async fn item_list(
+#[get("/api/item")]
+async fn api_item_list(
     data: web::Data<AppState>,
     query: web::Query<ItemListQuery>,
 ) -> Result<HttpResponse, Error> {
-    let template = &data.templates;
     let conn = &data.conn;
     let page = query.page.unwrap_or(1);
     let year_param = query.year.as_ref();
     let month_param = query.month.as_ref();
+
     let where_str = if year_param.is_some() && month_param.is_some() {
         format!(
-            "WHERE to_char(\"items\".\"release_date\", 'YYYY/MM') = '{}/{}'",
+            "WHERE to_char(\"item\".\"release_date\", 'YYYY/MM') = '{}/{}'",
             year_param.unwrap(),
             month_param.unwrap()
         )
@@ -146,37 +37,28 @@ async fn item_list(
     };
 
     let sql_select = r#"
-            "items"."id",
-            "items"."release_date",
-            "items"."reservation_start_date",
-            "items"."reservation_deadline",
-            "items"."order_date_to_maker",
-            "items"."title",
-            "items"."project_type",
-            "items"."name",
-            "items"."product_code",
-            "items"."sku",
-            "items"."illust_status",
-            "pics_illust"."name" AS "pic_illust",
-            "items"."design_status",
+            item.id,
+            item.name,
+            item.product_code,
+            item.sku,
+            item.illust_status,
+            "pic_illust"."name" AS "pic_illust",
+            item.design_status,
             "pics_design"."name" AS "pic_design",
-            "makers"."code_name" AS "maker_code",
-            "items"."retail_price",
-            "workers"."name" AS "double_check_person",
-            "items"."catalog_status",
-            "items"."announcement_status",
-            "items"."remarks"
+            "maker"."code_name" AS "maker_code",
+            item.retail_price,
+            "worker"."name" AS "double_check_person"
         FROM
-            "items"
-            LEFT JOIN "makers" ON "items"."maker_id" = "makers"."id"
-            LEFT JOIN "workers" AS "pics_illust" ON "items"."pic_illust_id" = "pics_illust"."id"
-            LEFT JOIN "workers" AS "pics_design" ON "items"."pic_design_id" = "pics_design"."id"
-            LEFT JOIN "workers" ON "items"."double_check_person_id" = "workers"."id"
+            "item"
+            LEFT JOIN "maker" ON "item"."maker_id" = "maker"."id"
+            LEFT JOIN "worker" AS "pic_illust" ON "item"."pic_illust_id" = "pic_illust"."id"
+            LEFT JOIN "worker" AS "pics_design" ON "item"."pic_design_id" = "pics_design"."id"
+            LEFT JOIN "worker" ON "item"."double_check_person_id" = "worker"."id"
     "#;
 
     let sql_order = r#"
         ORDER BY
-            "items"."title" ASC, "items"."id" ASC
+            "item"."title" ASC, "item"."id" ASC
     "#;
 
     let sql = sql_select.to_string() + &where_str + sql_order;
@@ -194,29 +76,6 @@ async fn item_list(
         .fetch_page(page - 1)
         .await
         .expect("could not retrieve datas");
-    #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
-    struct ViewData {
-        id: Uuid,
-        release_date: Option<String>,
-        reservation_start_date: Option<String>, // 予約開始日(BtoBおよびBtoC)
-        reservation_deadline: Option<String>,   // 予約締切日
-        order_date_to_maker: Option<String>,    // メーカーへの発注日
-        title: String,
-        project_type: String,
-        name: String,
-        product_code: Option<String>,
-        sku: Option<i32>, // 種類数
-        illust_status: String,
-        pic_illust: Option<String>, // from worker 「イラスト担当者」
-        design_status: String,
-        pic_design: Option<String>, // from worker 「デザイン担当者」
-        maker_code: Option<String>, // from maker
-        retail_price: Option<i32>,  // 上代
-        double_check_person: Option<String>, // from worker 「社員名」
-        catalog_status: String,
-        announcement_status: String,
-        remarks: Option<String>, // 備考
-    }
 
     let view_datas = datas
         .iter()
@@ -287,82 +146,79 @@ async fn item_list(
     .await
     .expect("could not find items.");
 
-    let mut ctx = tera::Context::new();
-    let h1 = "アイテム";
-    let path = "item";
-    ctx.insert("view_datas", &view_datas);
-    ctx.insert("year_month_list", &year_month_list);
-    ctx.insert("page", &page);
-    ctx.insert("h1", &h1);
-    ctx.insert("path", &path);
-    ctx.insert("items_per_page", &items_per_page);
-    ctx.insert("num_pages", &num_pages);
+    // ctx.insert("view_datas", &view_datas);
+    // ctx.insert("year_month_list", &year_month_list);
+    // ctx.insert("page", &page);
+    // ctx.insert("h1", &h1);
+    // ctx.insert("path", &path);
+    // ctx.insert("items_per_page", &items_per_page);
+    // ctx.insert("num_pages", &num_pages);
 
-    let body = template
-        .render("item/item_list.html.tera", &ctx)
-        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(body))
+    // let body = template
+    //     .render("item/item_list.html.tera", &ctx)
+    //     .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+    Ok(HttpResponse::Ok().body("test"))
 }
 
-#[get("/new_item")]
-async fn new_item(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
-    let template = &data.templates;
-    let mut ctx = tera::Context::new();
-    let h4 = "アイテム登録";
-    let path = "item";
-    let input_id_list: Vec<i32> = (1..ITME_INPUT_NUM + 1).collect();
-    let spacer = ",";
+// #[get("/new_item")]
+// async fn new_item(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+//     let template = &data.templates;
+//     let mut ctx = tera::Context::new();
+//     let h4 = "アイテム登録";
+//     let path = "item";
+//     let input_id_list: Vec<i32> = (1..ITME_INPUT_NUM + 1).collect();
+//     let spacer = ",";
 
-    ctx.insert("h4", &h4);
-    ctx.insert("path", &path);
-    ctx.insert("input_id_list", &input_id_list);
-    ctx.insert("spacer", &spacer);
-    let body = template
-        .render("item/new_item.html.tera", &ctx)
-        .map_err(|_| error::ErrorInternalServerError("Template error"))?;
-    Ok(HttpResponse::Ok().content_type("text/html").body(body))
-}
+//     ctx.insert("h4", &h4);
+//     ctx.insert("path", &path);
+//     ctx.insert("input_id_list", &input_id_list);
+//     ctx.insert("spacer", &spacer);
+//     let body = template
+//         .render("item/new_item.html.tera", &ctx)
+//         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
+//     Ok(HttpResponse::Ok().content_type("text/html").body(body))
+// }
 
-#[post("/new_item")]
-async fn create_items(
-    data: web::Data<AppState>,
-    post_data: web::Json<InputNewItem>,
-) -> Result<HttpResponse, Error> {
-    let conn = &data.conn;
+// #[post("/new_item")]
+// async fn create_items(
+//     data: web::Data<AppState>,
+//     post_data: web::Json<InputNewItem>,
+// ) -> Result<HttpResponse, Error> {
+//     let conn = &data.conn;
 
-    let form = post_data.into_inner();
-    let name_list = form.name_list;
+//     let form = post_data.into_inner();
+//     let name_list = form.name_list;
 
-    // title登録
-    let title = title::ActiveModel {
-        name: Set(form.title),
-        deleted: Set(false),
-        ..Default::default()
-    }
-    .insert(conn)
-    .await
-    .expect("could not insert title.");
+//     // title登録
+//     let title = title::ActiveModel {
+//         name: Set(form.title),
+//         deleted: Set(false),
+//         ..Default::default()
+//     }
+//     .insert(conn)
+//     .await
+//     .expect("could not insert title.");
 
-    // item登録
-    let title_id = title.id;
-    for item_name in name_list.iter() {
-        item::ActiveModel {
-            title_id: Set(title_id),
-            name: Set(item_name.to_string()),
-            ..Default::default()
-        }
-        .insert(conn)
-        .await
-        .expect("could not insert item");
-    }
+//     // item登録
+//     let title_id = title.id;
+//     for item_name in name_list.iter() {
+//         item::ActiveModel {
+//             title_id: Set(title_id),
+//             name: Set(item_name.to_string()),
+//             ..Default::default()
+//         }
+//         .insert(conn)
+//         .await
+//         .expect("could not insert item");
+//     }
 
-    Ok(HttpResponse::Found()
-        .append_header(("location", "/new_item"))
-        .finish())
-}
+//     Ok(HttpResponse::Found()
+//         .append_header(("location", "/new_item"))
+//         .finish())
+// }
 
 #[get("/api/item/{title_id}")]
-async fn api_edit_items(
+async fn api_item_edit_page(
     data: web::Data<AppState>,
     title_id: web::Path<Uuid>,
 ) -> Result<HttpResponse, Error> {
@@ -383,6 +239,7 @@ async fn api_edit_items(
     let items = Item::find()
         .order_by_asc(item::Column::Id)
         .filter(item::Column::TitleId.eq(title_id.to_owned()))
+        .filter(item::Column::Deleted.eq(false))
         .all(conn)
         .await
         .expect("could not find items by title_id.");
@@ -434,9 +291,9 @@ async fn api_edit_items(
 }
 
 #[put("/api/item")]
-async fn update_items(
+async fn api_update_items(
     data: web::Data<AppState>,
-    post_data: web::Json<JsonItems>,
+    post_data: web::Json<ItemsPutRequest>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let put_data = post_data.into_inner();
@@ -482,18 +339,18 @@ async fn update_items(
     .expect("could not update title.");
 
     for item in put_data.items.iter() {
-        let item_id = &item.id;
+        let item_id = item.id.clone();
+        // item_id存在確認
+        let item_id_exist = Item::find_by_id(item_id)
+            .one(conn)
+            .await
+            .expect("could not find item.");
 
-        match item_id {
-            Some(item_id) => {
-                // item_id存在確認
-                Item::find_by_id(*item_id)
-                    .one(conn)
-                    .await
-                    .expect("could not find item.");
+        match item_id_exist {
+            Some(_) => {
                 // idあり→UPDATE
                 item::ActiveModel {
-                    id: Set(*item_id),
+                    id: Set(item_id.to_owned()),
                     title_id: Set(put_data.title_id.to_owned()),
                     name: Set(item.name.to_owned()),
                     product_code: Set(item.product_code.to_owned()),
@@ -514,7 +371,7 @@ async fn update_items(
             None => {
                 // id無し→INSERT
                 item::ActiveModel {
-                    id: Set(Uuid::new_v4()),
+                    id: Set(item_id.to_owned()),
                     title_id: Set(put_data.title_id.to_owned()),
                     name: Set(item.name.to_owned()),
                     product_code: Set(item.product_code.to_owned()),
@@ -536,6 +393,26 @@ async fn update_items(
     }
 
     Ok(HttpResponse::Ok().body("put ok"))
+}
+
+#[delete("/api/delete_item/{id}")]
+async fn api_delete_item(
+    data: web::Data<AppState>,
+    id: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    // idに一致するitemをのdeletedカラムをtrueにする
+    item::ActiveModel {
+        id: Set(id.into_inner()),
+        deleted: Set(true),
+        ..Default::default()
+    }
+    .update(conn)
+    .await
+    .expect("could not delete item.");
+
+    Ok(HttpResponse::Ok().finish())
 }
 
 fn date_to_string(date_time: &DateTime<Utc>) -> String {

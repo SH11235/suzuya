@@ -1,10 +1,10 @@
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
-use crate::model::common::{MakerModel, NameOptionIdPair, WorkerModel};
+use crate::components::item::item_delete_button::DeleteButton;
+use crate::model::common::NameOptionIdPair;
 use crate::model::item_page::{ItemInfo, ItemState};
 use crate::settings::select::{design_status_list, illust_status_list};
-use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, Callback, Properties, TargetCast, UseStateHandle,
@@ -21,6 +21,8 @@ pub struct ItemDetailProperty {
 
 #[function_component(ItemDetail)]
 pub fn item_detail(props: &ItemDetailProperty) -> Html {
+    let items_state = props.items_state_handle.clone();
+
     let workers = props.workers.clone();
     let mut worker_list = vec![NameOptionIdPair {
         name: "未定".to_string(),
@@ -61,12 +63,12 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 "product_code" => ItemInfo::ProductCode,
                 "sku" => ItemInfo::Sku,
                 "illust_status" => ItemInfo::IllustStatus,
-                "pic_illust_id" => ItemInfo::PicIllustId,
+                "pic_illust" => ItemInfo::PicIllustId,
                 "design_status" => ItemInfo::DesignStatus,
-                "pic_design_id" => ItemInfo::PicDesignId,
+                "pic_design" => ItemInfo::PicDesignId,
                 "maker_code" => ItemInfo::MakerId,
                 "retail_price" => ItemInfo::RetailPrice,
-                "double_check_person_id" => ItemInfo::DoubleCheckPersonId,
+                "double_check_person" => ItemInfo::DoubleCheckPersonId,
                 _ => {
                     panic!("Unexpected name: {}", name);
                 }
@@ -129,6 +131,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
 
     html! {
         <div class="item-wrapper js-item">
+            <DeleteButton input_id={ props.item_info.id.clone() } items_state_handle={ items_state.clone() } />
             <div style="display: none;" class="input-warpper">{"id"}{ props.index }
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="id" id={ format!("{}-{}", "id", props.index) }
                     name={format!("{}-{}", "id", props.index) } value={ props.item_info.id.clone().to_string() } />

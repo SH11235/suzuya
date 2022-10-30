@@ -5,6 +5,7 @@ use crate::model::common::NameOptionIdPair;
 use crate::model::item_page::{GetItemInfoByTitleId, ItemState, TitleInfo, TitleState};
 use crate::settings::api::backend_url;
 use crate::settings::select::{announce_status_list, catalog_status_list, project_type_list};
+use uuid::Uuid;
 use reqwasm::http::Request;
 use urlencoding::decode;
 use web_sys::HtmlInputElement;
@@ -214,6 +215,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         let items_state = items_state.clone();
         Callback::from(move |_| {
             let mut new_items = vec![];
+            let id = Uuid::new_v4().to_string();
             for item_state in items_state.iter() {
                 new_items.push(ItemState {
                     id: item_state.id.clone(),
@@ -231,10 +233,38 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 });
             }
             let new_item = ItemState {
+                id,
                 ..Default::default()
             };
             new_items.push(new_item);
             items_state.set(new_items);
+        })
+    };
+
+    let save_onclick = {
+        let items_state = items_state.clone();
+        let title_state = title_state.clone();
+
+        Callback::from(move |_| {
+            let mut saved_items = vec![];
+            web_sys::console::log_1(&"save_onclick".into());
+            items_state.iter().for_each(|item_state| {
+                saved_items.push(ItemState {
+                    id: item_state.id.clone(),
+                    name: item_state.name.clone(),
+                    product_code: item_state.product_code.clone(),
+                    sku: item_state.sku,
+                    illust_status: item_state.illust_status.clone(),
+                    pic_illust_id: item_state.pic_illust_id.clone(),
+                    design_status: item_state.design_status.clone(),
+                    pic_design_id: item_state.pic_design_id.clone(),
+                    maker_id: item_state.maker_id.clone(),
+                    retail_price: item_state.retail_price,
+                    double_check_person_id: item_state.double_check_person_id.clone(),
+                    is_saved: true,
+                });
+            });
+            items_state.set(saved_items);
         })
     };
 
@@ -312,7 +342,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         <br/>
                         {
                             html! {
-                                <button class="save-button" id="btn_submit">
+                                <button onclick={save_onclick} class="save-button" id="btn_submit">
                                     { "保存" }
                                 </button>
                             }
