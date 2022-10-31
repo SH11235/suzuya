@@ -1,11 +1,12 @@
 use crate::model::item::{
-    ItemEdit, ItemListQuery, ItemsPutRequest, SelectResult, ViewData, YearMonthList,
+    ItemEdit, ItemListQuery, ItemListResponse, ItemsPutRequest, SelectResult, ViewData,
+    YearMonthList,
 };
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE, ITME_INPUT_NUM,
+    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE,
 };
-use actix_web::{delete, error, get, post, put, web, Error, HttpResponse, Result};
+use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
 use chrono::{DateTime, FixedOffset, Utc};
 use entity::item::Entity as Item;
 use entity::maker::Entity as Maker;
@@ -16,124 +17,90 @@ use sea_orm::prelude::{DateTimeWithTimeZone, Uuid};
 use sea_orm::DbBackend;
 use sea_orm::{entity::*, query::*};
 
-#[get("/api/item")]
+#[get("/api/item_list")]
 async fn api_item_list(
     data: web::Data<AppState>,
     query: web::Query<ItemListQuery>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
-    let page = query.page.unwrap_or(1);
+    // let page = query.page.unwrap_or(1);
     let year_param = query.year.as_ref();
     let month_param = query.month.as_ref();
 
-    let where_str = if year_param.is_some() && month_param.is_some() {
-        format!(
-            "WHERE to_char(\"item\".\"release_date\", 'YYYY/MM') = '{}/{}'",
-            year_param.unwrap(),
-            month_param.unwrap()
-        )
-    } else {
-        "WHERE release_date IS NULL".to_string()
-    };
+    // let sql = sql_select.to_string() + &where_str + sql_order;
 
-    let sql_select = r#"
-            item.id,
-            item.name,
-            item.product_code,
-            item.sku,
-            item.illust_status,
-            "pic_illust"."name" AS "pic_illust",
-            item.design_status,
-            "pics_design"."name" AS "pic_design",
-            "maker"."code_name" AS "maker_code",
-            item.retail_price,
-            "worker"."name" AS "double_check_person"
-        FROM
-            "item"
-            LEFT JOIN "maker" ON "item"."maker_id" = "maker"."id"
-            LEFT JOIN "worker" AS "pic_illust" ON "item"."pic_illust_id" = "pic_illust"."id"
-            LEFT JOIN "worker" AS "pics_design" ON "item"."pic_design_id" = "pics_design"."id"
-            LEFT JOIN "worker" ON "item"."double_check_person_id" = "worker"."id"
-    "#;
+    // let items_per_page = query.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
+    // let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
+    //     DbBackend::Postgres,
+    //     &sql,
+    //     vec![],
+    // ))
+    // .paginate(conn, items_per_page);
+    // let num_pages = paginator.num_pages().await.ok().unwrap();
 
-    let sql_order = r#"
-        ORDER BY
-            "item"."title" ASC, "item"."id" ASC
-    "#;
+    // let datas = paginator
+    //     .fetch_page(page - 1)
+    //     .await
+    //     .expect("could not retrieve datas");
 
-    let sql = sql_select.to_string() + &where_str + sql_order;
-
-    let items_per_page = query.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
-    let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
-        DbBackend::Postgres,
-        &sql,
-        vec![],
-    ))
-    .paginate(conn, items_per_page);
-    let num_pages = paginator.num_pages().await.ok().unwrap();
-
-    let datas = paginator
-        .fetch_page(page - 1)
-        .await
-        .expect("could not retrieve datas");
-
-    let view_datas = datas
-        .iter()
-        .map(|item| ViewData {
-            id: item.id,
-            release_date: {
-                if let Some(date) = item.release_date {
-                    Some(date_to_string(&date))
-                } else {
-                    None
-                }
-            },
-            reservation_start_date: {
-                if let Some(date) = item.reservation_start_date {
-                    Some(date_to_string(&date))
-                } else {
-                    None
-                }
-            },
-            reservation_deadline: {
-                if let Some(date) = item.reservation_deadline {
-                    Some(date_to_string(&date))
-                } else {
-                    None
-                }
-            },
-            order_date_to_maker: {
-                if let Some(date) = item.order_date_to_maker {
-                    Some(date_to_string(&date))
-                } else {
-                    None
-                }
-            },
-            title: item.title.clone(),
-            project_type: item.project_type.clone(),
-            name: item.name.clone(),
-            product_code: item.product_code.clone(),
-            sku: item.sku,
-            illust_status: item.illust_status.clone(),
-            pic_illust: item.pic_illust.clone(),
-            design_status: item.design_status.clone(),
-            pic_design: item.pic_design.clone(),
-            maker_code: item.maker_code.clone(),
-            retail_price: item.retail_price,
-            double_check_person: item.double_check_person.clone(),
-            catalog_status: item.catalog_status.clone(),
-            announcement_status: item.announcement_status.clone(),
-            remarks: item.remarks.clone(),
-        })
-        .collect::<Vec<ViewData>>();
+    // let view_datas = datas
+    //     .iter()
+    //     .map(|item| ViewData {
+    //         id: item.id,
+    //         release_date: {
+    //             if let Some(date) = item.release_date {
+    //                 Some(date_to_string(&date))
+    //             } else {
+    //                 None
+    //             }
+    //         },
+    //         reservation_start_date: {
+    //             if let Some(date) = item.reservation_start_date {
+    //                 Some(date_to_string(&date))
+    //             } else {
+    //                 None
+    //             }
+    //         },
+    //         reservation_deadline: {
+    //             if let Some(date) = item.reservation_deadline {
+    //                 Some(date_to_string(&date))
+    //             } else {
+    //                 None
+    //             }
+    //         },
+    //         order_date_to_maker: {
+    //             if let Some(date) = item.order_date_to_maker {
+    //                 Some(date_to_string(&date))
+    //             } else {
+    //                 None
+    //             }
+    //         },
+    //         title: item.title.clone(),
+    //         project_type: item.project_type.clone(),
+    //         name: item.name.clone(),
+    //         product_code: item.product_code.clone(),
+    //         sku: item.sku,
+    //         illust_status: item.illust_status.clone(),
+    //         pic_illust: item.pic_illust.clone(),
+    //         design_status: item.design_status.clone(),
+    //         pic_design: item.pic_design.clone(),
+    //         maker_code: item.maker_code.clone(),
+    //         retail_price: item.retail_price,
+    //         double_check_person: item.double_check_person.clone(),
+    //         catalog_status: item.catalog_status.clone(),
+    //         announcement_status: item.announcement_status.clone(),
+    //         remarks: item.remarks.clone(),
+    //     })
+    //     .collect::<Vec<ViewData>>();
 
     let year_month_sql = "
         SELECT
             to_char(release_date, 'YYYY/MM') as yyyymm,
             to_char(release_date, 'YYYY') as year,
             to_char(release_date, 'MM') as month
-        FROM items
+        FROM title
         WHERE release_date is not NULL
+        AND deleted = FALSE 
         GROUP BY yyyymm, year, month
         ORDER BY yyyymm DESC NULLS FIRST;
     ";
@@ -146,18 +113,62 @@ async fn api_item_list(
     .await
     .expect("could not find items.");
 
-    // ctx.insert("view_datas", &view_datas);
-    // ctx.insert("year_month_list", &year_month_list);
-    // ctx.insert("page", &page);
-    // ctx.insert("h1", &h1);
-    // ctx.insert("path", &path);
-    // ctx.insert("items_per_page", &items_per_page);
-    // ctx.insert("num_pages", &num_pages);
+    // year_month_listの長さ分だけ、対応する日付のitemを取得する
+    // let mut item_list = Vec::new();
+    // for year_month in year_month_list {
+    //     let year = year_month.year;
+    //     let month = year_month.month;
+    // let where_str = if year_param.is_some() && month_param.is_some() {
+    //     format!(
+    //         "WHERE to_char(\"item\".\"release_date\", 'YYYY/MM') = '{}/{}'",
+    //         year_param.unwrap(),
+    //         month_param.unwrap()
+    //     )
+    // } else {
+    //     "WHERE release_date IS NULL".to_string()
+    // };
 
-    // let body = template
-    //     .render("item/item_list.html.tera", &ctx)
-    //     .map_err(|_| error::ErrorInternalServerError("Template error"))?;
-    Ok(HttpResponse::Ok().body("test"))
+    // let sql_select = r#"
+    //         item.id,
+    //         item.name,
+    //         item.product_code,
+    //         item.sku,
+    //         item.illust_status,
+    //         "pic_illust"."name" AS "pic_illust",
+    //         item.design_status,
+    //         "pics_design"."name" AS "pic_design",
+    //         "maker"."code_name" AS "maker_code",
+    //         item.retail_price,
+    //         "worker"."name" AS "double_check_person"
+    //     FROM
+    //         "item"
+    //         LEFT JOIN "maker" ON "item"."maker_id" = "maker"."id"
+    //         LEFT JOIN "worker" AS "pic_illust" ON "item"."pic_illust_id" = "pic_illust"."id"
+    //         LEFT JOIN "worker" AS "pics_design" ON "item"."pic_design_id" = "pics_design"."id"
+    //         LEFT JOIN "worker" ON "item"."double_check_person_id" = "worker"."id"
+    // "#;
+
+    // let sql_order = r#"
+    //     ORDER BY
+    //         "item"."title" ASC, "item"."id" ASC
+    // "#;
+    // let sql = sql_select.to_string() + &where_str + sql_order;
+    // let items = Item::find_by_statement(Statement::from_sql_and_values(
+    //     DbBackend::Postgres,
+    //     &sql,
+    //     vec![],
+    // ))
+    // .all(conn)
+    // .await
+    // .expect("could not find items.");
+    // item_list.push((year, month, items));
+    // }
+
+    let response = ItemListResponse {
+        year_month_list: year_month_list,
+    };
+
+    Ok(HttpResponse::Ok().json(response))
 }
 
 // #[get("/new_item")]

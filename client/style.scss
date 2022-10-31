@@ -22,6 +22,45 @@ html {
   box-sizing: border-box;
 }
 
+.item-list-page {
+  padding: 0 4%;
+  .radio-input {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+  }
+
+  .radio-label {
+    display: inline-block;
+    background: #9fb7d4;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin-right: 18px;
+    border-radius: 3px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .radio-input:checked+.radio-label {
+    background: #b54a4a;
+    color: #fff;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
+  }
+
+  .radio-input:focus+.radio-label {
+    outline-color: #4d90fe;
+    outline-offset: -2px;
+    outline-style: auto;
+    outline-width: 5px;
+  }
+
+  .radio-label:hover {
+    background: #b54a4a;
+    color: #fff;
+    opacity: 0.8;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
+  }
+}
+
 .edit-item-page {
   padding: 0 4%;
 

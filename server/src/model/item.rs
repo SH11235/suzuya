@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use entity::{item, maker, title, worker};
+use entity::{item, maker, worker};
 use sea_orm::prelude::{DateTimeUtc, DateTimeWithTimeZone, Uuid};
 use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
@@ -41,9 +41,9 @@ pub struct SelectResult {
 
 #[derive(Debug, FromQueryResult, Serialize)]
 pub struct YearMonthList {
-    yyyymm: String,
-    year: String,
-    month: String,
+    pub yyyymm: String,
+    pub year: String,
+    pub month: String,
 }
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct InputNewItem {
@@ -128,4 +128,9 @@ pub struct ViewData {
     pub catalog_status: String,
     pub announcement_status: String,
     pub remarks: Option<String>, // 備考
+}
+
+#[derive(Debug, Serialize)]
+pub struct ItemListResponse {
+    pub year_month_list: Vec<YearMonthList>,
 }

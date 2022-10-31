@@ -103,9 +103,35 @@ pub enum TitleInfo {
     Remarks,
 }
 
+// /api/item_listのレスポンス
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct ItemListResponse {
+    pub year_month_list: Vec<YearMonth>,
+}
+
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct YearMonth {
+    pub yyyymm: String,
+    pub year: String,
+    pub month: String,
+}
+
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct YearMonthState {
+    pub yyyymm: String,
+    pub year: String,
+    pub month: String,
+    pub is_selected: bool,
+}
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct YearMonthListState {
+    pub year_month_list: Vec<YearMonthState>,
+}
+
 // /api/itemへのリクエストパラメータ
+// TODO client/index.htmlのclickイベントを置き換える
 #[derive(Debug, Serialize)]
-pub struct PutAPIItemRequest {
+pub struct PutApiItemRequest {
     pub release_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
