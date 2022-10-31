@@ -45,10 +45,10 @@ async fn api_item_list(
     .expect("could not find items.");
 
     // year_month_listの長さ分だけ、対応する日付のitemを取得する
-    let mut title_with_items = Vec::new();
+    let mut year_month_title_list = Vec::new();
     for year_month in year_month_list.clone() {
-        let year = year_month.year;
-        let month = year_month.month;
+        let year = year_month.year.clone();
+        let month = year_month.month.clone();
         let end_day = last_day_of_month(year.clone(), month.clone());
         let year_month_start = format!("{}-{}-01 00:00:00", year.clone(), month.clone());
         let year_month_end = format!("{}-{}-{} 23:59:59", year.clone(), month.clone(), end_day);
@@ -88,6 +88,7 @@ async fn api_item_list(
         .await
         .expect("could not find titles.");
 
+        let mut title_with_items = vec![];
         for title in titles.clone() {
             let title_id = title.id;
             let item_sql = format!(
@@ -148,17 +149,13 @@ async fn api_item_list(
                 items: items,
             });
         }
+        year_month_title_list.push(YearMonthTitleList {
+            yyyymm: year_month.yyyymm,
+            year: year_month.year,
+            month: year_month.month,
+            title_list: title_with_items,
+        });
     }
-
-    let year_month_title_list = year_month_list
-        .iter()
-        .map(|year_month| YearMonthTitleList {
-            yyyymm: year_month.yyyymm.clone(),
-            year: year_month.year.clone(),
-            month: year_month.month.clone(),
-            title_list: title_with_items.clone(),
-        })
-        .collect::<Vec<YearMonthTitleList>>();
 
     let response = ItemListResponse {
         year_month_list: year_month_list.clone(),
