@@ -104,9 +104,46 @@ pub enum TitleInfo {
 }
 
 // /api/item_listのレスポンス
-#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct ItemListResponse {
-    pub year_month_list: Vec<YearMonth>,
+    pub yyyymm: String,
+    pub year: String,
+    pub month: String,
+    pub title_list: Vec<TitleWithItems>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct TitleWithItems {
+    pub id: String,
+    pub name: String,
+    pub release_date: Option<String>, // DateTimeWithTimeZone
+    pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
+    pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
+    pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
+    pub project_type: String,
+    pub catalog_status: String,
+    pub announcement_status: String,
+    pub remarks: Option<String>,
+    pub items: Vec<ItemWithMakerAndWorker>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct ItemWithMakerAndWorker {
+    pub id: String,
+    pub name: String,
+    pub product_code: Option<String>,
+    pub sku: Option<i32>,
+    pub illust_status: String,
+    pub pic_illust_id: Option<String>,
+    pub pic_illust: Option<String>,
+    pub design_status: String,
+    pub pic_design_id: Option<String>,
+    pub pic_design: Option<String>,
+    pub maker_id: Option<String>,
+    pub maker_code: Option<String>,
+    pub retail_price: Option<i32>,
+    pub double_check_person_id: Option<String>,
+    pub double_check_person: Option<String>,
 }
 
 #[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
@@ -122,10 +159,6 @@ pub struct YearMonthState {
     pub year: String,
     pub month: String,
     pub is_selected: bool,
-}
-#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
-pub struct YearMonthListState {
-    pub year_month_list: Vec<YearMonthState>,
 }
 
 // /api/itemへのリクエストパラメータ

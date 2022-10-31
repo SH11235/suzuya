@@ -243,7 +243,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
 
     let save_onclick = {
         let items_state = items_state.clone();
-        let title_state = title_state.clone();
 
         Callback::from(move |_| {
             let mut saved_items = vec![];
