@@ -2,8 +2,6 @@ use sea_orm::DatabaseConnection;
 use serde::{Deserialize, Serialize};
 use tera::Tera;
 
-pub const DEFAULT_ITEMS_PER_PAGE: usize = 30;
-pub const ITME_INPUT_NUM: i32 = 10;
 #[derive(Debug, Clone)]
 pub struct AppState {
     pub templates: Tera,

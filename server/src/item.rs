@@ -1,13 +1,13 @@
 use crate::model::item::{
-    ItemEdit, ItemListQuery, ItemListResponse, ItemsPutRequest, SelectResult, ViewData,
-    YearMonthList,
+    ItemEditResponse, ItemListResponse, ItemWithMakerAndWorker, ItemsPutRequest, TitleFiltered,
+    TitleWithItems, YearMonthList,
 };
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState, DEFAULT_ITEMS_PER_PAGE,
+    project_type_list, AppState,
 };
 use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, Utc};
 use entity::item::Entity as Item;
 use entity::maker::Entity as Maker;
 use entity::title::Entity as Title;
@@ -20,78 +20,9 @@ use sea_orm::{entity::*, query::*};
 #[get("/api/item_list")]
 async fn api_item_list(
     data: web::Data<AppState>,
-    query: web::Query<ItemListQuery>,
+    // query: web::Query<ItemListQuery>,
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
-    // let page = query.page.unwrap_or(1);
-    let year_param = query.year.as_ref();
-    let month_param = query.month.as_ref();
-
-    // let sql = sql_select.to_string() + &where_str + sql_order;
-
-    // let items_per_page = query.items_per_page.unwrap_or(DEFAULT_ITEMS_PER_PAGE);
-    // let paginator = SelectResult::find_by_statement(Statement::from_sql_and_values(
-    //     DbBackend::Postgres,
-    //     &sql,
-    //     vec![],
-    // ))
-    // .paginate(conn, items_per_page);
-    // let num_pages = paginator.num_pages().await.ok().unwrap();
-
-    // let datas = paginator
-    //     .fetch_page(page - 1)
-    //     .await
-    //     .expect("could not retrieve datas");
-
-    // let view_datas = datas
-    //     .iter()
-    //     .map(|item| ViewData {
-    //         id: item.id,
-    //         release_date: {
-    //             if let Some(date) = item.release_date {
-    //                 Some(date_to_string(&date))
-    //             } else {
-    //                 None
-    //             }
-    //         },
-    //         reservation_start_date: {
-    //             if let Some(date) = item.reservation_start_date {
-    //                 Some(date_to_string(&date))
-    //             } else {
-    //                 None
-    //             }
-    //         },
-    //         reservation_deadline: {
-    //             if let Some(date) = item.reservation_deadline {
-    //                 Some(date_to_string(&date))
-    //             } else {
-    //                 None
-    //             }
-    //         },
-    //         order_date_to_maker: {
-    //             if let Some(date) = item.order_date_to_maker {
-    //                 Some(date_to_string(&date))
-    //             } else {
-    //                 None
-    //             }
-    //         },
-    //         title: item.title.clone(),
-    //         project_type: item.project_type.clone(),
-    //         name: item.name.clone(),
-    //         product_code: item.product_code.clone(),
-    //         sku: item.sku,
-    //         illust_status: item.illust_status.clone(),
-    //         pic_illust: item.pic_illust.clone(),
-    //         design_status: item.design_status.clone(),
-    //         pic_design: item.pic_design.clone(),
-    //         maker_code: item.maker_code.clone(),
-    //         retail_price: item.retail_price,
-    //         double_check_person: item.double_check_person.clone(),
-    //         catalog_status: item.catalog_status.clone(),
-    //         announcement_status: item.announcement_status.clone(),
-    //         remarks: item.remarks.clone(),
-    //     })
-    //     .collect::<Vec<ViewData>>();
 
     let year_month_sql = "
         SELECT
@@ -114,59 +45,120 @@ async fn api_item_list(
     .expect("could not find items.");
 
     // year_month_listの長さ分だけ、対応する日付のitemを取得する
-    // let mut item_list = Vec::new();
-    // for year_month in year_month_list {
-    //     let year = year_month.year;
-    //     let month = year_month.month;
-    // let where_str = if year_param.is_some() && month_param.is_some() {
-    //     format!(
-    //         "WHERE to_char(\"item\".\"release_date\", 'YYYY/MM') = '{}/{}'",
-    //         year_param.unwrap(),
-    //         month_param.unwrap()
-    //     )
-    // } else {
-    //     "WHERE release_date IS NULL".to_string()
-    // };
+    let mut title_with_items = Vec::new();
+    for year_month in year_month_list.clone() {
+        let year = year_month.year;
+        let month = year_month.month;
+        let end_day = last_day_of_month(year.clone(), month.clone());
+        let year_month_start = format!("{}-{}-01 00:00:00", year.clone(), month.clone());
+        let year_month_end = format!("{}-{}-{} 23:59:59", year.clone(), month.clone(), end_day);
+        let title_sql = format!(
+            "SELECT
+                id,
+                name,
+                release_date,
+                reservation_start_date,
+                reservation_deadline,
+                order_date_to_maker,
+                project_type,
+                catalog_status,
+                announcement_status,
+                remarks
+            FROM
+                title
+            WHERE
+                deleted = FALSE
+            AND
+                release_date
+                BETWEEN
+                    '{}'
+                AND
+                    '{}'
+            ORDER BY
+                reservation_start_date ASC NULLS FIRST;
+            ",
+            year_month_start, year_month_end
+        );
+        let titles = TitleFiltered::find_by_statement(Statement::from_sql_and_values(
+            DbBackend::Postgres,
+            &title_sql,
+            vec![],
+        ))
+        .all(conn)
+        .await
+        .expect("could not find titles.");
 
-    // let sql_select = r#"
-    //         item.id,
-    //         item.name,
-    //         item.product_code,
-    //         item.sku,
-    //         item.illust_status,
-    //         "pic_illust"."name" AS "pic_illust",
-    //         item.design_status,
-    //         "pics_design"."name" AS "pic_design",
-    //         "maker"."code_name" AS "maker_code",
-    //         item.retail_price,
-    //         "worker"."name" AS "double_check_person"
-    //     FROM
-    //         "item"
-    //         LEFT JOIN "maker" ON "item"."maker_id" = "maker"."id"
-    //         LEFT JOIN "worker" AS "pic_illust" ON "item"."pic_illust_id" = "pic_illust"."id"
-    //         LEFT JOIN "worker" AS "pics_design" ON "item"."pic_design_id" = "pics_design"."id"
-    //         LEFT JOIN "worker" ON "item"."double_check_person_id" = "worker"."id"
-    // "#;
+        for title in titles.clone() {
+            let title_id = title.id;
+            let item_sql = format!(
+                "SELECT
+                    item.id,
+                    item.name,
+                    item.product_code,
+                    item.sku,
+                    item.illust_status,
+                    item.pic_illust_id,
+                    pic_illust.name AS pic_illust,
+                    item.design_status,
+                    item.pic_design_id,
+                    pic_illust.name AS pic_design,
+                    item.maker_id,
+                    maker.code_name AS maker_code,
+                    item.retail_price,
+                    item.double_check_person_id,
+                    double_check_person.name AS double_check_person
+                FROM
+                    item
+                LEFT JOIN 
+                    maker ON item.maker_id = maker.id
+                LEFT JOIN 
+                    worker AS pic_illust ON item.pic_illust_id = pic_illust.id
+                LEFT JOIN
+                    worker AS pic_design ON item.pic_design_id = pic_design.id
+                LEFT JOIN
+                    worker AS double_check_person ON item.double_check_person_id = double_check_person.id
+                WHERE
+                    title_id = '{}'
+                AND
+                    item.deleted = FALSE
+                ORDER BY
+                    id ASC NULLS FIRST;
+                ",
+                title_id
+            );
+            let items = ItemWithMakerAndWorker::find_by_statement(Statement::from_sql_and_values(
+                DbBackend::Postgres,
+                &item_sql,
+                vec![],
+            ))
+            .all(conn)
+            .await
+            .expect("could not find items.");
+            title_with_items.push(TitleWithItems {
+                id: title.id,
+                name: title.name,
+                release_date: title.release_date,
+                reservation_start_date: title.reservation_start_date,
+                reservation_deadline: title.reservation_deadline,
+                order_date_to_maker: title.order_date_to_maker,
+                project_type: title.project_type,
+                catalog_status: title.catalog_status,
+                announcement_status: title.announcement_status,
+                remarks: title.remarks,
+                items: items,
+            });
+        }
+    }
 
-    // let sql_order = r#"
-    //     ORDER BY
-    //         "item"."title" ASC, "item"."id" ASC
-    // "#;
-    // let sql = sql_select.to_string() + &where_str + sql_order;
-    // let items = Item::find_by_statement(Statement::from_sql_and_values(
-    //     DbBackend::Postgres,
-    //     &sql,
-    //     vec![],
-    // ))
-    // .all(conn)
-    // .await
-    // .expect("could not find items.");
-    // item_list.push((year, month, items));
-    // }
-
-    let response = ItemListResponse {
-        year_month_list: year_month_list,
-    };
+    let response = year_month_list.iter().map(|year_month| {
+        ItemListResponse {
+            yyyymm: year_month.yyyymm.clone(),
+            year: year_month.year.clone(),
+            month:  year_month.month.clone(),
+            title_list: title_with_items.clone(),
+        }
+    })
+    .collect::<Vec<ItemListResponse>>();
 
     Ok(HttpResponse::Ok().json(response))
 }
@@ -280,7 +272,7 @@ async fn api_item_edit_page(
     let reservation_deadline: Option<DateTimeWithTimeZone> = title.reservation_deadline;
     let order_date_to_maker: Option<DateTimeWithTimeZone> = title.order_date_to_maker;
 
-    Ok(HttpResponse::Ok().json(ItemEdit {
+    Ok(HttpResponse::Ok().json(ItemEditResponse {
         items: items,
         workers: workers,
         makers: makers,
@@ -448,11 +440,25 @@ fn utc_date_time_to_jst(date_time: &DateTime<Utc>) -> DateTime<FixedOffset> {
     date_time.with_timezone(&FixedOffset::east(9 * 3600))
 }
 
+// 月の最終日を返す関数
+fn last_day_of_month(year: String, month: String) -> String {
+    let year: i32 = year.parse().unwrap();
+    let month: u32 = month.parse().unwrap();
+    // n月1日から1日戻った日付を取得するので、monthを調整する
+    let month = if month == 12 { 1 } else { month + 1 };
+    let last_day = NaiveDate::from_ymd(year, month, 1)
+        .with_month(month)
+        .unwrap()
+        .pred()
+        .day();
+    last_day.to_string()
+}
 #[cfg(test)]
 mod tests {
     use chrono::{TimeZone, Utc};
 
     use crate::item::date_to_string;
+    use crate::item::last_day_of_month;
 
     #[test]
     fn test_date_to_string() {
@@ -467,5 +473,34 @@ mod tests {
 
         let date_time = Utc.ymd(2022, 1, 1).and_hms(0, 0, 0);
         assert_eq!(date_to_string(&date_time), "01/01(土)".to_string());
+    }
+
+    #[test]
+    fn test_last_day_of_month() {
+        assert_eq!(last_day_of_month("2021".to_string(), "1".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "2".to_string()), "28".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "3".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "4".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "5".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "6".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "7".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "8".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "9".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "10".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "11".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2021".to_string(), "12".to_string()), "31".to_string());
+        // うるう年
+        assert_eq!(last_day_of_month("2020".to_string(), "1".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "2".to_string()), "29".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "3".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "4".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "5".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "6".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "7".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "8".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "9".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "10".to_string()), "31".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "11".to_string()), "30".to_string());
+        assert_eq!(last_day_of_month("2020".to_string(), "12".to_string()), "31".to_string());
     }
 }
