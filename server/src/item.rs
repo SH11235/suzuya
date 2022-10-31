@@ -1,6 +1,6 @@
 use crate::model::item::{
     ItemEditResponse, ItemListResponse, ItemWithMakerAndWorker, ItemsPutRequest, TitleFiltered,
-    TitleWithItems, YearMonthList,
+    TitleWithItems, YearMonthList, YearMonthTitleList,
 };
 use crate::setting::{
     announce_status_list, catalog_status_list, design_status_list, illust_status_list,
@@ -150,15 +150,20 @@ async fn api_item_list(
         }
     }
 
-    let response = year_month_list.iter().map(|year_month| {
-        ItemListResponse {
+    let year_month_title_list = year_month_list
+        .iter()
+        .map(|year_month| YearMonthTitleList {
             yyyymm: year_month.yyyymm.clone(),
             year: year_month.year.clone(),
-            month:  year_month.month.clone(),
+            month: year_month.month.clone(),
             title_list: title_with_items.clone(),
-        }
-    })
-    .collect::<Vec<ItemListResponse>>();
+        })
+        .collect::<Vec<YearMonthTitleList>>();
+
+    let response = ItemListResponse {
+        year_month_list: year_month_list.clone(),
+        year_month_title_list,
+    };
 
     Ok(HttpResponse::Ok().json(response))
 }
@@ -477,30 +482,102 @@ mod tests {
 
     #[test]
     fn test_last_day_of_month() {
-        assert_eq!(last_day_of_month("2021".to_string(), "1".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "2".to_string()), "28".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "3".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "4".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "5".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "6".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "7".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "8".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "9".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "10".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "11".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2021".to_string(), "12".to_string()), "31".to_string());
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "1".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "2".to_string()),
+            "28".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "3".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "4".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "5".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "6".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "7".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "8".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "9".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "10".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "11".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2021".to_string(), "12".to_string()),
+            "31".to_string()
+        );
         // うるう年
-        assert_eq!(last_day_of_month("2020".to_string(), "1".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "2".to_string()), "29".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "3".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "4".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "5".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "6".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "7".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "8".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "9".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "10".to_string()), "31".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "11".to_string()), "30".to_string());
-        assert_eq!(last_day_of_month("2020".to_string(), "12".to_string()), "31".to_string());
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "1".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "2".to_string()),
+            "29".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "3".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "4".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "5".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "6".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "7".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "8".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "9".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "10".to_string()),
+            "31".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "11".to_string()),
+            "30".to_string()
+        );
+        assert_eq!(
+            last_day_of_month("2020".to_string(), "12".to_string()),
+            "31".to_string()
+        );
     }
 }

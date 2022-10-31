@@ -106,11 +106,25 @@ pub enum TitleInfo {
 // /api/item_listのレスポンス
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct ItemListResponse {
+    pub year_month_list: Vec<YearMonthList>,
+    pub year_month_title_list: Vec<YearMonthTitleList>,
+}
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct YearMonthTitleList {
     pub yyyymm: String,
     pub year: String,
     pub month: String,
     pub title_list: Vec<TitleWithItems>,
 }
+
+#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct YearMonthList {
+    pub yyyymm: String,
+    pub year: String,
+    pub month: String,
+}
+
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct TitleWithItems {

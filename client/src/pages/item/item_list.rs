@@ -12,12 +12,10 @@ use yew::{
 #[function_component(ItemList)]
 pub fn item_list() -> Html {
     // "/api/item"
-    // let items_info_state = use_state(|| vec![]);
     let year_month_list_state = use_state(|| vec![]);
     let get_url = format!("{}{}", backend_url(), "/api/item_list");
 
     {
-        // let items_info_state = items_info_state.clone();
         let year_month_list_state = year_month_list_state.clone();
         use_effect_with_deps(
             move |_| {
@@ -25,24 +23,20 @@ pub fn item_list() -> Html {
                 let year_month_list_state = year_month_list_state.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
-                    let fetched_items: Vec<ItemListResponse> = client
+                    let fetched_items: ItemListResponse = client
                         .send()
                         .await
                         .expect("Failed to fetch items")
                         .json()
                         .await
                         .expect("Failed to parse items");
-                    web_sys::console::log_1(&JsValue::from_str(&format!(
-                        "fetched_items: {:?}",
-                        fetched_items
-                    )));
                     let mut year_month_list = vec![YearMonthState {
                         yyyymm: "発売日未定".to_string(),
                         year: "".to_string(),
                         month: "".to_string(),
                         is_selected: true,
                     }];
-                    fetched_items.iter().for_each(|year_month| {
+                    fetched_items.year_month_list.iter().for_each(|year_month| {
                         year_month_list.push(YearMonthState {
                             yyyymm: year_month.yyyymm.clone(),
                             year: year_month.year.clone(),
