@@ -5,7 +5,7 @@ use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
 use crate::model::worker_page::WorkerState;
 use crate::model::worker_page::PutWorkerRequest;
-use crate::settings::api::backend_url;
+use crate::common::api::backend_url;
 
 #[derive(Properties, PartialEq)]
 pub struct SaveButtonProperty {

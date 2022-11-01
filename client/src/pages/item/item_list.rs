@@ -1,6 +1,6 @@
 use crate::components::item::monthly_field::MonthlyField;
 use crate::model::item_page::{ItemListResponse, YearMonthState};
-use crate::settings::api::backend_url;
+use crate::common::api::backend_url;
 use reqwasm::http::Request;
 use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;

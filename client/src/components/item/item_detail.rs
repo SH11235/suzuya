@@ -4,7 +4,7 @@ use crate::components::common::text_box::TextBox;
 use crate::components::item::item_delete_button::DeleteButton;
 use crate::model::common::NameOptionIdPair;
 use crate::model::item_page::{ItemInfo, ItemState};
-use crate::settings::select::{design_status_list, illust_status_list};
+use crate::common::select::{design_status_list, illust_status_list};
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, Callback, Properties, TargetCast, UseStateHandle,

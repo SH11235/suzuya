@@ -8,7 +8,7 @@ use yew_router::prelude::*;
 mod components;
 mod model;
 mod pages;
-mod settings;
+mod common;
 
 #[derive(Routable, PartialEq, Clone, Debug)]
 pub enum Route {

@@ -3,7 +3,7 @@ use crate::components::worker::worker_delete_button::DeleteButton;
 use crate::components::worker::worker_save_button::SaveButton;
 use crate::components::worker::worker_add_button::AddButton;
 use crate::model::worker_page::WorkerState;
-use crate::{model::common::WorkerModel, settings::api::backend_url};
+use crate::{model::common::WorkerModel, common::api::backend_url};
 use reqwasm::http::Request;
 use web_sys::HtmlInputElement;
 use yew::{

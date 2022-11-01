@@ -3,7 +3,7 @@ use crate::components::maker::maker_delete_button::DeleteButton;
 use crate::components::maker::maker_save_button::SaveButton;
 use crate::components::maker::maker_add_button::AddButton;
 use crate::model::maker_page::MakerState;
-use crate::{model::common::MakerModel, settings::api::backend_url};
+use crate::{model::common::MakerModel, common::api::backend_url};
 use reqwasm::http::Request;
 use web_sys::HtmlInputElement;
 use yew::{

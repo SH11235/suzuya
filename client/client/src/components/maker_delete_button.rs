@@ -7,7 +7,7 @@ use yew::{function_component, html, Callback, Html, Properties, UseStateHandle};
 use crate::model::common::MakerModel;
 use crate::model::maker_page::MakerState;
 use crate::model::maker_page::PutMakerRequest;
-use crate::settings::api::backend_url;
+use crate::settings::common::backend_url;
 
 #[derive(Properties, PartialEq)]
 pub struct DeleteButtonProperty {

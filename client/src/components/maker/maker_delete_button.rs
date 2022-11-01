@@ -3,7 +3,7 @@ use wasm_bindgen::JsValue;
 use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
 use crate::model::maker_page::MakerState;
-use crate::settings::api::backend_url;
+use crate::common::api::backend_url;
 
 #[derive(Properties, PartialEq)]
 pub struct DeleteButtonProperty {
