@@ -1,13 +1,13 @@
+use crate::common::api::backend_url;
+use crate::common::select::{announce_status_list, catalog_status_list, project_type_list};
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item::item_detail::ItemDetail;
 use crate::model::common::NameOptionIdPair;
 use crate::model::item_page::{GetItemInfoByTitleId, ItemState, TitleInfo, TitleState};
-use crate::common::api::backend_url;
-use crate::common::select::{announce_status_list, catalog_status_list, project_type_list};
-use uuid::Uuid;
 use reqwasm::http::Request;
 use urlencoding::decode;
+use uuid::Uuid;
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
@@ -28,6 +28,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     let items_state = use_state(|| vec![]);
     let makers_state = use_state(|| vec![]);
     let workers_state = use_state(|| vec![]);
+    let fetching_state = use_state(|| true);
     let get_url = format!(
         "{}{}",
         backend_url() + "/api/item/",
@@ -39,12 +40,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
         let items_state = items_state.clone();
         let makers_state = makers_state.clone();
         let workers_state = workers_state.clone();
+        let fetching_state = fetching_state.clone();
         use_effect_with_deps(
             move |_| {
-                let title_state = title_state.clone();
-                let items_state = items_state.clone();
-                let makers_state = makers_state.clone();
-                let workers_state = workers_state.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
                     let mut fetched_items: GetItemInfoByTitleId = client
@@ -108,6 +106,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                     workers.sort_by(|a, b| a.name.cmp(&b.name));
                     workers_state.set(workers);
+                    fetching_state.set(false);
                 });
                 || ()
             },
@@ -271,7 +270,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
       <div class="edit-item-page">
         <h1>{ "Edit Items" }</h1>
         {
-            if items_state.len() == 0 {
+            if *fetching_state {
                 html! {
                     <p>{ "Loading..." }</p>
                 }
