@@ -11,6 +11,7 @@ wasm-bindgen-futures = "0.4"
 web-sys = "0.3"
 yew = "0.19"
 yew-router = "0.16"
+regex = "1.6.0"
 
 [dependencies.getrandom]
 version = "0.2"

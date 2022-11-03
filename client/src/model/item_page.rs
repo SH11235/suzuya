@@ -169,10 +169,8 @@ pub struct YearMonth {
 
 #[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct YearMonthState {
-    pub yyyymm: String,
-    pub year: String,
-    pub month: String,
-    pub is_selected: bool,
+    pub year_month_list: Vec<YearMonth>,
+    pub selected_yyymm: String,
 }
 
 // /api/itemへのリクエストパラメータ
