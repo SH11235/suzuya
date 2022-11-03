@@ -116,6 +116,8 @@ pub struct YearMonthTitleList {
     pub year: String,
     pub month: String,
     pub title_list: Vec<TitleWithItems>,
+    pub title_count: usize,
+    pub item_count: usize,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
@@ -162,7 +164,9 @@ pub struct YearMonth {
 #[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct YearMonthState {
     pub year_month_list: Vec<YearMonth>,
-    pub selected_yyymm: String,
+    pub selected_yyyymm: String,
+    pub title_count: usize,
+    pub item_count: usize,
 }
 
 // /api/itemへのリクエストパラメータ

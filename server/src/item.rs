@@ -120,6 +120,7 @@ async fn api_item_list(
         .expect("could not find titles.");
 
         let mut title_with_items = vec![];
+        let mut item_count = 0;
         for title in titles.clone() {
             let title_id = title.id;
             let item_sql = format!(
@@ -166,6 +167,7 @@ async fn api_item_list(
             .all(conn)
             .await
             .expect("could not find items.");
+            item_count += items.len();
             title_with_items.push(TitleWithItems {
                 id: title.id,
                 name: title.name,
@@ -184,6 +186,8 @@ async fn api_item_list(
             yyyymm: year_month.yyyymm,
             year: year_month.year,
             month: year_month.month,
+            title_count: title_with_items.len(),
+            item_count: item_count,
             title_list: title_with_items,
         });
     }

@@ -17,7 +17,9 @@ pub fn item_list() -> Html {
     let items_state = use_state(|| vec![]);
     let year_month_list_state = use_state(|| YearMonthState {
         year_month_list: vec![],
-        selected_yyymm: "".to_string(),
+        selected_yyyymm: "".to_string(),
+        title_count: 0,
+        item_count: 0,
     });
     let get_url = format!("{}{}", backend_url(), "/api/item_list");
 
@@ -39,7 +41,17 @@ pub fn item_list() -> Html {
                         .expect("Failed to parse items");
                     year_month_list_state.set(YearMonthState {
                         year_month_list: fetched_items.year_month_list,
-                        selected_yyymm: RELEASE_DATE_TEXT.to_string(),
+                        selected_yyyymm: RELEASE_DATE_TEXT.to_string(),
+                        title_count: if fetched_items.year_month_title_list.len() > 0 {
+                            fetched_items.year_month_title_list[0].title_count
+                        } else {
+                            0
+                        },
+                        item_count: if fetched_items.year_month_title_list.len() > 0 {
+                            fetched_items.year_month_title_list[0].item_count
+                        } else {
+                            0
+                        },
                     });
                     items_state.set(fetched_items.year_month_title_list);
                 });
@@ -53,8 +65,8 @@ pub fn item_list() -> Html {
         <div class="item-list-page">
             <h1>{ "Suzuya ItemList" }</h1>
             <h2>{ "Monthly filter" }</h2>
-            <MonthlyField year_month_list_state_handle={year_month_list_state.clone()}/>
-            <h2>{ "ItemList" }</h2>
+            <MonthlyField year_month_list_state_handle={year_month_list_state.clone()} items_state_hanle={items_state.clone()} />
+            <h2>{ format!("タイトル数: {}, アイテム数: {}", year_month_list_state.title_count, year_month_list_state.item_count) }</h2>
             <table border="3">
                 <thead>
                     <tr>
@@ -90,7 +102,7 @@ pub fn item_list() -> Html {
                                 } else {
                                     date_column_rowspan
                                 };
-                                let is_display = if year_month_list_state.selected_yyymm == year_month_title.yyyymm {
+                                let is_display = if year_month_list_state.selected_yyyymm == year_month_title.yyyymm {
                                     ""
                                 } else {
                                     "none"

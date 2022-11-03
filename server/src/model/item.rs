@@ -109,6 +109,8 @@ pub struct YearMonthTitleList {
     pub yyyymm: String,
     pub year: String,
     pub month: String,
+    pub title_count: usize,
+    pub item_count: usize,
     pub title_list: Vec<TitleWithItems>,
 }
 
