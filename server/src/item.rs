@@ -123,7 +123,7 @@ async fn api_item_list(
                 AND
                     item.deleted = FALSE
                 ORDER BY
-                    id ASC NULLS FIRST;
+                    item.product_code ASC NULLS FIRST;
                 ",
                 title_id
             );
