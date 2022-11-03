@@ -1,4 +1,4 @@
-use crate::common::api::backend_url;
+use crate::common::api::{backend_url, RELEASE_DATE_TEXT};
 use crate::common::date_util::date_time_with_timezone_to_string;
 use crate::components::item::monthly_field::MonthlyField;
 use crate::model::item_page::YearMonth;
@@ -39,7 +39,7 @@ pub fn item_list() -> Html {
                         .expect("Failed to parse items");
                     year_month_list_state.set(YearMonthState {
                         year_month_list: fetched_items.year_month_list,
-                        selected_yyymm: "発売日未定".to_string(),
+                        selected_yyymm: RELEASE_DATE_TEXT.to_string(),
                     });
                     items_state.set(fetched_items.year_month_title_list);
                 });
