@@ -37,20 +37,8 @@ pub fn item_list() -> Html {
                         .json()
                         .await
                         .expect("Failed to parse items");
-                    let mut year_month_list = vec![YearMonth {
-                        yyyymm: "発売日未定".to_string(),
-                        year: "".to_string(),
-                        month: "".to_string(),
-                    }];
-                    fetched_items.year_month_list.iter().for_each(|year_month| {
-                        year_month_list.push(YearMonth {
-                            yyyymm: year_month.yyyymm.clone(),
-                            year: year_month.year.clone(),
-                            month: year_month.month.clone(),
-                        });
-                    });
                     year_month_list_state.set(YearMonthState {
-                        year_month_list,
+                        year_month_list: fetched_items.year_month_list,
                         selected_yyymm: "発売日未定".to_string(),
                     });
                     items_state.set(fetched_items.year_month_title_list);

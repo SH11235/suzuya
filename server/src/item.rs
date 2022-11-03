@@ -35,7 +35,7 @@ async fn api_item_list(
         GROUP BY yyyymm, year, month
         ORDER BY yyyymm DESC NULLS FIRST;
     ";
-    let year_month_list = YearMonthList::find_by_statement(Statement::from_sql_and_values(
+    let year_month_not_null_list = YearMonthList::find_by_statement(Statement::from_sql_and_values(
         DbBackend::Postgres,
         year_month_sql,
         vec![],
@@ -44,15 +44,17 @@ async fn api_item_list(
     .await
     .expect("could not find items.");
 
+    let mut year_month_list = vec![YearMonthList {
+        yyyymm: "発売日未定".to_string(),
+        year: "".to_string(),
+        month: "".to_string(),
+    }];
+    year_month_list.extend(year_month_not_null_list);
+
     // year_month_listの長さ分だけ、対応する日付のitemを取得する
     let mut year_month_title_list = Vec::new();
     for year_month in year_month_list.clone() {
-        let year = year_month.year.clone();
-        let month = year_month.month.clone();
-        let end_day = last_day_of_month(year.clone(), month.clone());
-        let year_month_start = format!("{}-{}-01 00:00:00", year.clone(), month.clone());
-        let year_month_end = format!("{}-{}-{} 23:59:59", year.clone(), month.clone(), end_day);
-        let title_sql = format!(
+        let title_sql = if year_month.yyyymm == "発売日未定" {
             "SELECT
                 id,
                 name,
@@ -69,16 +71,45 @@ async fn api_item_list(
             WHERE
                 deleted = FALSE
             AND
-                release_date
-                BETWEEN
-                    '{}'
-                AND
-                    '{}'
+                release_date is NULL
             ORDER BY
                 reservation_start_date ASC NULLS FIRST;
-            ",
-            year_month_start, year_month_end
-        );
+            ".to_string()
+        } else {
+            let year = year_month.year.clone();
+            let month = year_month.month.clone();
+            let end_day = last_day_of_month(year.clone(), month.clone());
+            let year_month_start = format!("{}-{}-01 00:00:00", year.clone(), month.clone());
+            let year_month_end = format!("{}-{}-{} 23:59:59", year.clone(), month.clone(), end_day);
+            format!(
+                "SELECT
+                    id,
+                    name,
+                    release_date,
+                    reservation_start_date,
+                    reservation_deadline,
+                    order_date_to_maker,
+                    project_type,
+                    catalog_status,
+                    announcement_status,
+                    remarks
+                FROM
+                    title
+                WHERE
+                    deleted = FALSE
+                AND
+                    release_date
+                    BETWEEN
+                        '{}'
+                    AND
+                        '{}'
+                ORDER BY
+                    reservation_start_date ASC NULLS FIRST;
+                ",
+                year_month_start, year_month_end
+            )
+        };
+        
         let titles = TitleFiltered::find_by_statement(Statement::from_sql_and_values(
             DbBackend::Postgres,
             &title_sql,
