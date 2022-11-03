@@ -332,7 +332,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                                 </div>
                             }
                         }
-                        { "カタログステータス：" }<SelectBox onchange={title_onchange.clone()} id="catalog_status" name="catalog_status" value={title_state.catalog_status.clone()} select_list={catalog_status_list()} />
+                        { "カタログ：" }<SelectBox onchange={title_onchange.clone()} id="catalog_status" name="catalog_status" value={title_state.catalog_status.clone()} select_list={catalog_status_list()} />
                         <br/>
                         { "告知：" }<SelectBox onchange={title_onchange.clone()} id="announcement_status" name="announcement_status" value={title_state.announcement_status.clone()} select_list={announce_status_list()} />
                         <br/>

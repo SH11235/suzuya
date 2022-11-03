@@ -140,8 +140,8 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}-{}", "name", props.index) }
                     name={format!("{}-{}", "name", props.index) } value={ props.item_info.name.clone() } />
             </div>
-            <div class="input-warpper">{"品番"}<br/>
-                <TextBox onchange={onchange.clone()} input_type="text" placeholder="品番" id={ format!("{}-{}", "product_code", props.index) }
+            <div class="input-warpper">{"管理番号"}<br/>
+                <TextBox onchange={onchange.clone()} input_type="text" placeholder="管理番号" id={ format!("{}-{}", "product_code", props.index) }
                     name={format!("{}-{}", "product_code", props.index) } value={ props.item_info.product_code.clone().unwrap_or("".to_string()) } />
             </div>
             <div class="input-warpper">{"SKU"}<br/>
