@@ -29,12 +29,12 @@ mod tests {
     #[test]
     fn test_date_time_with_timezone_to_string() {
         let date_time_with_timezone = "2022-03-03T00:00:00+00:00".to_string();
-        let date_time_with_timezone = date_time_with_timezone_to_string(Some(date_time_with_timezone));
+        let date_time_with_timezone = date_time_with_timezone_to_string(&Some(date_time_with_timezone));
         assert_eq!(date_time_with_timezone, "2022/03/03");
 
         // yyyy-mm-ddThh:mm:ss+00:00 以外の形式の場合は空文字列を返す
         let date_time_with_timezone = "2022-03-03T00:00:00".to_string();
-        let date_time_with_timezone = date_time_with_timezone_to_string(Some(date_time_with_timezone));
+        let date_time_with_timezone = date_time_with_timezone_to_string(&Some(date_time_with_timezone));
         assert_eq!(date_time_with_timezone, "");
     }
 }
