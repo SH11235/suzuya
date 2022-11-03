@@ -136,43 +136,43 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="id" id={ format!("{}-{}", "id", props.index) }
                     name={format!("{}-{}", "id", props.index) } value={ props.item_info.id.clone().to_string() } />
             </div>
-            <div class="input-warpper">{"アイテム"}{ props.index }
+            <div class="input-warpper">{"アイテム"}{ props.index }<br/>
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="アイテム名" id={ format!("{}-{}", "name", props.index) }
                     name={format!("{}-{}", "name", props.index) } value={ props.item_info.name.clone() } />
             </div>
-            <div class="input-warpper">{"品番"}
+            <div class="input-warpper">{"品番"}<br/>
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="品番" id={ format!("{}-{}", "product_code", props.index) }
                     name={format!("{}-{}", "product_code", props.index) } value={ props.item_info.product_code.clone().unwrap_or("".to_string()) } />
             </div>
-            <div class="input-warpper">{"SKU"}
+            <div class="input-warpper">{"SKU"}<br/>
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="SKU" id={ format!("{}-{}", "sku", props.index) }
                     name={format!("{}-{}", "sku", props.index) } value={ sku } />
             </div>
-            <div class="input-warpper">{"イラストステータス："}
+            <div class="input-warpper">{"イラストステータス："}<br/>
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "illust_status", props.index)} name={ format!("{}-{}", "illust_status", props.index)}
                     value={props.item_info.illust_status.clone()} select_list={illust_status_list()}/>
             </div>
-            <div class="input-warpper">{"イラスト担当者"}
+            <div class="input-warpper">{"イラスト担当者"}<br/>
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_illust", props.index)} name={ format!("{}-{}", "pic_illust", props.index)}
                     value={props.item_info.pic_illust_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
-            <div class="input-warpper">{"デザインステータス"}
+            <div class="input-warpper">{"デザインステータス"}<br/>
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "design_status", props.index)} name={ format!("{}-{}", "design_status", props.index)}
                     value={props.item_info.design_status.clone()} select_list={design_status_list()}/>
             </div>
-            <div class="input-warpper">{"デザイン担当者"}
+            <div class="input-warpper">{"デザイン担当者"}<br/>
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "pic_design", props.index)} name={ format!("{}-{}", "pic_design", props.index)}
                     value={props.item_info.pic_design_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
-            <div class="input-warpper">{"メーカー"}
+            <div class="input-warpper">{"メーカー"}<br/>
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "maker_code", props.index)} name={ format!("{}-{}", "maker_code", props.index)}
                     value={props.item_info.maker_id.clone()} name_value_list={maker_list.clone()}/>
             </div>
-            <div class="input-warpper">{"上代"}
+            <div class="input-warpper">{"上代"}<br/>
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="上代" id={ format!("{}-{}", "retail_price", props.index) }
                     name={format!("{}-{}", "retail_price", props.index) } value={ retail_price } />
             </div>
-            <div class="input-warpper">{"ダブルチェック"}
+            <div class="input-warpper">{"ダブルチェック"}<br/>
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
                     value={props.item_info.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
