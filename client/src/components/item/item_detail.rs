@@ -26,14 +26,14 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     let workers = props.workers.clone();
     let mut worker_list = vec![NameOptionIdPair {
         name: "未定".to_string(),
-        id: None,
+        id: Some("null".to_string()),
     }];
     worker_list.extend(workers);
 
     let makers = props.makers.clone();
     let mut maker_list = vec![NameOptionIdPair {
         name: "未定".to_string(),
-        id: None,
+        id: Some("null".to_string()),
     }];
     maker_list.extend(makers);
 

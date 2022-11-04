@@ -65,12 +65,12 @@
                 product_code: getElement("product_code-" + index).value,
                 sku: Number(getElement("sku-" + index).value),
                 illust_status: getElement("illust_status-" + index).value,
-                pic_illust_id: getElement("pic_illust-" + index).value ? getElement("pic_illust-" + index).value : null,
+                pic_illust_id: getElement("pic_illust-" + index).value === "null" ? null : getElement("pic_illust-" + index).value,
                 design_status: getElement("design_status-" + index).value,
-                pic_design_id: getElement("pic_design-" + index).value ? getElement("pic_design-" + index).value : null,
-                maker_id: getElement("maker_code-" + index).value ? getElement("maker_code-" + index).value : null,
+                pic_design_id: getElement("pic_design-" + index).value === "null" ? null : getElement("pic_design-" + index).value,
+                maker_id: getElement("maker_code-" + index).value === "null" ? null : getElement("maker_code-" + index).value,
                 retail_price: Number(getElement("retail_price-" + index).value),
-                double_check_person_id: getElement("double_check_person-" + index).value ? getElement("double_check_person-" + index).value : null,
+                double_check_person_id: getElement("double_check_person-" + index).value === "null" ? null : getElement("double_check_person-" + index).value,
             });
         }
 
