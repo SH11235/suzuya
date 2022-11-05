@@ -324,10 +324,29 @@ async fn api_item_edit_page(
     let catalog_status_list = catalog_status_list();
     let announce_status_list = announce_status_list();
 
-    let release_date: Option<DateTimeWithTimeZone> = title.release_date;
-    let reservation_start_date: Option<DateTimeWithTimeZone> = title.reservation_start_date;
-    let reservation_deadline: Option<DateTimeWithTimeZone> = title.reservation_deadline;
-    let order_date_to_maker: Option<DateTimeWithTimeZone> = title.order_date_to_maker;
+    let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
+        Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let reservation_start_date = match title.reservation_start_date {
+        Some(reservation_start_date) => {
+            Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let reservation_deadline = match title.reservation_deadline {
+        Some(reservation_deadline) => {
+            Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let order_date_to_maker = match title.order_date_to_maker {
+        Some(order_date_to_maker) => {
+            Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let updated_at = title.updated_at.with_timezone(&FixedOffset::east(9 * 3600));
 
     Ok(HttpResponse::Ok().json(ItemEditResponse {
         items: items,
@@ -340,6 +359,7 @@ async fn api_item_edit_page(
         reservation_start_date,
         reservation_deadline,
         order_date_to_maker,
+        updated_at,
         title: title_name,
         project_type,
         catalog_status,
