@@ -128,6 +128,7 @@ pub struct TitleWithItems {
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
     pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
+    pub updated_at: String, // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -152,6 +153,8 @@ pub struct ItemWithMakerAndWorker {
     pub retail_price: Option<i32>,
     pub double_check_person_id: Option<String>,
     pub double_check_person: Option<String>,
+    pub resubmission: bool,
+    pub line: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]

@@ -74,6 +74,7 @@ pub fn item_list() -> Html {
                         <th>{ "案内" }</th>
                         <th>{ "〆切" }</th>
                         <th>{ "発注" }</th>
+                        <th>{ "最終更新日" }</th>
                         <th>{ "編集" }</th>
                         <th>{ "タイトル" }</th>
                         <th>{ "アイテム" }</th>
@@ -124,6 +125,9 @@ pub fn item_list() -> Html {
                                                 { date_time_with_timezone_to_string(&title.order_date_to_maker) }
                                             </td>
                                             <td rowspan={date_column_rowspan.to_string()}>
+                                                { date_time_with_timezone_to_string(&Some(title.updated_at.clone())) }
+                                            </td>
+                                            <td rowspan={date_column_rowspan.to_string()}>
                                                 <a href={format!("/item_edit/{}", &title.id)}>{ "編集"}</a>
                                             </td>
                                             <td/>
@@ -162,6 +166,9 @@ pub fn item_list() -> Html {
                                                         </td>
                                                         <td rowspan={date_column_rowspan.to_string()}>
                                                             { date_time_with_timezone_to_string(&title.order_date_to_maker) }
+                                                        </td>
+                                                        <td rowspan={date_column_rowspan.to_string()}>
+                                                            { date_time_with_timezone_to_string(&Some(title.updated_at.clone())) }
                                                         </td>
                                                         <td rowspan={date_column_rowspan.to_string()}>
                                                             <a href={format!("/item_edit/{}", &title.id)}>{ "編集"}</a>
