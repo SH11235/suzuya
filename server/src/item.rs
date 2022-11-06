@@ -2,10 +2,7 @@ use crate::model::item::{
     ItemEditResponse, ItemListResponse, ItemWithMakerAndWorker, ItemsPutRequest, TitleFiltered,
     TitleWithItems, YearMonthList, YearMonthTitleList,
 };
-use crate::setting::{
-    announce_status_list, catalog_status_list, design_status_list, illust_status_list,
-    project_type_list, AppState,
-};
+use crate::setting::AppState;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
 use chrono::{DateTime, Datelike, FixedOffset, NaiveDate, Utc};
 use entity::item::Entity as Item;
@@ -320,12 +317,6 @@ async fn api_item_edit_page(
         .await
         .expect("could not find makers.");
 
-    let project_type_list = project_type_list();
-    let illust_status_list = illust_status_list();
-    let design_status_list = design_status_list();
-    let catalog_status_list = catalog_status_list();
-    let announce_status_list = announce_status_list();
-
     let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
         Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
         None => None,
@@ -354,9 +345,6 @@ async fn api_item_edit_page(
         items: items,
         workers: workers,
         makers: makers,
-        project_type_list: project_type_list,
-        illust_status_list: illust_status_list,
-        design_status_list: design_status_list,
         release_date,
         reservation_start_date,
         reservation_deadline,
@@ -367,8 +355,6 @@ async fn api_item_edit_page(
         catalog_status,
         announcement_status,
         remarks,
-        catalog_status_list,
-        announce_status_list,
     }))
 }
 
