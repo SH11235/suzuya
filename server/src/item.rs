@@ -125,7 +125,7 @@ async fn api_item_list(
                     pic_illust.name AS pic_illust,
                     item.design_status,
                     item.pic_design_id,
-                    pic_illust.name AS pic_design,
+                    pic_design.name AS pic_design,
                     item.maker_id,
                     maker.code_name AS maker_code,
                     item.retail_price,
