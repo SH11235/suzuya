@@ -3,9 +3,10 @@ use regex::Regex;
 pub fn date_time_with_timezone_to_string(date_time_with_timezone: &Option<String>) -> String {
     match date_time_with_timezone {
         Some(date_time_with_timezone) => {
-            // yyyy-mm-ddThh:mm:ss+00:00 の形式であるか正規表現でチェックする
-            let re = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$").unwrap();
-            if re.is_match(&date_time_with_timezone) {
+            // yyyy-mm-ddThh:mm:ss+00:00 もしくは"2022-11-07T01:29:51.703763+09:00"の形式であるか正規表現でチェックする
+            let re1 = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$").unwrap();
+            let re2 = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}\+\d{2}:\d{2}$").unwrap();
+            if re1.is_match(&date_time_with_timezone) || re2.is_match(&date_time_with_timezone) {
                 let date_time_with_timezone = date_time_with_timezone.replace("T", " ");
                 let date_time_with_timezone = date_time_with_timezone.replace("+00:00", "");
                 let date_time_with_timezone = date_time_with_timezone.replace("-", "/");
@@ -15,7 +16,6 @@ pub fn date_time_with_timezone_to_string(date_time_with_timezone: &Option<String
             } else {
                 "".to_string()
             }
-            
         }
         None => "".to_string(),
     }
@@ -56,5 +56,12 @@ mod tests {
         let date_time_with_timezone = "2022-03-03T00:00:00".to_string();
         let date_time_with_timezone = date_time_with_timezone_to_string(&Some(date_time_with_timezone));
         assert_eq!(date_time_with_timezone, "");
+    }
+
+    #[test]
+    fn test() {
+        let date_time_with_timezone = "2022-11-06T21:49:45.779829+09:00".to_string();
+        let date_time_with_timezone = date_time_with_timezone_to_string(&Some(date_time_with_timezone));
+        assert_eq!(date_time_with_timezone, "2022/11/06");
     }
 }
