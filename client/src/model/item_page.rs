@@ -3,21 +3,23 @@ use serde::{Deserialize, Serialize};
 use super::common::{ItemModel, MakerModel, WorkerModel};
 
 // Request Parameter for PUT: /api/item
-#[derive(Debug, Deserialize, PartialEq, Serialize)]
+#[derive(Debug, PartialEq, Serialize)]
 pub struct RequestPutTitleInfo {
     pub release_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
-    pub title: String,
+    pub title_id: String,
+    pub title_name: String,
     pub project_type: String,
-    pub items: Vec<PutItem>,
+    pub items: Vec<ItemRegisterParams>,
     pub catalog_status: String,
     pub announcement_status: String,
     pub remarks: Option<String>,
 }
+
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
-pub struct PutItem {
+pub struct ItemRegisterParams {
     pub id: String,
     pub name: String,
     pub product_code: Option<String>,
@@ -28,7 +30,33 @@ pub struct PutItem {
     pub pic_design_id: Option<String>,
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
+    pub resubmission: bool,
     pub double_check_person_id: Option<String>,
+    pub line: String,
+}
+
+// Response for GET /api/item_new
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct ItemNewResponse {
+    pub workers: Vec<WorkerModel>,
+    pub makers: Vec<MakerModel>,
+}
+
+// Request for POST /api/item_new
+#[derive(Debug, Default, Deserialize, PartialEq, Serialize)]
+pub struct ItemNewRequest {
+    pub id: String,
+    pub name: String,
+    pub release_date: Option<String>, // DateTimeWithTimeZone
+    pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
+    pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
+    pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
+    pub updated_at: String,           // DateTimeWithTimeZone
+    pub project_type: String,
+    pub catalog_status: String,
+    pub announcement_status: String,
+    pub remarks: Option<String>,
+    pub items: Vec<ItemWithMakerAndWorker>,
 }
 
 // Response for GET /api/item/{title_id}
@@ -134,7 +162,7 @@ pub struct TitleWithItems {
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
     pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
-    pub updated_at: String, // DateTimeWithTimeZone
+    pub updated_at: String,           // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -176,36 +204,4 @@ pub struct YearMonthState {
     pub selected_yyyymm: String,
     pub title_count: usize,
     pub item_count: usize,
-}
-
-// /api/itemへのリクエストパラメータ
-// TODO client/index.htmlのclickイベントを置き換える
-#[derive(Debug, Serialize)]
-pub struct PutApiItemRequest {
-    pub release_date: Option<String>,
-    pub reservation_start_date: Option<String>,
-    pub reservation_deadline: Option<String>,
-    pub order_date_to_maker: Option<String>,
-    pub title_id: String,
-    pub title_name: String,
-    pub project_type: String,
-    pub items: Vec<PutItemInfo>,
-    pub catalog_status: String,
-    pub announcement_status: String,
-    pub remarks: Option<String>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct PutItemInfo {
-    pub id: String,
-    pub name: String,
-    pub product_code: Option<String>,
-    pub sku: Option<i32>,
-    pub illust_status: String,
-    pub pic_illust_id: Option<String>,
-    pub design_status: String,
-    pub pic_design_id: Option<String>,
-    pub maker_id: Option<String>,
-    pub retail_price: Option<i32>,
-    pub double_check_person_id: Option<String>,
 }

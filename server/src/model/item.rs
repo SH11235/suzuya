@@ -37,12 +37,17 @@ pub struct YearMonthList {
 }
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct InputNewItem {
-    pub title: String,
-    pub release_date: Option<DateTime<Utc>>,
-    pub reservation_start_date: Option<DateTime<Utc>>,
-    pub reservation_deadline: Option<DateTime<Utc>>,
-    pub order_date_to_maker: Option<DateTime<Utc>>,
-    pub name_list: Vec<String>,
+    pub title_id: Uuid,
+    pub title_name: String,
+    pub release_date: Option<DateTimeUtc>,
+    pub reservation_start_date: Option<DateTimeUtc>,
+    pub reservation_deadline: Option<DateTimeUtc>,
+    pub order_date_to_maker: Option<DateTimeUtc>,
+    pub project_type: String,
+    pub catalog_status: String,
+    pub announcement_status: String,
+    pub remarks: Option<String>,
+    pub items: Vec<RequestItems>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -75,6 +80,12 @@ pub struct RequestItems {
     pub resubmission: bool,
     pub double_check_person_id: Option<Uuid>,
     pub line: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ItemNewResponse {
+    pub workers: Vec<worker::Model>,
+    pub makers: Vec<maker::Model>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

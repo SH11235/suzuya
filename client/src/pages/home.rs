@@ -7,6 +7,7 @@ pub fn home() -> Html {
         <h1>{ "Suzuya Home" }</h1>
         <ul>
           <li><a href="/item_list">{ "ItemList" }</a></li>
+          <li><a href="/item_new">{ "ItemNew" }</a></li>
           <li><a href="/maker_list">{ "MakerList" }</a></li>
           <li><a href="/worker_list">{ "WorkerList" }</a></li>
         </ul>

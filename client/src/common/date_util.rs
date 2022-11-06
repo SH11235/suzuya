@@ -28,6 +28,19 @@ pub fn parse_date(date: &Option<String>) -> String {
     }
 }
 
+pub fn date_string_to_iso_string(date_string: Option<String>) -> Option<String> {
+    match date_string {
+        Some(date_string) => {
+            let year = date_string[0..4].parse::<u32>().unwrap();
+            // 月は0から始まるので1を引く
+            let month = date_string[5..7].parse::<i32>().unwrap() - 1;
+            let day = date_string[8..10].parse::<i32>().unwrap();
+            Some(js_sys::Date::new_with_year_month_day(year, month, day).to_iso_string().into())
+        },
+        None => None,
+    }
+}
+
 // test
 #[cfg(test)]
 mod tests {

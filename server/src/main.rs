@@ -81,8 +81,8 @@ async fn main() -> std::io::Result<()> {
 pub fn init(cfg: &mut web::ServiceConfig) {
     // item
     cfg.service(item::api_item_list);
-    // cfg.service(item::new_item);
-    // cfg.service(item::create_items);
+    cfg.service(item::api_item_new);
+    cfg.service(item::api_create_items);
     cfg.service(item::api_item_edit_page);
     cfg.service(item::api_update_items);
     cfg.service(item::api_delete_item);

@@ -1,6 +1,6 @@
 use crate::model::item::{
-    ItemEditResponse, ItemListResponse, ItemWithMakerAndWorker, ItemsPutRequest, TitleFiltered,
-    TitleWithItems, YearMonthList, YearMonthTitleList,
+    ItemEditResponse, ItemListResponse, ItemNewResponse, ItemWithMakerAndWorker, ItemsPutRequest,
+    TitleFiltered, TitleWithItems, YearMonthList, YearMonthTitleList, InputNewItem,
 };
 use crate::setting::AppState;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
@@ -219,62 +219,103 @@ async fn api_item_list(
     Ok(HttpResponse::Ok().json(response))
 }
 
-// #[get("/new_item")]
-// async fn new_item(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
-//     let template = &data.templates;
-//     let mut ctx = tera::Context::new();
-//     let h4 = "アイテム登録";
-//     let path = "item";
-//     let input_id_list: Vec<i32> = (1..ITME_INPUT_NUM + 1).collect();
-//     let spacer = ",";
+#[get("/api/item_new")]
+async fn api_item_new(data: web::Data<AppState>) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
 
-//     ctx.insert("h4", &h4);
-//     ctx.insert("path", &path);
-//     ctx.insert("input_id_list", &input_id_list);
-//     ctx.insert("spacer", &spacer);
-//     let body = template
-//         .render("item/new_item.html.tera", &ctx)
-//         .map_err(|_| error::ErrorInternalServerError("Template error"))?;
-//     Ok(HttpResponse::Ok().content_type("text/html").body(body))
-// }
+    let workers = Worker::find()
+        .order_by_asc(worker::Column::Name)
+        .filter(worker::Column::Deleted.eq(false))
+        .all(conn)
+        .await
+        .expect("could not find workers.");
 
-// #[post("/new_item")]
-// async fn create_items(
-//     data: web::Data<AppState>,
-//     post_data: web::Json<InputNewItem>,
-// ) -> Result<HttpResponse, Error> {
-//     let conn = &data.conn;
+    let makers = Maker::find()
+        .filter(maker::Column::Deleted.eq(false))
+        .order_by_asc(maker::Column::CodeName)
+        .all(conn)
+        .await
+        .expect("could not find makers.");
 
-//     let form = post_data.into_inner();
-//     let name_list = form.name_list;
+    Ok(HttpResponse::Ok().json(ItemNewResponse { makers, workers }))
+}
 
-//     // title登録
-//     let title = title::ActiveModel {
-//         name: Set(form.title),
-//         deleted: Set(false),
-//         ..Default::default()
-//     }
-//     .insert(conn)
-//     .await
-//     .expect("could not insert title.");
+#[post("/api/item_new")]
+async fn api_create_items(
+    data: web::Data<AppState>,
+    post_data: web::Json<InputNewItem>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
 
-//     // item登録
-//     let title_id = title.id;
-//     for item_name in name_list.iter() {
-//         item::ActiveModel {
-//             title_id: Set(title_id),
-//             name: Set(item_name.to_string()),
-//             ..Default::default()
-//         }
-//         .insert(conn)
-//         .await
-//         .expect("could not insert item");
-//     }
+    let release_date: Option<DateTimeWithTimeZone> = match post_data.release_date {
+        Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let reservation_start_date = match post_data.reservation_start_date {
+        Some(reservation_start_date) => {
+            Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let reservation_deadline = match post_data.reservation_deadline {
+        Some(reservation_deadline) => {
+            Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let order_date_to_maker = match post_data.order_date_to_maker {
+        Some(order_date_to_maker) => {
+            Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
 
-//     Ok(HttpResponse::Found()
-//         .append_header(("location", "/new_item"))
-//         .finish())
-// }
+    // title登録
+    let title = title::ActiveModel {
+        id: Set(post_data.title_id),
+        name: Set(post_data.title_name.clone()),
+        release_date: Set(release_date),
+        reservation_start_date: Set(reservation_start_date),
+        reservation_deadline: Set(reservation_deadline),
+        order_date_to_maker: Set(order_date_to_maker),
+        updated_at: Set(Utc::now().into()),
+        project_type: Set(post_data.project_type.clone()),
+        catalog_status: Set(post_data.catalog_status.clone()),
+        announcement_status: Set(post_data.announcement_status.clone()),
+        remarks: Set(post_data.remarks.clone()),
+        deleted: Set(false),
+    }
+    .insert(conn)
+    .await
+    .expect("could not insert title.");
+
+    // item登録
+    let title_id = title.id;
+    for item in post_data.items.iter() {
+        item::ActiveModel {
+            id: Set(item.id),
+            title_id: Set(title_id),
+            name: Set(item.name.clone()),
+            product_code: Set(item.product_code.clone()),
+            sku: Set(item.sku.clone()),
+            illust_status: Set(item.illust_status.clone()),
+            pic_illust_id: Set(item.pic_illust_id),
+            design_status: Set(item.design_status.clone()),
+            pic_design_id: Set(item.pic_design_id),
+            maker_id: Set(item.maker_id),
+            retail_price: Set(item.retail_price),
+            double_check_person_id: Set(item.double_check_person_id),
+            deleted: Set(false),
+            resubmission: Set(item.resubmission),
+            line: Set(item.line.clone()),
+        }
+        .insert(conn)
+        .await
+        .expect("could not insert item");
+    }
+
+    Ok(HttpResponse::Created().finish())
+}
 
 #[get("/api/item/{title_id}")]
 async fn api_item_edit_page(
