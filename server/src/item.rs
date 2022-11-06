@@ -76,7 +76,7 @@ async fn api_item_list(
                         release_date is NULL
                     ORDER BY
                         release_date ASC,
-                        reservation_start_date ASC NULLS FIRST;
+                        reservation_start_date ASC;
                 "
             )
         } else {
@@ -97,7 +97,7 @@ async fn api_item_list(
                             '{}'
                     ORDER BY
                         release_date ASC,
-                        reservation_start_date ASC NULLS FIRST;
+                        reservation_start_date ASC;
                 ",
                 title_sql_select, year_month_start, year_month_end
             )
