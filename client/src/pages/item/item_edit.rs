@@ -52,9 +52,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .json()
                         .await
                         .expect("Failed to parse items");
-                    fetched_items
-                        .items
-                        .sort_by(|a, b| a.product_code.cmp(&b.product_code));
                     title_state.set(TitleState {
                         id: title_id,
                         release_date: fetched_items.release_date,
@@ -97,7 +94,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             id: Some(maker.id.clone()),
                         });
                     });
-                    makers.sort_by(|a, b| a.name.cmp(&b.name));
                     makers_state.set(makers);
 
                     let mut workers = vec![];
@@ -107,7 +103,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             id: Some(worker.id.clone()),
                         });
                     });
-                    workers.sort_by(|a, b| a.name.cmp(&b.name));
                     workers_state.set(workers);
                     fetching_state.set(false);
                 });

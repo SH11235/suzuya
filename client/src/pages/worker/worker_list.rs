@@ -29,7 +29,6 @@ pub fn worker_list() -> Html {
                         .json()
                         .await
                         .expect("Failed to parse items");
-                    fetched_items.sort_by(|a, b| a.name.cmp(&b.name));
                     let workers = fetched_items
                         .iter()
                         .map(|worker| WorkerState {

@@ -29,7 +29,6 @@ pub fn maker_list() -> Html {
                         .json()
                         .await
                         .expect("Failed to parse items");
-                    fetched_items.sort_by(|a, b| a.code_name.cmp(&b.code_name));
                     let makers = fetched_items
                         .iter()
                         .map(|maker| MakerState {

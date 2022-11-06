@@ -296,7 +296,7 @@ async fn api_item_edit_page(
     let remarks = title.remarks;
 
     let items = Item::find()
-        .order_by_asc(item::Column::Id)
+        .order_by_asc(item::Column::ProductCode)
         .filter(item::Column::TitleId.eq(title_id.to_owned()))
         .filter(item::Column::Deleted.eq(false))
         .all(conn)
@@ -304,7 +304,7 @@ async fn api_item_edit_page(
         .expect("could not find items by title_id.");
 
     let workers = Worker::find()
-        .order_by_asc(worker::Column::Id)
+        .order_by_asc(worker::Column::Name)
         .filter(worker::Column::Deleted.eq(false))
         .all(conn)
         .await
@@ -312,7 +312,7 @@ async fn api_item_edit_page(
 
     let makers = Maker::find()
         .filter(maker::Column::Deleted.eq(false))
-        .order_by_asc(maker::Column::Id)
+        .order_by_asc(maker::Column::CodeName)
         .all(conn)
         .await
         .expect("could not find makers.");
