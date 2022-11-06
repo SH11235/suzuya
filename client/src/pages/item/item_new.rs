@@ -116,26 +116,46 @@ pub fn edit_item() -> Html {
                     });
                 }
                 TitleInfo::ReleaseDate => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        release_date: Some(val),
+                        release_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationStartDate => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        reservation_start_date: Some(val),
+                        reservation_start_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationDeadline => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        reservation_deadline: Some(val),
+                        reservation_deadline: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::OrderDateToMaker => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        order_date_to_maker: Some(val),
+                        order_date_to_maker: val,
                         ..original_title_state
                     });
                 }
@@ -158,8 +178,13 @@ pub fn edit_item() -> Html {
                     });
                 }
                 TitleInfo::Remarks => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        remarks: Some(val),
+                        remarks: val,
                         ..original_title_state
                     });
                 }
@@ -255,7 +280,7 @@ pub fn edit_item() -> Html {
                 } else {
                     // responseが200以外の場合はエラーを出す
                     let error_message =
-                        format!("Failed to update maker: {}", post_response.status());
+                        format!("Failed to create title: {}", post_response.status());
                     web_sys::window()
                         .unwrap()
                         .alert_with_message(&error_message)

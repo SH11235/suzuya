@@ -1,11 +1,13 @@
 use crate::common::api::backend_url;
-use crate::common::date_util::parse_date;
+use crate::common::date_util::{date_string_to_iso_string, parse_date};
 use crate::common::select::{announce_status_list, catalog_status_list, project_type_list};
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item::item_detail::ItemDetail;
 use crate::model::common::NameOptionIdPair;
-use crate::model::item_page::{GetItemInfoByTitleId, ItemState, TitleInfo, TitleState};
+use crate::model::item_page::{
+    GetItemInfoByTitleId, ItemRegisterParams, ItemState, RequestPutTitleInfo, TitleInfo, TitleState,
+};
 use reqwasm::http::Request;
 use urlencoding::decode;
 use uuid::Uuid;
@@ -160,26 +162,46 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 TitleInfo::ReleaseDate => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        release_date: Some(val),
+                        release_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationStartDate => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        reservation_start_date: Some(val),
+                        reservation_start_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationDeadline => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        reservation_deadline: Some(val),
+                        reservation_deadline: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::OrderDateToMaker => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        order_date_to_maker: Some(val),
+                        order_date_to_maker: val,
                         ..original_title_state
                     });
                 }
@@ -202,8 +224,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 TitleInfo::Remarks => {
+                    let val = if val == "" {
+                        None
+                    } else {
+                        Some(val)
+                    };
                     title_state.set(TitleState {
-                        remarks: Some(val),
+                        remarks: val,
                         ..original_title_state
                     });
                 }
@@ -245,6 +272,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
 
     let save_onclick = {
         let items_state = items_state.clone();
+        let title_state = title_state.clone();
 
         Callback::from(move |_| {
             let mut saved_items = vec![];
@@ -268,6 +296,75 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 });
             });
             items_state.set(saved_items);
+
+            let title_state = title_state.clone();
+            let put_param_items = items_state
+                .iter()
+                .map(|item_state| {
+                    let item = ItemRegisterParams {
+                        id: item_state.id.clone(),
+                        name: item_state.name.clone(),
+                        product_code: item_state.product_code.clone(),
+                        sku: item_state.sku,
+                        illust_status: item_state.illust_status.clone(),
+                        pic_illust_id: item_state.pic_illust_id.clone(),
+                        design_status: item_state.design_status.clone(),
+                        pic_design_id: item_state.pic_design_id.clone(),
+                        maker_id: item_state.maker_id.clone(),
+                        retail_price: item_state.retail_price,
+                        resubmission: item_state.resubmission,
+                        double_check_person_id: item_state.double_check_person_id.clone(),
+                        line: item_state.line.clone(),
+                    };
+                    item
+                })
+                .collect::<Vec<ItemRegisterParams>>();
+            wasm_bindgen_futures::spawn_local(async move {
+                let put_url = format!("{}", backend_url() + "/api/item",);
+                let client = Request::put(&put_url)
+                    .header("Content-Type", "application/json")
+                    .body(
+                        serde_json::to_string(&RequestPutTitleInfo {
+                            release_date: date_string_to_iso_string(
+                                title_state.release_date.clone(),
+                            ),
+                            reservation_start_date: date_string_to_iso_string(
+                                title_state.reservation_start_date.clone(),
+                            ),
+                            reservation_deadline: date_string_to_iso_string(
+                                title_state.reservation_deadline.clone(),
+                            ),
+                            order_date_to_maker: date_string_to_iso_string(
+                                title_state.order_date_to_maker.clone(),
+                            ),
+                            title_id: title_state.id.clone(),
+                            title_name: title_state.title.clone(),
+                            project_type: title_state.project_type.clone(),
+                            items: put_param_items,
+                            catalog_status: title_state.catalog_status.clone(),
+                            announcement_status: title_state.announcement_status.clone(),
+                            remarks: title_state.remarks.clone(),
+                        })
+                        .unwrap(),
+                    );
+                let post_response = client.send().await.expect("Failed to update maker");
+                if post_response.status() == 200 {
+                    web_sys::window()
+                        .unwrap()
+                        .alert_with_message("保存しました")
+                        .unwrap();
+                } else {
+                    // responseが200以外の場合はエラーを出す
+                    let error_message =
+                        format!("Failed to update title: {}", post_response.status());
+                    web_sys::window()
+                        .unwrap()
+                        .alert_with_message(&error_message)
+                        .unwrap();
+                    let error_message = JsValue::from_str(&error_message);
+                    web_sys::console::error_1(&error_message);
+                }
+            });
         })
     };
 
@@ -280,12 +377,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             .unwrap();
         if confirm {
             wasm_bindgen_futures::spawn_local(async move {
-                let delete_url = format!(
-                    "{}{}{}",
-                    backend_url(),
-                    "/api/delete_title/",
-                    title_id
-                );
+                let delete_url = format!("{}{}{}", backend_url(), "/api/delete_title/", title_id);
                 let client = Request::delete(&delete_url);
                 let delete_response = client.send().await.expect("Failed to delete maker");
                 // responseが200以外の場合はエラーを出す
