@@ -4,8 +4,6 @@ use sea_orm::prelude::{DateTimeUtc, DateTimeWithTimeZone, Uuid};
 use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
 
-use crate::setting::StatusName;
-
 #[derive(Debug, FromQueryResult)]
 pub struct SelectResult {
     pub id: Uuid,
@@ -39,12 +37,17 @@ pub struct YearMonthList {
 }
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct InputNewItem {
-    pub title: String,
-    pub release_date: Option<DateTime<Utc>>,
-    pub reservation_start_date: Option<DateTime<Utc>>,
-    pub reservation_deadline: Option<DateTime<Utc>>,
-    pub order_date_to_maker: Option<DateTime<Utc>>,
-    pub name_list: Vec<String>,
+    pub title_id: Uuid,
+    pub title_name: String,
+    pub release_date: Option<DateTimeUtc>,
+    pub reservation_start_date: Option<DateTimeUtc>,
+    pub reservation_deadline: Option<DateTimeUtc>,
+    pub order_date_to_maker: Option<DateTimeUtc>,
+    pub project_type: String,
+    pub catalog_status: String,
+    pub announcement_status: String,
+    pub remarks: Option<String>,
+    pub items: Vec<RequestItems>,
 }
 
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -80,13 +83,16 @@ pub struct RequestItems {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct ItemNewResponse {
+    pub workers: Vec<worker::Model>,
+    pub makers: Vec<maker::Model>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct ItemEditResponse {
     pub items: Vec<item::Model>,
     pub workers: Vec<worker::Model>,
     pub makers: Vec<maker::Model>,
-    pub project_type_list: Vec<StatusName>,
-    pub illust_status_list: Vec<StatusName>,
-    pub design_status_list: Vec<StatusName>,
     pub release_date: Option<DateTimeWithTimeZone>,
     pub reservation_start_date: Option<DateTimeWithTimeZone>,
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
@@ -97,8 +103,6 @@ pub struct ItemEditResponse {
     pub catalog_status: String,
     pub announcement_status: String,
     pub remarks: Option<String>,
-    pub catalog_status_list: Vec<StatusName>,
-    pub announce_status_list: Vec<StatusName>,
 }
 
 #[derive(Debug, Serialize)]

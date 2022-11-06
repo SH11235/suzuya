@@ -1,5 +1,5 @@
 use pages::home::Home;
-use pages::item::{item_edit::ItemEdit, item_list::ItemList};
+use pages::item::{item_edit::ItemEdit, item_list::ItemList, item_new::ItemNew};
 use pages::maker::maker_list::MakerList;
 use pages::worker::worker_list::WorkerList;
 use yew::prelude::*;
@@ -18,6 +18,8 @@ pub enum Route {
     MakerList,
     #[at("/item_list")]
     ItemList,
+    #[at("/item_new")]
+    ItemNew,
     #[at("/item_edit/:title_id")]
     ItemEdit { title_id: String },
     #[at("/worker_list")]
@@ -43,6 +45,9 @@ fn switch(routes: &Route) -> Html {
         }
         Route::ItemList => {
             html! { <ItemList/> }
+        }
+        Route::ItemNew => {
+            html! { <ItemNew/> }
         }
         Route::ItemEdit { title_id } => {
             html! {

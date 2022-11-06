@@ -100,8 +100,14 @@
             },
             body: JSON.stringify(data)
         })
-            .then(_data => {
-                alert("登録に成功しました");
+            .then(response => {
+                if (response.ok) {
+                    alert("登録しました。");
+                    // TODO リダイレクト先をパラメータ付きで更新
+                    // location.href = "/item_list";
+                } else {
+                    throw new Error('Network response was not ok.');
+                }
             })
             .catch((error) => {
                 alert("登録に失敗しました");

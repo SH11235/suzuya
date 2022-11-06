@@ -1,8 +1,7 @@
-use crate::model::item_page::{YearMonth, YearMonthState, YearMonthTitleList};
-use wasm_bindgen::JsValue;
+use crate::model::item_page::{YearMonthState, YearMonthTitleList};
 use web_sys::{HtmlInputElement, MouseEvent};
 use yew::UseStateHandle;
-use yew::{events::Event, function_component, html, Callback, Html, Properties, TargetCast};
+use yew::{function_component, html, Callback, Html, Properties, TargetCast};
 
 #[derive(Properties, PartialEq)]
 pub struct MonthlyFieldProperty {
