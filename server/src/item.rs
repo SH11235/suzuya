@@ -75,6 +75,7 @@ async fn api_item_list(
                     AND
                         release_date is NULL
                     ORDER BY
+                        release_date ASC,
                         reservation_start_date ASC NULLS FIRST;
                 "
             )
@@ -95,6 +96,7 @@ async fn api_item_list(
                         AND
                             '{}'
                     ORDER BY
+                        release_date ASC,
                         reservation_start_date ASC NULLS FIRST;
                 ",
                 title_sql_select, year_month_start, year_month_end
