@@ -86,6 +86,7 @@ pub fn init(cfg: &mut web::ServiceConfig) {
     cfg.service(item::api_item_edit_page);
     cfg.service(item::api_update_items);
     cfg.service(item::api_delete_item);
+    cfg.service(item::api_delete_title);
 
     // maker
     cfg.service(maker::api_maker_list);

@@ -516,9 +516,29 @@ async fn api_delete_item(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    // idに一致するitemをのdeletedカラムをtrueにする
+    // idに一致するitemのdeletedカラムをtrueにする
     item::ActiveModel {
         id: Set(id.into_inner()),
+        deleted: Set(true),
+        ..Default::default()
+    }
+    .update(conn)
+    .await
+    .expect("could not delete item.");
+
+    Ok(HttpResponse::Ok().finish())
+}
+
+#[delete("/api/delete_title/{title_id}")]
+async fn api_delete_title(
+    data: web::Data<AppState>,
+    title_id: web::Path<Uuid>,
+) -> Result<HttpResponse, Error> {
+    let conn = &data.conn;
+
+    // idに一致するtitleのdeletedカラムをtrueにする
+    title::ActiveModel {
+        id: Set(title_id.into_inner()),
         deleted: Set(true),
         ..Default::default()
     }
