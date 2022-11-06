@@ -8,7 +8,6 @@ use migration::{Migrator, MigratorTrait};
 use std::env;
 use suzuya::setting::AppState;
 use suzuya::{item, maker, worker};
-use tera::Tera;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -34,9 +33,8 @@ async fn main() -> std::io::Result<()> {
         }
         Err(_) => (),
     }
-    // load tera templates and build app state
-    let templates = Tera::new(concat!(env!("CARGO_MANIFEST_DIR"), "/templates/**/*")).unwrap();
-    let state = AppState { templates, conn };
+
+    let state = AppState { conn };
 
     // create server and try to serve over socket if possible
     let mut listenfd = ListenFd::from_env();
