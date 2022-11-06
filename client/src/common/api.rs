@@ -4,3 +4,5 @@ pub fn backend_url() -> String {
 }
 
 pub const RELEASE_DATE_TEXT: &str = "発売日未定";
+
+pub const RESUBMISSION_OK: &str = "○";

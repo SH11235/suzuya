@@ -35,11 +35,9 @@ async fn api_item_list(
         GROUP BY yyyymm, year, month
         ORDER BY yyyymm DESC NULLS FIRST;
     ";
-    let year_month_not_null_list = YearMonthList::find_by_statement(Statement::from_sql_and_values(
-        DbBackend::Postgres,
-        year_month_sql,
-        vec![],
-    ))
+    let year_month_not_null_list = YearMonthList::find_by_statement(
+        Statement::from_sql_and_values(DbBackend::Postgres, year_month_sql, vec![]),
+    )
     .all(conn)
     .await
     .expect("could not find items.");
@@ -53,28 +51,36 @@ async fn api_item_list(
 
     // year_month_listの長さ分だけ、対応する日付のitemを取得する
     let mut year_month_title_list = Vec::new();
+    let title_sql_select = "
+        SELECT
+            id,
+            name,
+            release_date,
+            reservation_start_date,
+            reservation_deadline,
+            order_date_to_maker,
+            updated_at,
+            project_type,
+            catalog_status,
+            announcement_status,
+            remarks
+        FROM
+            title
+    ";
     for year_month in year_month_list.clone() {
         let title_sql = if year_month.yyyymm == "発売日未定" {
-            "SELECT
-                id,
-                name,
-                release_date,
-                reservation_start_date,
-                reservation_deadline,
-                order_date_to_maker,
-                project_type,
-                catalog_status,
-                announcement_status,
-                remarks
-            FROM
-                title
-            WHERE
-                deleted = FALSE
-            AND
-                release_date is NULL
-            ORDER BY
-                reservation_start_date ASC NULLS FIRST;
-            ".to_string()
+            format!(
+                "{}{}",
+                title_sql_select,
+                "
+                    WHERE
+                        deleted = FALSE
+                    AND
+                        release_date is NULL
+                    ORDER BY
+                        reservation_start_date ASC NULLS FIRST;
+                "
+            )
         } else {
             let year = year_month.year.clone();
             let month = year_month.month.clone();
@@ -82,34 +88,22 @@ async fn api_item_list(
             let year_month_start = format!("{}-{}-01 00:00:00", year.clone(), month.clone());
             let year_month_end = format!("{}-{}-{} 23:59:59", year.clone(), month.clone(), end_day);
             format!(
-                "SELECT
-                    id,
-                    name,
-                    release_date,
-                    reservation_start_date,
-                    reservation_deadline,
-                    order_date_to_maker,
-                    project_type,
-                    catalog_status,
-                    announcement_status,
-                    remarks
-                FROM
-                    title
-                WHERE
-                    deleted = FALSE
-                AND
-                    release_date
-                    BETWEEN
-                        '{}'
+                "{}
+                    WHERE
+                        deleted = FALSE
                     AND
-                        '{}'
-                ORDER BY
-                    reservation_start_date ASC NULLS FIRST;
+                        release_date
+                        BETWEEN
+                            '{}'
+                        AND
+                            '{}'
+                    ORDER BY
+                        reservation_start_date ASC NULLS FIRST;
                 ",
-                year_month_start, year_month_end
+                title_sql_select, year_month_start, year_month_end
             )
         };
-        
+
         let titles = TitleFiltered::find_by_statement(Statement::from_sql_and_values(
             DbBackend::Postgres,
             &title_sql,
@@ -138,8 +132,10 @@ async fn api_item_list(
                     item.maker_id,
                     maker.code_name AS maker_code,
                     item.retail_price,
+                    item.resubmission,
                     item.double_check_person_id,
-                    double_check_person.name AS double_check_person
+                    double_check_person.name AS double_check_person,
+                    item.line
                 FROM
                     item
                 LEFT JOIN 
@@ -167,14 +163,40 @@ async fn api_item_list(
             .all(conn)
             .await
             .expect("could not find items.");
+            let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
+                Some(release_date) => {
+                    Some(release_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let reservation_start_date = match title.reservation_start_date {
+                Some(reservation_start_date) => {
+                    Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let reservation_deadline = match title.reservation_deadline {
+                Some(reservation_deadline) => {
+                    Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let order_date_to_maker = match title.order_date_to_maker {
+                Some(order_date_to_maker) => {
+                    Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let updated_at = title.updated_at.with_timezone(&FixedOffset::east(9 * 3600));
             item_count += items.len();
             title_with_items.push(TitleWithItems {
                 id: title.id,
                 name: title.name,
-                release_date: title.release_date,
-                reservation_start_date: title.reservation_start_date,
-                reservation_deadline: title.reservation_deadline,
-                order_date_to_maker: title.order_date_to_maker,
+                release_date,
+                reservation_start_date,
+                reservation_deadline,
+                order_date_to_maker,
+                updated_at,
                 project_type: title.project_type,
                 catalog_status: title.catalog_status,
                 announcement_status: title.announcement_status,
@@ -304,10 +326,29 @@ async fn api_item_edit_page(
     let catalog_status_list = catalog_status_list();
     let announce_status_list = announce_status_list();
 
-    let release_date: Option<DateTimeWithTimeZone> = title.release_date;
-    let reservation_start_date: Option<DateTimeWithTimeZone> = title.reservation_start_date;
-    let reservation_deadline: Option<DateTimeWithTimeZone> = title.reservation_deadline;
-    let order_date_to_maker: Option<DateTimeWithTimeZone> = title.order_date_to_maker;
+    let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
+        Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let reservation_start_date = match title.reservation_start_date {
+        Some(reservation_start_date) => {
+            Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let reservation_deadline = match title.reservation_deadline {
+        Some(reservation_deadline) => {
+            Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let order_date_to_maker = match title.order_date_to_maker {
+        Some(order_date_to_maker) => {
+            Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
+    let updated_at = title.updated_at.with_timezone(&FixedOffset::east(9 * 3600));
 
     Ok(HttpResponse::Ok().json(ItemEditResponse {
         items: items,
@@ -320,6 +361,7 @@ async fn api_item_edit_page(
         reservation_start_date,
         reservation_deadline,
         order_date_to_maker,
+        updated_at,
         title: title_name,
         project_type,
         catalog_status,
@@ -368,6 +410,7 @@ async fn api_update_items(
             Some(order_date_to_maker) => Set(Some(utc_date_time_to_jst(&order_date_to_maker))),
             None => Set(None),
         },
+        updated_at: Set(Utc::now().into()),
         project_type: Set(put_data.project_type),
         catalog_status: Set(put_data.catalog_status),
         announcement_status: Set(put_data.announcement_status),
@@ -401,7 +444,9 @@ async fn api_update_items(
                     pic_design_id: Set(item.pic_design_id.to_owned()),
                     maker_id: Set(item.maker_id),
                     retail_price: Set(item.retail_price.to_owned()),
+                    resubmission: Set(item.resubmission),
                     double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                    line: Set(item.line.to_owned()),
                     ..Default::default()
                 }
                 .save(conn)
@@ -422,7 +467,9 @@ async fn api_update_items(
                     pic_design_id: Set(item.pic_design_id.to_owned()),
                     maker_id: Set(item.maker_id.to_owned()),
                     retail_price: Set(item.retail_price.to_owned()),
+                    resubmission: Set(item.resubmission),
                     double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                    line: Set(item.line.to_owned()),
                     ..Default::default()
                 }
                 .insert(conn)

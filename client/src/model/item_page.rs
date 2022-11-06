@@ -41,6 +41,7 @@ pub struct GetItemInfoByTitleId {
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
+    pub updated_at: String,
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -60,7 +61,9 @@ pub struct ItemState {
     pub pic_design_id: Option<String>,
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
+    pub resubmission: bool,
     pub double_check_person_id: Option<String>,
+    pub line: String,
     pub is_saved: bool,
 }
 
@@ -74,6 +77,8 @@ pub enum ItemInfo {
     PicDesignId,
     MakerId,
     RetailPrice,
+    Resubmission,
+    Line,
     DoubleCheckPersonId,
 }
 
@@ -84,6 +89,7 @@ pub struct TitleState {
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
+    pub updated_at: String,
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -128,6 +134,7 @@ pub struct TitleWithItems {
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
     pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
+    pub updated_at: String, // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -152,6 +159,8 @@ pub struct ItemWithMakerAndWorker {
     pub retail_price: Option<i32>,
     pub double_check_person_id: Option<String>,
     pub double_check_person: Option<String>,
+    pub resubmission: bool,
+    pub line: String,
 }
 
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]

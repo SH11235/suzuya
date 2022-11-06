@@ -61,6 +61,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         reservation_start_date: fetched_items.reservation_start_date,
                         reservation_deadline: fetched_items.reservation_deadline,
                         order_date_to_maker: fetched_items.order_date_to_maker,
+                        updated_at: fetched_items.updated_at,
                         project_type: fetched_items.project_type,
                         catalog_status: fetched_items.catalog_status,
                         announcement_status: fetched_items.announcement_status,
@@ -81,7 +82,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             pic_design_id: item.pic_design_id.clone(),
                             maker_id: item.maker_id.clone(),
                             retail_price: item.retail_price,
+                            resubmission: item.resubmission,
                             double_check_person_id: item.double_check_person_id.clone(),
+                            line: item.line.clone(),
                             is_saved: true,
                         })
                         .collect::<Vec<ItemState>>();
@@ -145,6 +148,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 reservation_start_date: title_state.reservation_start_date.clone(),
                 reservation_deadline: title_state.reservation_deadline.clone(),
                 order_date_to_maker: title_state.order_date_to_maker.clone(),
+                updated_at: title_state.updated_at.clone(),
                 project_type: title_state.project_type.clone(),
                 catalog_status: title_state.catalog_status.clone(),
                 announcement_status: title_state.announcement_status.clone(),
@@ -227,7 +231,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     pic_design_id: item_state.pic_design_id.clone(),
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
+                    resubmission: item_state.resubmission,
                     double_check_person_id: item_state.double_check_person_id.clone(),
+                    line: item_state.line.clone(),
                     is_saved: item_state.is_saved,
                 });
             }
@@ -258,7 +264,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     pic_design_id: item_state.pic_design_id.clone(),
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
+                    resubmission: item_state.resubmission,
                     double_check_person_id: item_state.double_check_person_id.clone(),
+                    line: item_state.line.clone(),
                     is_saved: true,
                 });
             });
@@ -293,6 +301,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 let reservation_start_date = parse_date(&title_state.reservation_start_date);
                 let reservation_deadline = parse_date(&title_state.reservation_deadline);
                 let order_date_to_maker = parse_date(&title_state.order_date_to_maker);
+                // 2022/11/06T06:38:10+09:00  →2022/11/06 06:38:10
+                let updated_at = (&title_state.updated_at[0..19]).replace("-", "/").replace("T", " ");
                 let items = items_state.clone();
                 let mut index: usize = 0;
                 html! {
@@ -304,6 +314,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         { "締切日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
                         <br/>
                         { "発注日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="order_date_to_maker" name="order_date_to_maker" value={order_date_to_maker} />
+                        <br/>
+                        { "最終更新日：" }<span id="updated_at">{updated_at}</span>
                         <br/>
                         { "タイトル：" }<TextBox onchange={title_onchange.clone()} input_type="text" placeholder="yyyy-mm-dd" id="title" name="title" value={title_state.title.clone()} />
                         <br/>

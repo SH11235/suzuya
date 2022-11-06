@@ -19,6 +19,8 @@ pub struct Model {
     pub retail_price: Option<i32>,
     pub double_check_person_id: Option<Uuid>,
     pub deleted: bool,
+    pub resubmission: bool,
+    pub line: String,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

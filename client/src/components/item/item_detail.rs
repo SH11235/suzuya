@@ -1,10 +1,11 @@
+use crate::common::api::RESUBMISSION_OK;
+use crate::common::select::{design_status_list, illust_status_list, resubmission_list, line_list};
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;
 use crate::components::item::item_delete_button::DeleteButton;
 use crate::model::common::NameOptionIdPair;
 use crate::model::item_page::{ItemInfo, ItemState};
-use crate::common::select::{design_status_list, illust_status_list};
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, Callback, Properties, TargetCast, UseStateHandle,
@@ -49,6 +50,11 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     } else {
         retail_price.to_string()
     };
+    let resubmission = if props.item_info.resubmission {
+        RESUBMISSION_OK
+    } else {
+        ""
+    };
 
     let onchange = {
         let items_state = props.items_state_handle.clone();
@@ -68,7 +74,9 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 "pic_design" => ItemInfo::PicDesignId,
                 "maker_code" => ItemInfo::MakerId,
                 "retail_price" => ItemInfo::RetailPrice,
+                "resubmission" => ItemInfo::Resubmission,
                 "double_check_person" => ItemInfo::DoubleCheckPersonId,
+                "line" => ItemInfo::Line,
                 _ => {
                     panic!("Unexpected name: {}", name);
                 }
@@ -88,7 +96,9 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     pic_design_id: item.pic_design_id.clone(),
                     maker_id: item.maker_id.clone(),
                     retail_price: item.retail_price.clone(),
+                    resubmission: item.resubmission.clone(),
                     double_check_person_id: item.double_check_person_id.clone(),
+                    line: item.line.clone(),
                     is_saved: item.is_saved.clone(),
                 })
             });
@@ -121,8 +131,15 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 ItemInfo::RetailPrice => {
                     original_items[index - 1].retail_price = Some(val.parse().unwrap());
                 }
+                ItemInfo::Resubmission => {
+                    original_items[index - 1].resubmission =
+                        if val == RESUBMISSION_OK { true } else { false };
+                }
                 ItemInfo::DoubleCheckPersonId => {
                     original_items[index - 1].double_check_person_id = Some(val);
+                }
+                ItemInfo::Line => {
+                    original_items[index - 1].line = val.parse().unwrap();
                 }
             }
             items_state.set(original_items);
@@ -172,9 +189,17 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 <TextBox onchange={onchange.clone()} input_type="text" placeholder="上代" id={ format!("{}-{}", "retail_price", props.index) }
                     name={format!("{}-{}", "retail_price", props.index) } value={ retail_price } />
             </div>
+            <div class="input-warpper">{"再入稿"}<br/>
+                <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "resubmission", props.index)} name={ format!("{}-{}", "resubmission", props.index)}
+                        value={resubmission.clone()} select_list={resubmission_list()}/>
+            </div>
             <div class="input-warpper">{"ダブルチェック"}<br/>
                 <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
                     value={props.item_info.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"ライン"}<br/>
+                <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "line", props.index)} name={ format!("{}-{}", "line", props.index)}
+                        value={props.item_info.line.clone()} select_list={line_list()}/>
             </div>
         </div>
 

@@ -74,7 +74,9 @@ pub struct RequestItems {
     pub pic_design_id: Option<Uuid>,
     pub maker_id: Option<Uuid>,
     pub retail_price: Option<i32>,
+    pub resubmission: bool,
     pub double_check_person_id: Option<Uuid>,
+    pub line: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -89,6 +91,7 @@ pub struct ItemEditResponse {
     pub reservation_start_date: Option<DateTimeWithTimeZone>,
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
     pub order_date_to_maker: Option<DateTimeWithTimeZone>,
+    pub updated_at: DateTimeWithTimeZone,
     pub title: String,
     pub project_type: String,
     pub catalog_status: String,
@@ -122,6 +125,7 @@ pub struct TitleWithItems {
     pub reservation_start_date: Option<DateTimeWithTimeZone>,
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
     pub order_date_to_maker: Option<DateTimeWithTimeZone>,
+    pub updated_at: DateTimeWithTimeZone,
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -144,8 +148,10 @@ pub struct ItemWithMakerAndWorker {
     pub maker_id: Option<Uuid>,
     pub maker_code: Option<String>,
     pub retail_price: Option<i32>,
+    pub resubmission: bool,
     pub double_check_person_id: Option<Uuid>,
     pub double_check_person: Option<String>,
+    pub line: String,
 }
 
 #[derive(Clone, Debug, FromQueryResult, Serialize)]
@@ -156,6 +162,7 @@ pub struct TitleFiltered {
     pub reservation_start_date: Option<DateTimeWithTimeZone>,
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
     pub order_date_to_maker: Option<DateTimeWithTimeZone>,
+    pub updated_at: DateTimeWithTimeZone,
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,

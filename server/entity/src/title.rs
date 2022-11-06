@@ -13,6 +13,7 @@ pub struct Model {
     pub reservation_start_date: Option<DateTimeWithTimeZone>,
     pub reservation_deadline: Option<DateTimeWithTimeZone>,
     pub order_date_to_maker: Option<DateTimeWithTimeZone>,
+    pub updated_at: DateTimeWithTimeZone,
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
