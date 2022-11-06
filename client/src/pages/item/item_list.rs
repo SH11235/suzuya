@@ -33,9 +33,16 @@ pub fn item_list() -> Html {
                         .json()
                         .await
                         .expect("Failed to parse items");
+                    let yyyymm_param = web_sys::Url::new(web_sys::window().unwrap().location().href().unwrap().as_str()).unwrap().search_params().get("yyyymm");
+                    let selected_yyyymm = match yyyymm_param {
+                        Some(yyyymm) => {
+                            format!("{}/{}", &yyyymm[0..4], &yyyymm[4..6])
+                        },
+                        None => RELEASE_DATE_TEXT.to_string(),
+                    };
                     year_month_list_state.set(YearMonthState {
                         year_month_list: fetched_items.year_month_list,
-                        selected_yyyymm: RELEASE_DATE_TEXT.to_string(),
+                        selected_yyyymm,
                         title_count: if fetched_items.year_month_title_list.len() > 0 {
                             fetched_items.year_month_title_list[0].title_count
                         } else {

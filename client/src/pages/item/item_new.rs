@@ -277,6 +277,23 @@ pub fn edit_item() -> Html {
                     );
                 let post_response = client.send().await.expect("Failed to update maker");
                 if post_response.status() == 201 {
+                    let release_date = title_state.release_date.clone();
+                    match release_date {
+                        Some(date) => {
+                            // 2022-05-03... → 202205
+                            let date = date.replace("-", "")[0..6].to_string();
+                            web_sys::window()
+                                .unwrap()
+                                .location()
+                                .set_href(&format!("/item_list?yyyymm={}", date))
+                                .unwrap()
+                        }
+                        None => web_sys::window()
+                            .unwrap()
+                            .location()
+                            .set_href("/item_list")
+                            .unwrap(),
+                    };
                 } else {
                     // responseが200以外の場合はエラーを出す
                     let error_message =

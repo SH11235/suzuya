@@ -162,44 +162,28 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 TitleInfo::ReleaseDate => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationStartDate => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_start_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationDeadline => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_deadline: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::OrderDateToMaker => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         order_date_to_maker: val,
                         ..original_title_state
@@ -224,11 +208,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 TitleInfo::Remarks => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         remarks: val,
                         ..original_title_state
@@ -353,6 +333,23 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .unwrap()
                         .alert_with_message("保存しました")
                         .unwrap();
+                    let release_date = title_state.release_date.clone();
+                    match release_date {
+                        Some(date) => {
+                            // 2022-05-03... → 202205
+                            let date = date.replace("-", "")[0..6].to_string();
+                            web_sys::window()
+                                .unwrap()
+                                .location()
+                                .set_href(&format!("/item_list?yyyymm={}", date))
+                                .unwrap()
+                        }
+                        None => web_sys::window()
+                            .unwrap()
+                            .location()
+                            .set_href("/item_list")
+                            .unwrap(),
+                    };
                 } else {
                     // responseが200以外の場合はエラーを出す
                     let error_message =
