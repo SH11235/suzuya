@@ -52,7 +52,7 @@
                 <td>{{ data.release_date }}</td>
                 <td>{{ data.reservation_start_date }}</td>
                 <td>{{ data.reservation_deadline }}</td>
-                <td>{{ data.order_date }}</td>
+                <td>{{ data.order_date_to_maker }}</td>
                 <td>{{ data.title }}<br><a onclick="window.location='/{{ path }}/{{ data.title }}';">編集</a></td>
                 <td>{{ data.project_type }}</td>
                 <td>{{ data.last_updated }}</td>

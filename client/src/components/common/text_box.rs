@@ -14,7 +14,7 @@ pub struct EditItemProperty {
 pub fn input_text(props: &EditItemProperty) -> Html {
     html! {
       <>
-        <input class="item-edit-input"
+        <input class="common-input"
           onchange = { props.onchange.clone() }
           type={ props.input_type.clone() } placeholder={ props.placeholder.clone() }
           name={ props.name.clone() } id={ props.id.clone() } value={ props.value.clone() } />

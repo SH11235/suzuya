@@ -11,22 +11,62 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+.common-input {
+  width: 225px;
+  height: 30px;
+  padding: 6px 10px;
+  background-color: #fff;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+.item-list-page {
+  padding: 0 4%;
+  .radio-input {
+    clip: rect(1px, 1px, 1px, 1px);
+    position: absolute !important;
+  }
+
+  .radio-label {
+    display: inline-block;
+    background: #9fb7d4;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin-right: 18px;
+    border-radius: 3px;
+    transition: all 0.2s;
+    cursor: pointer;
+  }
+
+  .radio-input:checked+.radio-label {
+    background: #b54a4a;
+    color: #fff;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
+  }
+
+  .radio-input:focus+.radio-label {
+    outline-color: #4d90fe;
+    outline-offset: -2px;
+    outline-style: auto;
+    outline-width: 5px;
+  }
+
+  .radio-label:hover {
+    background: #b54a4a;
+    color: #fff;
+    opacity: 0.8;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
+  }
+}
+
 .edit-item-page {
   padding: 0 4%;
 
-  .item-edit-input {
-    width: 225px;
-    height: 30px;
-    padding: 6px 10px;
-    background-color: #fff;
-    border: 1px solid #d1d1d1;
-    border-radius: 4px;
-    box-shadow: none;
-    box-sizing: border-box;
-  }
-
   .item-detail-wrapper {
     display: flex;
+
     .item-wrapper {
       border-top: solid 2px #5989cf;
       border-bottom: solid 2px #5989cf;
@@ -34,6 +74,7 @@ html {
       margin-right: 10px;
       margin-bottom: 10px;
     }
+
     .input-warpper {
       margin: 3px 0;
     }
@@ -48,6 +89,19 @@ html {
     align-items: center;
     justify-content: center;
     border: 2px dashed #000;
-    border-radius: 50px 50px 50px 50px;
+    border-radius: 30px 30px 30px 30px;
   }
+}
+
+.worker-list-page,
+.maker-list-page {
+  padding: 0 4%;
+
+  th,
+  td {
+    width: 200px;
+    text-align: center;
+    border: 1px solid #E1E1E1;
+  }
+
 }
