@@ -74,7 +74,9 @@ pub struct RequestItems {
     pub pic_design_id: Option<Uuid>,
     pub maker_id: Option<Uuid>,
     pub retail_price: Option<i32>,
+    pub resubmission: bool,
     pub double_check_person_id: Option<Uuid>,
+    pub line: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

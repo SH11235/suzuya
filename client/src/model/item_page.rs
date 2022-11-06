@@ -61,7 +61,9 @@ pub struct ItemState {
     pub pic_design_id: Option<String>,
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
+    pub resubmission: bool,
     pub double_check_person_id: Option<String>,
+    pub line: String,
     pub is_saved: bool,
 }
 
@@ -75,6 +77,8 @@ pub enum ItemInfo {
     PicDesignId,
     MakerId,
     RetailPrice,
+    Resubmission,
+    Line,
     DoubleCheckPersonId,
 }
 

@@ -70,7 +70,9 @@
                 pic_design_id: getElement("pic_design-" + index).value === "null" ? null : getElement("pic_design-" + index).value,
                 maker_id: getElement("maker_code-" + index).value === "null" ? null : getElement("maker_code-" + index).value,
                 retail_price: Number(getElement("retail_price-" + index).value),
+                resubmission: getElement("resubmission-" + index).value ? true : false,
                 double_check_person_id: getElement("double_check_person-" + index).value === "null" ? null : getElement("double_check_person-" + index).value,
+                line: getElement("line-" + index).value,
             });
         }
 

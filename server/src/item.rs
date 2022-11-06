@@ -164,7 +164,9 @@ async fn api_item_list(
             .await
             .expect("could not find items.");
             let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
-                Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
+                Some(release_date) => {
+                    Some(release_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
                 None => None,
             };
             let reservation_start_date = match title.reservation_start_date {
@@ -442,7 +444,9 @@ async fn api_update_items(
                     pic_design_id: Set(item.pic_design_id.to_owned()),
                     maker_id: Set(item.maker_id),
                     retail_price: Set(item.retail_price.to_owned()),
+                    resubmission: Set(item.resubmission),
                     double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                    line: Set(item.line.to_owned()),
                     ..Default::default()
                 }
                 .save(conn)
@@ -463,7 +467,9 @@ async fn api_update_items(
                     pic_design_id: Set(item.pic_design_id.to_owned()),
                     maker_id: Set(item.maker_id.to_owned()),
                     retail_price: Set(item.retail_price.to_owned()),
+                    resubmission: Set(item.resubmission),
                     double_check_person_id: Set(item.double_check_person_id.to_owned()),
+                    line: Set(item.line.to_owned()),
                     ..Default::default()
                 }
                 .insert(conn)

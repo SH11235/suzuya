@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use super::api::RESUBMISSION_OK;
+
 pub fn project_type_list() -> Vec<String> {
     vec![
         String::from("デフォルト"),
@@ -45,6 +47,21 @@ pub fn design_status_list() -> Vec<String> {
         String::from("校正監修中"),
         String::from("校了"),
         String::from("発注済み"),
+    ]
+}
+
+pub fn resubmission_list() -> Vec<String> {
+    vec![
+        String::from(""),
+        String::from(RESUBMISSION_OK),
+    ]
+}
+
+pub fn line_list() -> Vec<String> {
+    vec![
+        String::from("未対応"),
+        String::from("不要"),
+        String::from("対応済"),
     ]
 }
 
