@@ -15,7 +15,6 @@ chrono = "0.4.19"
 dotenv = "0.15"
 listenfd = "0.5"
 serde = "1"
-tera = "1.15.0"
 
 [dependencies.entity]
 path = "entity"
