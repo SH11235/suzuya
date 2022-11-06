@@ -21,6 +21,13 @@ pub fn date_time_with_timezone_to_string(date_time_with_timezone: &Option<String
     }
 }
 
+pub fn parse_date(date: &Option<String>) -> String {
+    match date {
+        Some(date) => (&date[0..10]).to_string(),
+        None => "".to_string(),
+    }
+}
+
 // test
 #[cfg(test)]
 mod tests {

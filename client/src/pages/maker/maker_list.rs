@@ -22,7 +22,7 @@ pub fn maker_list() -> Html {
                 let makers_state = makers_state.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
-                    let mut fetched_items: Vec<MakerModel> = client
+                    let fetched_items: Vec<MakerModel> = client
                         .send()
                         .await
                         .expect("Failed to fetch items")

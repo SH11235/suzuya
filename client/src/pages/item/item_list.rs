@@ -1,15 +1,9 @@
 use crate::common::api::{backend_url, RELEASE_DATE_TEXT};
 use crate::common::date_util::date_time_with_timezone_to_string;
 use crate::components::item::monthly_field::MonthlyField;
-use crate::model::item_page::YearMonth;
 use crate::model::item_page::{ItemListResponse, YearMonthState};
 use reqwasm::http::Request;
-use wasm_bindgen::JsValue;
-use web_sys::HtmlInputElement;
-use yew::{
-    events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
-    Properties, TargetCast,
-};
+use yew::{function_component, html, use_effect_with_deps, use_state, Html};
 
 #[function_component(ItemList)]
 pub fn item_list() -> Html {

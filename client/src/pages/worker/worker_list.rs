@@ -22,7 +22,7 @@ pub fn worker_list() -> Html {
                 let workers_state = workers_state.clone();
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
-                    let mut fetched_items: Vec<WorkerModel> = client
+                    let fetched_items: Vec<WorkerModel> = client
                         .send()
                         .await
                         .expect("Failed to fetch items")

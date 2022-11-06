@@ -1,4 +1,5 @@
 use crate::common::api::backend_url;
+use crate::common::date_util::parse_date;
 use crate::common::select::{announce_status_list, catalog_status_list, project_type_list};
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
@@ -45,7 +46,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
                     let client = Request::get(&get_url);
-                    let mut fetched_items: GetItemInfoByTitleId = client
+                    let fetched_items: GetItemInfoByTitleId = client
                         .send()
                         .await
                         .expect("Failed to fetch items")
@@ -357,12 +358,5 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             }
         }
       </div>
-    }
-}
-
-fn parse_date(date: &Option<String>) -> String {
-    match date {
-        Some(date) => (&date[0..10]).to_string(),
-        None => "".to_string(),
     }
 }
