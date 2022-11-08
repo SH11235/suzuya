@@ -1,6 +1,7 @@
 use crate::common::api::backend_url;
-use crate::common::date_util::{parse_date, date_string_to_iso_string};
+use crate::common::date_util::{date_string_to_iso_string, parse_date};
 use crate::common::select::{announce_status_list, catalog_status_list, project_type_list};
+use crate::components::common::header_link::HeaderLink;
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item::item_detail::ItemDetail;
@@ -116,44 +117,28 @@ pub fn edit_item() -> Html {
                     });
                 }
                 TitleInfo::ReleaseDate => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationStartDate => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_start_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationDeadline => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_deadline: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::OrderDateToMaker => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         order_date_to_maker: val,
                         ..original_title_state
@@ -178,11 +163,7 @@ pub fn edit_item() -> Html {
                     });
                 }
                 TitleInfo::Remarks => {
-                    let val = if val == "" {
-                        None
-                    } else {
-                        Some(val)
-                    };
+                    let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         remarks: val,
                         ..original_title_state
@@ -255,7 +236,9 @@ pub fn edit_item() -> Html {
                     .header("Content-Type", "application/json")
                     .body(
                         serde_json::to_string(&RequestPutTitleInfo {
-                            release_date: date_string_to_iso_string(title_state.release_date.clone()),
+                            release_date: date_string_to_iso_string(
+                                title_state.release_date.clone(),
+                            ),
                             reservation_start_date: date_string_to_iso_string(
                                 title_state.reservation_start_date.clone(),
                             ),
@@ -312,6 +295,7 @@ pub fn edit_item() -> Html {
     html! {
       <div class="edit-item-page">
         <h1>{ "Edit Items" }</h1>
+        <HeaderLink current_page={"item_new".to_string()} />
         {
             if *fetching_state {
                 html! {

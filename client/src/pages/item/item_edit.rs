@@ -1,6 +1,7 @@
 use crate::common::api::backend_url;
 use crate::common::date_util::{date_string_to_iso_string, parse_date};
 use crate::common::select::{announce_status_list, catalog_status_list, project_type_list};
+use crate::components::common::header_link::HeaderLink;
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::text_box::TextBox;
 use crate::components::item::item_detail::ItemDetail;
@@ -430,6 +431,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 let mut index: usize = 0;
                 html! {
                     <>
+                        <HeaderLink current_page={"item_edit".to_string()} />
                         <button onclick={delete_onclick} class="delete-button">
                             { "タイトル削除" }
                         </button>

@@ -1,5 +1,6 @@
 use crate::common::api::{backend_url, RELEASE_DATE_TEXT};
 use crate::common::date_util::date_time_with_timezone_to_string;
+use crate::components::common::header_link::HeaderLink;
 use crate::components::item::monthly_field::MonthlyField;
 use crate::model::item_page::{ItemListResponse, YearMonthState};
 use reqwasm::http::Request;
@@ -94,6 +95,7 @@ pub fn item_list() -> Html {
     html! {
         <div class="item-list-page">
             <h1>{ "Suzuya ItemList" }</h1>
+            <HeaderLink current_page={"item_list".to_string()} />
             <h2>{ "Monthly filter" }</h2>
             <MonthlyField year_month_list_state_handle={year_month_list_state.clone()} items_state_hanle={items_state.clone()} />
             <h2>{ format!("タイトル数: {}, アイテム数: {}", year_month_list_state.title_count, year_month_list_state.item_count) }</h2>
