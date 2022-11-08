@@ -5,7 +5,7 @@ use super::api::RESUBMISSION_OK;
 pub fn project_type_list() -> Vec<String> {
     vec![
         String::from("デフォルト"),
-        String::from("A案件"),
+        String::from("S案件"),
         String::from("Y案件"),
         String::from("再販"),
     ]

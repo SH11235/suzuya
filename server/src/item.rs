@@ -1,6 +1,6 @@
 use crate::model::item::{
-    ItemEditResponse, ItemListResponse, ItemNewResponse, ItemWithMakerAndWorker, ItemsPutRequest,
-    TitleFiltered, TitleWithItems, YearMonthList, YearMonthTitleList, InputNewItem,
+    InputNewItem, ItemEditResponse, ItemListResponse, ItemNewResponse, ItemWithMakerAndWorker,
+    ItemsPutRequest, TitleFiltered, TitleWithItems, YearMonthList, YearMonthTitleList,
 };
 use crate::setting::AppState;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
@@ -76,7 +76,12 @@ async fn api_item_list(
                         release_date is NULL
                     ORDER BY
                         release_date ASC,
-                        reservation_start_date ASC;
+                        CASE project_type WHEN 'S案件' THEN 1 
+                                          WHEN 'Y案件' THEN 2 
+                                          WHEN 'デフォルト' THEN 3 
+                                          WHEN '再販' THEN 4 
+                                          ELSE 5 END ASC
+                        ;
                 "
             )
         } else {
@@ -97,7 +102,12 @@ async fn api_item_list(
                             '{}'
                     ORDER BY
                         release_date ASC,
-                        reservation_start_date ASC;
+                        CASE project_type WHEN 'S案件' THEN 1 
+                                          WHEN 'Y案件' THEN 2 
+                                          WHEN 'デフォルト' THEN 3 
+                                          WHEN '再販' THEN 4 
+                                          ELSE 5 END ASC
+                        ;
                 ",
                 title_sql_select, year_month_start, year_month_end
             )
