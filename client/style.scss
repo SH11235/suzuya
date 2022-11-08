@@ -1,3 +1,9 @@
+$pink: #f98ef0;
+$yellow: #fff463;
+$blue: #42ccff;
+$green: #8eef64;
+$gray: #c0c0c0;
+
 /* common  */
 body {
   line-height: 1.6;
@@ -79,6 +85,22 @@ html {
   border-radius: 4px;
   box-shadow: none;
   box-sizing: border-box;
+}
+
+.select-list:has(.pink:checked) {
+  background-color: $pink;
+}
+.select-list:has(.yellow:checked) {
+  background-color: $yellow;
+}
+.select-list:has(.blue:checked) {
+  background-color: $blue;
+}
+.select-list:has(.green:checked) {
+  background-color: $green;
+}
+.select-list:has(.gray:checked) {
+  background-color: $gray;
 }
 
 .home-page {
