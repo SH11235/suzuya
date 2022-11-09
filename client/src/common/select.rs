@@ -1,144 +1,172 @@
 use serde::Serialize;
 use std::fmt;
 
-use super::api::RESUBMISSION_OK;
-
+pub const PROJECT_DEFAULT: &str = "デフォルト";
+pub const PROJECT_S: &str = "S案件";
+pub const PROJECT_Y: &str = "Y案件";
+pub const PROJECT_RE: &str = "再販";
 pub fn project_type_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from("デフォルト"),
+            name: String::from(PROJECT_DEFAULT),
             color: Color::WHITE,
         },
         StatusName {
-            name: String::from("S案件"),
+            name: String::from(PROJECT_S),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("Y案件"),
+            name: String::from(PROJECT_Y),
             color: Color::BLUE,
         },
         StatusName {
-            name: String::from("再販"),
+            name: String::from(PROJECT_RE),
             color: Color::GRAY,
         },
     ]
 }
 
+pub const CATALOG_NOT_STARTED_YET: &str = "未着手";
+pub const CATALOG_UNNECESSARY: &str = "不要";
+pub const CATALOG_IN_PROGRESS: &str = "作成中";
+pub const CATALOG_COMPLETED: &str = "作成済み";
 pub fn catalog_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from("未着手"),
+            name: String::from(CATALOG_NOT_STARTED_YET),
             color: Color::WHITE,
         },
         StatusName {
-            name: String::from("不要"),
+            name: String::from(CATALOG_UNNECESSARY),
             color: Color::GRAY,
         },
         StatusName {
-            name: String::from("作成中"),
+            name: String::from(CATALOG_IN_PROGRESS),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("作成済み"),
+            name: String::from(CATALOG_COMPLETED),
             color: Color::GREEN,
         },
     ]
 }
 
+pub const ILLUST_NOT_STARTED_YET: &str = "未着手";
+pub const ILLUST_WAITING_FOR_MATERIALS: &str = "素材提供待ち";
+pub const ILLUST_ROUGH_IN_PROGRESS: &str = "ラフ作成中";
+pub const ILLUST_ROUGH_UNDER_SUPERVISION: &str = "ラフ監修中";
+pub const ILLUST_WAITING_FOR_DELIVERY: &str = "イラスト納品待ち";
+pub const ILLUST_LINE_DRAWING_IN_PROGRESS: &str = "線画作成中";
+pub const ILLUST_LINE_DRAWING_UNDER_SUPERVISION: &str = "線画監修中";
+pub const ILLUST_COLORING_IN_PROGRESS: &str = "着彩作成中";
+pub const ILLUST_COLORING_UNDER_SUPERVISION: &str = "着彩監修中";
+pub const ILLUST_COMPLETED: &str = "完了";
 pub fn illust_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from("未着手"),
+            name: String::from(ILLUST_NOT_STARTED_YET),
             color: Color::WHITE,
         },
         StatusName {
-            name: String::from("素材提供待ち"),
+            name: String::from(ILLUST_WAITING_FOR_MATERIALS),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("ラフ作成中"),
+            name: String::from(ILLUST_ROUGH_IN_PROGRESS),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("ラフ監修中"),
+            name: String::from(ILLUST_ROUGH_UNDER_SUPERVISION),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("イラスト納品待ち"),
+            name: String::from(ILLUST_WAITING_FOR_DELIVERY),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("線画作成中"),
+            name: String::from(ILLUST_LINE_DRAWING_IN_PROGRESS),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("線画監修中"),
+            name: String::from(ILLUST_LINE_DRAWING_UNDER_SUPERVISION),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("着彩作成中"),
+            name: String::from(ILLUST_COLORING_IN_PROGRESS),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("着彩監修中"),
+            name: String::from(ILLUST_COLORING_UNDER_SUPERVISION),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("完了"),
+            name: String::from(ILLUST_COMPLETED),
             color: Color::GREEN,
         },
     ]
 }
 
+pub const DESIGN_NOT_STARTED_YET: &str = "未着手";
+pub const DESIGN_WAITING_FOR_MATERIALS: &str = "素材提供待ち";
+pub const DESIGN_IN_PROGRESS: &str = "デザイン作成中";
+pub const DESIGN_UNDER_SUPERVISION: &str = "デザイン監修中";
+pub const DESIGN_PREPARING_SUBMISSION_DATA: &str = "入稿データ作成中";
+pub const DESIGN_ARRANGING_PROOFREADING: &str = "校正手配中";
+pub const DESIGN_WAITING_FOR_ANOTHER_PROOFREADING: &str = "他校正待ち";
+pub const DESIGN_PROOFREADING_UNDER_SUPERVISION: &str = "校正監修中";
+pub const DESIGN_PROOFREADING_COMPLETED: &str = "校了";
+pub const DESIGN_ORDERED: &str = "発注済み";
 pub fn design_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from("未着手"),
+            name: String::from(DESIGN_NOT_STARTED_YET),
             color: Color::WHITE,
         },
         StatusName {
-            name: String::from("素材提供待ち"),
+            name: String::from(DESIGN_WAITING_FOR_MATERIALS),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("デザイン作成中"),
+            name: String::from(DESIGN_IN_PROGRESS),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("デザイン監修中"),
+            name: String::from(DESIGN_UNDER_SUPERVISION),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("入稿データ作成中"),
+            name: String::from(DESIGN_PREPARING_SUBMISSION_DATA),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("校正手配中"),
+            name: String::from(DESIGN_ARRANGING_PROOFREADING),
             color: Color::BLUE,
         },
         StatusName {
-            name: String::from("他校正待ち"),
+            name: String::from(DESIGN_WAITING_FOR_ANOTHER_PROOFREADING),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("校正監修中"),
+            name: String::from(DESIGN_PROOFREADING_UNDER_SUPERVISION),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("校了"),
+            name: String::from(DESIGN_PROOFREADING_COMPLETED),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("発注済み"),
+            name: String::from(DESIGN_ORDERED),
             color: Color::GREEN,
         },
     ]
 }
 
+pub const RESUBMISSION_NONE: &str = "";
+pub const RESUBMISSION_OK: &str = "○";
 pub fn resubmission_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from(""),
+            name: String::from(RESUBMISSION_NONE),
             color: Color::WHITE,
         },
         StatusName {
@@ -148,46 +176,99 @@ pub fn resubmission_list() -> Vec<StatusName> {
     ]
 }
 
+pub const LINE_UNADDRESSED: &str = "未対応";
+pub const LINE_UNNECESSARY: &str = "不要";
+pub const LINE_DONE: &str = "対応済";
 pub fn line_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from("未対応"),
+            name: String::from(LINE_UNADDRESSED),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("不要"),
-            color: Color::WHITE,
+            name: String::from(LINE_UNNECESSARY),
+            color: Color::GRAY,
         },
         StatusName {
-            name: String::from("対応済"),
+            name: String::from(LINE_DONE),
             color: Color::GREEN,
         },
     ]
 }
 
+pub const ANNOUNCE_NOT_STARTED_YET: &str = "未着手";
+pub const ANNOUNCE_UNNECESSARY: &str = "不要";
+pub const ANNOUNCE_IN_PROGRESS: &str = "作成中";
+pub const ANNOUNCE_UNDER_SUPERVISION: &str = "監修中";
+pub const ANNOUNCE_COMPLETED: &str = "作成済み";
 pub fn announce_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
-            name: String::from("未着手"),
+            name: String::from(ANNOUNCE_NOT_STARTED_YET),
             color: Color::WHITE,
         },
         StatusName {
-            name: String::from("不要"),
+            name: String::from(ANNOUNCE_UNNECESSARY),
             color: Color::GRAY,
         },
         StatusName {
-            name: String::from("作成中"),
+            name: String::from(ANNOUNCE_IN_PROGRESS),
             color: Color::YELLOW,
         },
         StatusName {
-            name: String::from("監修中"),
+            name: String::from(ANNOUNCE_UNDER_SUPERVISION),
             color: Color::PINK,
         },
         StatusName {
-            name: String::from("作成済み"),
+            name: String::from(ANNOUNCE_COMPLETED),
             color: Color::GREEN,
         },
     ]
+}
+
+pub fn get_corresponding_color(text: &str) -> Color {
+    match text {
+        // 重複する文言はコメントアウトしているが、色の対応は同じなので問題ない
+        PROJECT_DEFAULT => Color::WHITE,
+        PROJECT_S => Color::YELLOW,
+        PROJECT_Y => Color::BLUE,
+        PROJECT_RE => Color::GRAY,
+        CATALOG_NOT_STARTED_YET => Color::WHITE,
+        CATALOG_UNNECESSARY => Color::GRAY,
+        CATALOG_IN_PROGRESS => Color::YELLOW,
+        CATALOG_COMPLETED => Color::GREEN,
+        // ILLUST_NOT_STARTED_YET => Color::WHITE,
+        ILLUST_WAITING_FOR_MATERIALS => Color::PINK,
+        ILLUST_ROUGH_IN_PROGRESS => Color::YELLOW,
+        ILLUST_ROUGH_UNDER_SUPERVISION => Color::PINK,
+        ILLUST_WAITING_FOR_DELIVERY => Color::YELLOW,
+        ILLUST_LINE_DRAWING_IN_PROGRESS => Color::YELLOW,
+        ILLUST_LINE_DRAWING_UNDER_SUPERVISION => Color::PINK,
+        ILLUST_COLORING_IN_PROGRESS => Color::YELLOW,
+        ILLUST_COLORING_UNDER_SUPERVISION => Color::PINK,
+        ILLUST_COMPLETED => Color::GREEN,
+        // DESIGN_NOT_STARTED_YET => Color::WHITE,
+        // DESIGN_WAITING_FOR_MATERIALS => Color::PINK,
+        DESIGN_IN_PROGRESS => Color::YELLOW,
+        DESIGN_UNDER_SUPERVISION => Color::PINK,
+        DESIGN_PREPARING_SUBMISSION_DATA => Color::YELLOW,
+        DESIGN_ARRANGING_PROOFREADING => Color::BLUE,
+        DESIGN_WAITING_FOR_ANOTHER_PROOFREADING => Color::YELLOW,
+        DESIGN_PROOFREADING_UNDER_SUPERVISION => Color::PINK,
+        DESIGN_PROOFREADING_COMPLETED => Color::YELLOW,
+        DESIGN_ORDERED => Color::GREEN,
+        RESUBMISSION_NONE => Color::WHITE,
+        RESUBMISSION_OK => Color::YELLOW,
+        LINE_UNADDRESSED => Color::YELLOW,
+        // LINE_UNNECESSARY => Color::GRAY,
+        LINE_DONE => Color::GREEN,
+        // ANNOUNCE_NOT_STARTED_YET => Color::WHITE,
+        // ANNOUNCE_UNNECESSARY => Color::GRAY,
+        // ANNOUNCE_IN_PROGRESS => Color::YELLOW,
+        ANNOUNCE_UNDER_SUPERVISION => Color::PINK,
+        // ANNOUNCE_COMPLETED => Color::GREEN,
+        _ => Color::WHITE,
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]

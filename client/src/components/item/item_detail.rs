@@ -1,5 +1,6 @@
-use crate::common::api::RESUBMISSION_OK;
-use crate::common::select::{design_status_list, illust_status_list, resubmission_list, line_list};
+use crate::common::select::{
+    design_status_list, illust_status_list, line_list, resubmission_list, RESUBMISSION_OK,
+};
 use crate::components::common::select_box::SelectBox;
 use crate::components::common::select_worker_maker::SelectUserMaker;
 use crate::components::common::text_box::TextBox;

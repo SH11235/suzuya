@@ -1,5 +1,6 @@
 use crate::common::api::{backend_url, RELEASE_DATE_TEXT};
 use crate::common::date_util::date_time_with_timezone_to_string;
+use crate::common::select::{get_corresponding_color, RESUBMISSION_NONE, RESUBMISSION_OK};
 use crate::components::common::header_link::HeaderLink;
 use crate::components::item::monthly_field::MonthlyField;
 use crate::model::item_page::{ItemListResponse, YearMonthState};
@@ -186,8 +187,8 @@ pub fn item_list() -> Html {
                                     title.items.iter().map(|item| {
                                         index += 1;
                                         let resubmission = match item.resubmission {
-                                            true => "○",
-                                            false => "",
+                                            true => RESUBMISSION_OK,
+                                            false => RESUBMISSION_NONE,
                                         };
                                         html! {
                                             <tr style={display_style.clone()}>
@@ -213,7 +214,7 @@ pub fn item_list() -> Html {
                                                         <td rowspan={date_column_rowspan.to_string()}>
                                                             <a href={format!("/item_edit/{}", &title.id)}>{ "編集"}</a>
                                                         </td>
-                                                        <td rowspan={date_column_rowspan.to_string()}>
+                                                        <td class={get_corresponding_color(&title.project_type).to_string()} rowspan={date_column_rowspan.to_string()}>
                                                             {&title.name}
                                                         </td>
                                                         <td>
@@ -225,16 +226,16 @@ pub fn item_list() -> Html {
                                                         <td>
                                                             {&item.sku.unwrap_or(0)}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.illust_status).to_string()}>
                                                             {&item.illust_status}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.illust_status).to_string()}>
                                                             {item.pic_illust.clone().unwrap_or("".to_string())}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.design_status).to_string()}>
                                                             {&item.design_status}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.design_status).to_string()}>
                                                             {item.pic_design.clone().unwrap_or("".to_string())}
                                                         </td>
                                                         <td>
@@ -252,10 +253,10 @@ pub fn item_list() -> Html {
                                                         <td>
                                                             {item.line.clone()}
                                                         </td>
-                                                        <td rowspan={date_column_rowspan.to_string()}>
+                                                        <td class={get_corresponding_color(&title.catalog_status).to_string()} rowspan={date_column_rowspan.to_string()}>
                                                             {&title.catalog_status}
                                                         </td>
-                                                        <td rowspan={date_column_rowspan.to_string()}>
+                                                        <td class={get_corresponding_color(&title.announcement_status).to_string()} rowspan={date_column_rowspan.to_string()}>
                                                             {&title.announcement_status}
                                                         </td>
                                                         <td rowspan={date_column_rowspan.to_string()}>
@@ -275,16 +276,16 @@ pub fn item_list() -> Html {
                                                         <td>
                                                             {&item.sku.unwrap_or(0)}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.illust_status).to_string()}>
                                                             {&item.illust_status}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.illust_status).to_string()}>
                                                             {item.pic_illust.clone().unwrap_or("".to_string())}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.design_status).to_string()}>
                                                             {&item.design_status}
                                                         </td>
-                                                        <td>
+                                                        <td class={get_corresponding_color(&item.design_status).to_string()}>
                                                             {item.pic_design.clone().unwrap_or("".to_string())}
                                                         </td>
                                                         <td>

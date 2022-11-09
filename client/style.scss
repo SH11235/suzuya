@@ -90,15 +90,19 @@ html {
 .select-list:has(.pink:checked) {
   background-color: $pink;
 }
+
 .select-list:has(.yellow:checked) {
   background-color: $yellow;
 }
+
 .select-list:has(.blue:checked) {
   background-color: $blue;
 }
+
 .select-list:has(.green:checked) {
   background-color: $green;
 }
+
 .select-list:has(.gray:checked) {
   background-color: $gray;
 }
@@ -144,6 +148,26 @@ html {
     color: #fff;
     opacity: 0.8;
     text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
+  }
+
+  td.pink {
+    background-color: $pink;
+  }
+
+  td.yellow {
+    background-color: $yellow;
+  }
+
+  td.blue {
+    background-color: $blue;
+  }
+
+  td.green {
+    background-color: $green;
+  }
+
+  td.gray {
+    background-color: $gray;
   }
 }
 
