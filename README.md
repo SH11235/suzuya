@@ -6,9 +6,9 @@ A merchandise management application using SeaORM, Actix-Web, Tera
 
 - rustc：1.60.0
 - DB：PostgreSQL（14）
-- ORM：SeaORM（0.7）
+- ORM：SeaORM（0.9）
 - Backend：Actix-Web（4）
-- Template：Tera（1.15.0）
+- Frontend：Yew（0.19）
 
 ## develop env
 
@@ -58,3 +58,21 @@ https://yew.rs/ja/docs/getting-started/introduction
     cd client
     trunc serve
   ```
+
+## Release
+
+- heroku
+
+check `.git/config`
+
+```
+[remote "heroku"]
+	url = https://git.heroku.com/your-resource-name.git
+```
+
+```sh
+heroku container:push web
+heroku container:release web
+# log
+heroku logs --tail
+```
