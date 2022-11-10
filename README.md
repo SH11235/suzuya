@@ -63,16 +63,16 @@ https://yew.rs/ja/docs/getting-started/introduction
 
 - heroku
 
-check `.git/config`
+  check `.git/config`
 
-```
-[remote "heroku"]
-	url = https://git.heroku.com/your-resource-name.git
-```
+  ```
+  [remote "heroku"]
+	  url = https://git.heroku.com/your-resource-name.git
+  ```
 
-```sh
-heroku container:push web
-heroku container:release web
-# log
-heroku logs --tail
-```
+  ```sh
+  heroku container:push web
+  heroku container:release web
+  # log
+  heroku logs --tail
+  ```
