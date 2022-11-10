@@ -1,5 +1,4 @@
 use actix_cors::Cors;
-use actix_files::Files as Fs;
 use actix_web::http::header;
 use actix_web::{middleware, web, App, HttpServer};
 use sea_orm;
@@ -58,7 +57,6 @@ async fn main() -> std::io::Result<()> {
             .supports_credentials()
             .max_age(3600);
         App::new()
-            .service(Fs::new("/static", "./static"))
             .app_data(web::Data::new(state.clone()))
             .wrap(middleware::Logger::default()) // enable logger
             .wrap(cors)
