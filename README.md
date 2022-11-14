@@ -1,6 +1,6 @@
 # suzuya
 
-A merchandise management application using SeaORM, Actix-Web, Tera
+A merchandise management application using SeaORM, Actix-Web, Yew
 
 ## versions
 
