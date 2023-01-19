@@ -21,7 +21,7 @@ cp .env.sample .env
 PostgreSQL
 
 ```sh
-docker-compose up -d postgres
+docker compose up -d postgres
 ```
 
 install sea-orm-cli
