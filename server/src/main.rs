@@ -10,7 +10,8 @@ use suzuya::{item, maker, worker};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    std::env::set_var("RUST_LOG", "debug");
+    let log_level = env::var("RUST_LOG").unwrap_or(String::from("info"));
+    std::env::set_var("RUST_LOG", log_level);
     tracing_subscriber::fmt::init();
 
     // get env vars
@@ -22,15 +23,10 @@ async fn main() -> std::io::Result<()> {
 
     // establish connection to database and apply migrations
     let conn = sea_orm::Database::connect(&db_url).await.unwrap();
-    match env::var("MIGRATION") {
-        Ok(flag) => {
-            if flag == String::from("true") {
-                println!("Run migration.");
-                Migrator::up(&conn, None).await.unwrap();
-                println!("Finish migration.");
-            }
-        }
-        Err(_) => (),
+    if env::var("MIGRATION").unwrap_or(String::from("false")) == String::from("true") {
+        tracing::debug!("Run migration.");
+        Migrator::up(&conn, None).await.unwrap();
+        tracing::debug!("Finish migration.");
     }
 
     let state = AppState { conn };
@@ -68,7 +64,7 @@ async fn main() -> std::io::Result<()> {
         None => server.bind(&server_url)?,
     };
 
-    println!("Starting server at {}", server_url);
+    tracing::debug!("Starting server at {}", server_url);
     server.run().await?;
 
     Ok(())
