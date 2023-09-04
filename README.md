@@ -59,7 +59,7 @@ PGPASSWORD=postgres psql -f ./sample_data.sql -p 8765 -U postgres -d suzuya -h l
 
   ```sh
     cd client
-    trunc serve
+    trunk serve
   ```
 
 ## Release
