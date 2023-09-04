@@ -44,16 +44,19 @@ PGPASSWORD=postgres psql -f ./sample_data.sql -p 8765 -U postgres -d suzuya -h l
 
 ## Yew
 
-https://yew.rs/ja/docs/getting-started/introduction
+<https://yew.rs/ja/docs/getting-started/introduction>
 
 ## App start
 
 - server
+
   ```sh
     cd server
     cargo run
   ```
+
 - client
+
   ```sh
     cd client
     trunc serve
@@ -65,9 +68,9 @@ https://yew.rs/ja/docs/getting-started/introduction
 
   check `.git/config`
 
-  ```
+  ```.git/config
   [remote "heroku"]
-	  url = https://git.heroku.com/your-resource-name.git
+    url = https://git.heroku.com/your-resource-name.git
   ```
 
   ```sh
