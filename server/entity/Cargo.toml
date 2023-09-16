@@ -12,4 +12,10 @@ path = "src/lib.rs"
 serde = { version = "1", features = ["derive"] }
 
 [dependencies.sea-orm]
-version = "^0.9"
+version = "^0.9.0"
+features = [
+    "macros",
+    "debug-print",
+    "runtime-actix-native-tls",
+    "sqlx-postgres"
+]

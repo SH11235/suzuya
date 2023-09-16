@@ -30,7 +30,7 @@ features = [
     "runtime-actix-native-tls",
     "sqlx-postgres",
 ]
-version = "^0.9"
+version = "^0.9.0"
 
 [dependencies.tracing-subscriber]
 features = ["env-filter"]
