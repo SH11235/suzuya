@@ -103,9 +103,9 @@ pub fn item_list() -> Html {
             <table border="3">
                 <thead>
                     <tr>
-                        <th>{ "発売月" }</th>
-                        <th>{ "案内" }</th>
-                        <th>{ "〆切" }</th>
+                        <th>{ "入荷日" }</th>
+                        <th>{ "解禁" }</th>
+                        <th>{ "締切" }</th>
                         <th>{ "発注" }</th>
                         <th>{ "最終更新日" }</th>
                         <th>{ "編集" }</th>
