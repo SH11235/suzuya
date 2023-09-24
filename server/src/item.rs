@@ -178,6 +178,18 @@ async fn api_item_list(
                 }
                 None => None,
             };
+            let delivery_date = match title.delivery_date {
+                Some(delivery_date) => {
+                    Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let list_submission_date = match title.list_submission_date {
+                Some(list_submission_date) => {
+                    Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
             let reservation_start_date = match title.reservation_start_date {
                 Some(reservation_start_date) => {
                     Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
@@ -202,6 +214,8 @@ async fn api_item_list(
                 id: title.id,
                 name: title.name,
                 release_date,
+                delivery_date,
+                list_submission_date,
                 reservation_start_date,
                 reservation_deadline,
                 order_date_to_maker,
@@ -263,6 +277,16 @@ async fn api_create_items(
         Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
         None => None,
     };
+    let delivery_date = match post_data.delivery_date {
+        Some(delivery_date) => Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let list_submission_date = match post_data.list_submission_date {
+        Some(list_submission_date) => {
+            Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
     let reservation_start_date = match post_data.reservation_start_date {
         Some(reservation_start_date) => {
             Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
@@ -287,6 +311,8 @@ async fn api_create_items(
         id: Set(post_data.title_id),
         name: Set(post_data.title_name.clone()),
         release_date: Set(release_date),
+        delivery_date: Set(delivery_date),
+        list_submission_date: Set(list_submission_date),
         reservation_start_date: Set(reservation_start_date),
         reservation_deadline: Set(reservation_deadline),
         order_date_to_maker: Set(order_date_to_maker),
@@ -317,6 +343,20 @@ async fn api_create_items(
             maker_id: Set(item.maker_id),
             retail_price: Set(item.retail_price),
             double_check_person_id: Set(item.double_check_person_id),
+            rough_coordinator_id: Set(item.rough_coordinator_id),
+            rough_check_person_id: Set(item.rough_check_person_id),
+            line_art_coordinator_id: Set(item.line_art_coordinator_id),
+            line_art_check_person_id: Set(item.line_art_check_person_id),
+            coloring_coordinator_id: Set(item.coloring_coordinator_id),
+            coloring_check_person_id: Set(item.coloring_check_person_id),
+            design_coordinator_id: Set(item.design_coordinator_id),
+            design_check_person_id: Set(item.design_check_person_id),
+            submission_data_coordinator_id: Set(item.submission_data_coordinator_id),
+            submission_data_check_person_id: Set(item.submission_data_check_person_id),
+            announcement_materials_coordinator_id: Set(item.announcement_materials_coordinator_id),
+            announcement_materials_check_person_id: Set(item.announcement_materials_check_person_id),
+            jan_coordinator_id: Set(item.jan_coordinator_id),
+            jan_check_person_id: Set(item.jan_check_person_id),
             deleted: Set(false),
             resubmission: Set(item.resubmission),
             line: Set(item.line.clone()),
@@ -374,6 +414,16 @@ async fn api_item_edit_page(
         Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
         None => None,
     };
+    let delivery_date = match title.delivery_date {
+        Some(delivery_date) => Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let list_submission_date = match title.list_submission_date {
+        Some(list_submission_date) => {
+            Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
     let reservation_start_date = match title.reservation_start_date {
         Some(reservation_start_date) => {
             Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
@@ -399,6 +449,8 @@ async fn api_item_edit_page(
         workers: workers,
         makers: makers,
         release_date,
+        delivery_date,
+        list_submission_date,
         reservation_start_date,
         reservation_deadline,
         order_date_to_maker,
@@ -433,6 +485,16 @@ async fn api_update_items(
         name: Set(put_data.title_name),
         release_date: match put_data.release_date {
             Some(release_date) => Set(Some(utc_date_time_to_jst(&release_date))),
+            None => Set(None),
+        },
+        delivery_date: match put_data.delivery_date {
+            Some(delivery_date) => Set(Some(utc_date_time_to_jst(&delivery_date))),
+            None => Set(None),
+        },
+        list_submission_date: match put_data.list_submission_date {
+            Some(list_submission_date) => {
+                Set(Some(utc_date_time_to_jst(&list_submission_date)))
+            }
             None => Set(None),
         },
         reservation_start_date: match put_data.reservation_start_date {
