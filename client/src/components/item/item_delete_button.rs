@@ -52,7 +52,6 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                                 maker_id: item_state.maker_id.clone(),
                                 retail_price: item_state.retail_price.clone(),
                                 resubmission: item_state.resubmission.clone(),
-                                double_check_person_id: item_state.double_check_person_id.clone(),
                                 line: item_state.line.clone(),
                                 is_saved: item_state.is_saved,
                             });
@@ -87,7 +86,6 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price.clone(),
                     resubmission: item_state.resubmission.clone(),
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
                     is_saved: item_state.is_saved,
                 });

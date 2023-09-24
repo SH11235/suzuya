@@ -85,7 +85,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             maker_id: item.maker_id.clone(),
                             retail_price: item.retail_price,
                             resubmission: item.resubmission,
-                            double_check_person_id: item.double_check_person_id.clone(),
                             line: item.line.clone(),
                             is_saved: true,
                         })
@@ -237,7 +236,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
                     resubmission: item_state.resubmission,
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
                     is_saved: item_state.is_saved,
                 });
@@ -271,7 +269,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
                     resubmission: item_state.resubmission,
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
                     is_saved: true,
                 });
@@ -294,7 +291,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         maker_id: item_state.maker_id.clone(),
                         retail_price: item_state.retail_price,
                         resubmission: item_state.resubmission,
-                        double_check_person_id: item_state.double_check_person_id.clone(),
                         line: item_state.line.clone(),
                     };
                     item

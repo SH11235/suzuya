@@ -76,7 +76,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 "maker_code" => ItemInfo::MakerId,
                 "retail_price" => ItemInfo::RetailPrice,
                 "resubmission" => ItemInfo::Resubmission,
-                "double_check_person" => ItemInfo::DoubleCheckPersonId,
                 "line" => ItemInfo::Line,
                 _ => {
                     panic!("Unexpected name: {}", name);
@@ -98,7 +97,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     maker_id: item.maker_id.clone(),
                     retail_price: item.retail_price.clone(),
                     resubmission: item.resubmission.clone(),
-                    double_check_person_id: item.double_check_person_id.clone(),
                     line: item.line.clone(),
                     is_saved: item.is_saved.clone(),
                 })
@@ -135,9 +133,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 ItemInfo::Resubmission => {
                     original_items[index - 1].resubmission =
                         if val == RESUBMISSION_OK { true } else { false };
-                }
-                ItemInfo::DoubleCheckPersonId => {
-                    original_items[index - 1].double_check_person_id = Some(val);
                 }
                 ItemInfo::Line => {
                     original_items[index - 1].line = val.parse().unwrap();
@@ -193,10 +188,6 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             <div class="input-warpper">{"再入稿"}<br/>
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "resubmission", props.index)} name={ format!("{}-{}", "resubmission", props.index)}
                         value={resubmission.clone()} select_list={resubmission_list()}/>
-            </div>
-            <div class="input-warpper">{"ダブルチェック"}<br/>
-                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
-                    value={props.item_info.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
             <div class="input-warpper">{"ライン"}<br/>
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "line", props.index)} name={ format!("{}-{}", "line", props.index)}

@@ -120,7 +120,6 @@ pub fn item_list() -> Html {
                         <th>{ "工場" }</th>
                         <th>{ "上代" }</th>
                         <th>{ "再入稿" }</th>
-                        <th>{ "ダブルチェック" }</th>
                         <th>{ "ライン" }</th>
                         <th>{ "カタログ" }</th>
                         <th>{ "告知物" }</th>
@@ -248,9 +247,6 @@ pub fn item_list() -> Html {
                                                             {resubmission}
                                                         </td>
                                                         <td>
-                                                            {item.double_check_person.clone().unwrap_or("".to_string())}
-                                                        </td>
-                                                        <td>
                                                             {item.line.clone()}
                                                         </td>
                                                         <td class={get_corresponding_color(&title.catalog_status).to_string()} rowspan={date_column_rowspan.to_string()}>
@@ -296,9 +292,6 @@ pub fn item_list() -> Html {
                                                         </td>
                                                         <td>
                                                             {resubmission}
-                                                        </td>
-                                                        <td>
-                                                            {item.double_check_person.clone().unwrap_or("".to_string())}
                                                         </td>
                                                         <td>
                                                             {item.line.clone()}

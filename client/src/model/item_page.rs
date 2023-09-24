@@ -31,7 +31,6 @@ pub struct ItemRegisterParams {
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
     pub resubmission: bool,
-    pub double_check_person_id: Option<String>,
     pub line: String,
 }
 
@@ -90,7 +89,6 @@ pub struct ItemState {
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
     pub resubmission: bool,
-    pub double_check_person_id: Option<String>,
     pub line: String,
     pub is_saved: bool,
 }
@@ -107,7 +105,6 @@ pub enum ItemInfo {
     RetailPrice,
     Resubmission,
     Line,
-    DoubleCheckPersonId,
 }
 
 #[derive(Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
@@ -185,8 +182,6 @@ pub struct ItemWithMakerAndWorker {
     pub maker_id: Option<String>,
     pub maker_code: Option<String>,
     pub retail_price: Option<i32>,
-    pub double_check_person_id: Option<String>,
-    pub double_check_person: Option<String>,
     pub resubmission: bool,
     pub line: String,
 }

@@ -14,7 +14,6 @@ pub struct ItemModel {
     pub pic_design_id: Option<String>, // from user 「デザイン担当者」
     pub maker_id: Option<String>,      // from maker
     pub retail_price: Option<i32>,     // 上代
-    pub double_check_person_id: Option<String>, // from user 社員名
     pub resubmission: bool,
     pub line: String,
 }
