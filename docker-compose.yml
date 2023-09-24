@@ -12,13 +12,11 @@ x-environment: &environment
   TZ: Asia/Tokyo
   PGTZ: Asia/Tokyo
 
-
-
 services:
   app:
     build:
-      context: ./server
-      dockerfile: Dockerfile.app
+      context: .
+      dockerfile: ./Dockerfile
     container_name: app
     working_dir: /app
     tty: true
