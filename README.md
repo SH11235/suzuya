@@ -64,18 +64,10 @@ PGPASSWORD=postgres psql -f ./sample_data.sql -p 8765 -U postgres -d suzuya -h l
 
 ## Release
 
-- heroku
-
-  check `.git/config`
-
-  ```.git/config
-  [remote "heroku"]
-    url = https://git.heroku.com/your-resource-name.git
-  ```
+- client
 
   ```sh
-  heroku container:push web
-  heroku container:release web
-  # log
-  heroku logs --tail
+    cd client
+    # dist以下にhtml, css, js, wasm生成
+    trunk build --release
   ```
