@@ -561,7 +561,7 @@ async fn api_delete_title(
     Ok(HttpResponse::Ok().finish())
 }
 
-fn date_to_string(date_time: &DateTime<Utc>) -> String {
+fn _date_to_string(date_time: &DateTime<Utc>) -> String {
     // format document https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html
     let date_time_japan = utc_date_time_to_jst(date_time);
     let day_format = date_time_japan.format("%w").to_string(); // Sunday = 0, Monday = 1, ..., Saturday = 6.
