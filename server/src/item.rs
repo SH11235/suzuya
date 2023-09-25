@@ -53,6 +53,8 @@ async fn api_item_list(
             id,
             name,
             release_date,
+            delivery_date,
+            list_submission_date,
             reservation_start_date,
             reservation_deadline,
             order_date_to_maker,
@@ -143,8 +145,36 @@ async fn api_item_list(
                     item.retail_price,
                     item.resubmission,
                     item.double_check_person_id,
+                    item.line,
                     double_check_person.name AS double_check_person,
-                    item.line
+                    item.rough_coordinator_id,
+                    rough_coordinator.name AS rough_coordinator,
+                    item.rough_check_person_id,
+                    rough_check_person.name AS rough_check_person,
+                    item.line_art_coordinator_id,
+                    line_art_coordinator.name AS line_art_coordinator,
+                    item.line_art_check_person_id,
+                    line_art_check_person.name AS line_art_check_person,
+                    item.coloring_coordinator_id,
+                    coloring_coordinator.name AS coloring_coordinator,
+                    item.coloring_check_person_id,
+                    coloring_check_person.name AS coloring_check_person,
+                    item.design_coordinator_id,
+                    design_coordinator.name AS design_coordinator,
+                    item.design_check_person_id,
+                    design_check_person.name AS design_check_person,
+                    item.submission_data_coordinator_id,
+                    submission_data_coordinator.name AS submission_data_coordinator,
+                    item.submission_data_check_person_id,
+                    submission_data_check_person.name AS submission_data_check_person,
+                    item.announcement_materials_coordinator_id,
+                    announcement_materials_coordinator.name AS announcement_materials_coordinator,
+                    item.announcement_materials_check_person_id,
+                    announcement_materials_check_person.name AS announcement_materials_check_person,
+                    item.jan_coordinator_id,
+                    jan_coordinator.name AS jan_coordinator,
+                    item.jan_check_person_id,
+                    jan_check_person.name AS jan_check_person
                 FROM
                     item
                 LEFT JOIN 
@@ -155,6 +185,34 @@ async fn api_item_list(
                     worker AS pic_design ON item.pic_design_id = pic_design.id
                 LEFT JOIN
                     worker AS double_check_person ON item.double_check_person_id = double_check_person.id
+                LEFT JOIN
+                    worker AS rough_coordinator ON item.rough_coordinator_id = rough_coordinator.id
+                LEFT JOIN
+                    worker AS rough_check_person ON item.rough_check_person_id = rough_check_person.id
+                LEFT JOIN
+                    worker AS line_art_coordinator ON item.line_art_coordinator_id = line_art_coordinator.id
+                LEFT JOIN
+                    worker AS line_art_check_person ON item.line_art_check_person_id = line_art_check_person.id
+                LEFT JOIN
+                    worker AS coloring_coordinator ON item.coloring_coordinator_id = coloring_coordinator.id
+                LEFT JOIN
+                    worker AS coloring_check_person ON item.coloring_check_person_id = coloring_check_person.id
+                LEFT JOIN
+                    worker AS design_coordinator ON item.design_coordinator_id = design_coordinator.id
+                LEFT JOIN
+                    worker AS design_check_person ON item.design_check_person_id = design_check_person.id
+                LEFT JOIN
+                    worker AS submission_data_coordinator ON item.submission_data_coordinator_id = submission_data_coordinator.id
+                LEFT JOIN
+                    worker AS submission_data_check_person ON item.submission_data_check_person_id = submission_data_check_person.id
+                LEFT JOIN
+                    worker AS announcement_materials_coordinator ON item.announcement_materials_coordinator_id = announcement_materials_coordinator.id
+                LEFT JOIN
+                    worker AS announcement_materials_check_person ON item.announcement_materials_check_person_id = announcement_materials_check_person.id
+                LEFT JOIN
+                    worker AS jan_coordinator ON item.jan_coordinator_id = jan_coordinator.id
+                LEFT JOIN
+                    worker AS jan_check_person ON item.jan_check_person_id = jan_check_person.id
                 WHERE
                     title_id = '{}'
                 AND
