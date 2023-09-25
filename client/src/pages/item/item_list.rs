@@ -179,7 +179,6 @@ pub fn item_list() -> Html {
                                             <td/>
                                             <td/>
                                             <td/>
-                                            <td/>
                                         </tr>
                                     }
                                 } else {
