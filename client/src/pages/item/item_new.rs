@@ -82,6 +82,8 @@ pub fn edit_item() -> Html {
             let name = match name {
                 "title" => TitleInfo::Title,
                 "release_date" => TitleInfo::ReleaseDate,
+                "delivery_date" => TitleInfo::DeliveryDate,
+                "list_submission_date" => TitleInfo::ListSubmissionDate,
                 "reservation_start_date" => TitleInfo::ReservationStartDate,
                 "reservation_deadline" => TitleInfo::ReservationDeadline,
                 "order_date_to_maker" => TitleInfo::OrderDateToMaker,
