@@ -150,6 +150,8 @@ pub struct TitleWithItems {
     pub id: String,
     pub name: String,
     pub release_date: Option<String>, // DateTimeWithTimeZone
+    pub delivery_date: Option<String>, // DateTimeWithTimeZone
+    pub list_submission_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
     pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone

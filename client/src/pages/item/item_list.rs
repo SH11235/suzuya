@@ -98,6 +98,8 @@ pub fn item_list() -> Html {
                 <thead>
                     <tr>
                         <th>{ "入荷日" }</th>
+                        <th>{ "納品日" }</th>
+                        <th>{ "リスト提出日" }</th>
                         <th>{ "解禁" }</th>
                         <th>{ "締切" }</th>
                         <th>{ "発注" }</th>
@@ -140,6 +142,12 @@ pub fn item_list() -> Html {
                                 <tr style={display_style.clone()}>
                                     <td rowspan={date_column_rowspan.to_string()}>
                                         { date_time_with_timezone_to_string(&title_with_items.release_date) }
+                                    </td>
+                                    <td rowspan={date_column_rowspan.to_string()}>
+                                        { date_time_with_timezone_to_string(&title_with_items.delivery_date) }
+                                    </td>
+                                    <td rowspan={date_column_rowspan.to_string()}>
+                                        { date_time_with_timezone_to_string(&title_with_items.list_submission_date) }
                                     </td>
                                     <td rowspan={date_column_rowspan.to_string()}>
                                         { date_time_with_timezone_to_string(&title_with_items.reservation_start_date) }
@@ -188,6 +196,12 @@ pub fn item_list() -> Html {
                                                 <>
                                                 <td rowspan={date_column_rowspan.to_string()}>
                                                     { date_time_with_timezone_to_string(&title_with_items.release_date) }
+                                                </td>
+                                                <td rowspan={date_column_rowspan.to_string()}>
+                                                    { date_time_with_timezone_to_string(&title_with_items.delivery_date) }
+                                                </td>
+                                                <td rowspan={date_column_rowspan.to_string()}>
+                                                    { date_time_with_timezone_to_string(&title_with_items.list_submission_date) }
                                                 </td>
                                                 <td rowspan={date_column_rowspan.to_string()}>
                                                     { date_time_with_timezone_to_string(&title_with_items.reservation_start_date) }
