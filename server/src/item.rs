@@ -550,9 +550,7 @@ async fn api_update_items(
             None => Set(None),
         },
         list_submission_date: match put_data.list_submission_date {
-            Some(list_submission_date) => {
-                Set(Some(utc_date_time_to_jst(&list_submission_date)))
-            }
+            Some(list_submission_date) => Set(Some(utc_date_time_to_jst(&list_submission_date))),
             None => Set(None),
         },
         reservation_start_date: match put_data.reservation_start_date {
@@ -720,22 +718,22 @@ fn last_day_of_month(year: String, month: String) -> String {
 mod tests {
     use chrono::{TimeZone, Utc};
 
-    use crate::item::date_to_string;
+    use crate::item::_date_to_string;
     use crate::item::last_day_of_month;
 
     #[test]
     fn test_date_to_string() {
         let date_time = Utc.ymd(2022, 2, 21).and_hms(16, 0, 0);
-        assert_eq!(date_to_string(&date_time), "02/22(火)".to_string());
+        assert_eq!(_date_to_string(&date_time), "02/22(火)".to_string());
 
         let date_time = Utc.ymd(2022, 12, 31).and_hms(11, 0, 0);
-        assert_eq!(date_to_string(&date_time), "12/31(土)".to_string());
+        assert_eq!(_date_to_string(&date_time), "12/31(土)".to_string());
 
         let date_time = Utc.ymd(2022, 12, 31).and_hms(16, 0, 0);
-        assert_eq!(date_to_string(&date_time), "01/01(日)".to_string());
+        assert_eq!(_date_to_string(&date_time), "01/01(日)".to_string());
 
         let date_time = Utc.ymd(2022, 1, 1).and_hms(0, 0, 0);
-        assert_eq!(date_to_string(&date_time), "01/01(土)".to_string());
+        assert_eq!(_date_to_string(&date_time), "01/01(土)".to_string());
     }
 
     #[test]
