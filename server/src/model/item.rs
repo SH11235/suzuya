@@ -1,33 +1,7 @@
-use chrono::{DateTime, Utc};
 use entity::{item, maker, worker};
 use sea_orm::prelude::{DateTimeUtc, DateTimeWithTimeZone, Uuid};
 use sea_orm::FromQueryResult;
 use serde::{Deserialize, Serialize};
-
-#[derive(Debug, FromQueryResult)]
-pub struct SelectResult {
-    pub id: Uuid,
-    pub release_date: Option<DateTime<Utc>>,
-    pub reservation_start_date: Option<DateTime<Utc>>,
-    pub reservation_deadline: Option<DateTime<Utc>>,
-    pub order_date_to_maker: Option<DateTime<Utc>>,
-    pub title_id: Uuid,
-    pub title: String,
-    pub project_type: String,
-    pub name: String,
-    pub product_code: Option<String>,
-    pub sku: Option<i32>,
-    pub illust_status: String,
-    pub pic_illust: Option<String>,
-    pub design_status: String,
-    pub pic_design: Option<String>,
-    pub maker_code: Option<String>,
-    pub retail_price: Option<i32>,
-    pub double_check_person: Option<String>,
-    pub catalog_status: String,
-    pub announcement_status: String,
-    pub remarks: Option<String>,
-}
 
 #[derive(Clone, Debug, FromQueryResult, Serialize)]
 pub struct YearMonthList {
@@ -35,6 +9,7 @@ pub struct YearMonthList {
     pub year: String,
     pub month: String,
 }
+
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
 pub struct InputNewItem {
     pub title_id: Uuid,
