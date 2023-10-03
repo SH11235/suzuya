@@ -47,7 +47,7 @@ async fn api_item_list(
     year_month_list.extend(year_month_not_null_list);
 
     // year_month_listの長さ分だけ、対応する日付のitemを取得する
-    let mut year_month_title_list = Vec::new();
+    let mut title_list_group_by_year_month = Vec::new();
     let title_sql_select = "
         SELECT
             id,
@@ -66,7 +66,7 @@ async fn api_item_list(
         FROM
             title
     ";
-    for year_month in year_month_list.clone() {
+    for year_month in year_month_list {
         let title_sql = if year_month.yyyymm == "発売日未定" {
             format!(
                 "{}{}",
@@ -285,7 +285,7 @@ async fn api_item_list(
                 items: items,
             });
         }
-        year_month_title_list.push(YearMonthTitleList {
+        title_list_group_by_year_month.push(YearMonthTitleList {
             yyyymm: year_month.yyyymm,
             year: year_month.year,
             month: year_month.month,
@@ -295,12 +295,12 @@ async fn api_item_list(
         });
     }
 
-    let response = ItemListResponse {
-        year_month_list: year_month_list.clone(),
-        year_month_title_list,
-    };
+    // let response = ItemListResponse {
+    //     year_month_list: year_month_list.clone(),
+    //     year_month_title_list,
+    // };
 
-    Ok(HttpResponse::Ok().json(response))
+    Ok(HttpResponse::Ok().json(title_list_group_by_year_month))
 }
 
 #[get("/api/item_new")]
