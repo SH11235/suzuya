@@ -60,6 +60,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     title_state.set(TitleState {
                         id: title_id,
                         release_date: fetched_items.release_date,
+                        delivery_date: fetched_items.delivery_date,
+                        list_submission_date: fetched_items.list_submission_date,
                         reservation_start_date: fetched_items.reservation_start_date,
                         reservation_deadline: fetched_items.reservation_deadline,
                         order_date_to_maker: fetched_items.order_date_to_maker,
@@ -127,6 +129,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let name = match name {
                 "title" => TitleInfo::Title,
                 "release_date" => TitleInfo::ReleaseDate,
+                "delivery_date" => TitleInfo::DeliveryDate,
+                "list_submission_date" => TitleInfo::ListSubmissionDate,
                 "reservation_start_date" => TitleInfo::ReservationStartDate,
                 "reservation_deadline" => TitleInfo::ReservationDeadline,
                 "order_date_to_maker" => TitleInfo::OrderDateToMaker,
@@ -144,6 +148,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 id: title_state.id.clone(),
                 title: title_state.title.clone(),
                 release_date: title_state.release_date.clone(),
+                delivery_date: title_state.delivery_date.clone(),
+                list_submission_date: title_state.list_submission_date.clone(),
                 reservation_start_date: title_state.reservation_start_date.clone(),
                 reservation_deadline: title_state.reservation_deadline.clone(),
                 order_date_to_maker: title_state.order_date_to_maker.clone(),
@@ -165,6 +171,20 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
+                        ..original_title_state
+                    });
+                }
+                TitleInfo::DeliveryDate => {
+                    let val = if val == "" { None } else { Some(val) };
+                    title_state.set(TitleState {
+                        delivery_date: val,
+                        ..original_title_state
+                    });
+                }
+                TitleInfo::ListSubmissionDate => {
+                    let val = if val == "" { None } else { Some(val) };
+                    title_state.set(TitleState {
+                        list_submission_date: val,
                         ..original_title_state
                     });
                 }
@@ -305,6 +325,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             release_date: date_string_to_iso_string(
                                 title_state.release_date.clone(),
                             ),
+                            delivery_date: date_string_to_iso_string(
+                                title_state.delivery_date.clone(),
+                            ),
+                            list_submission_date: date_string_to_iso_string(
+                                title_state.list_submission_date.clone(),
+                            ),
                             reservation_start_date: date_string_to_iso_string(
                                 title_state.reservation_start_date.clone(),
                             ),
@@ -418,6 +444,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 });
                 let release_date = parse_date(&title_state.release_date);
+                let delivery_date = parse_date(&title_state.delivery_date);
+                let list_submission_date = parse_date(&title_state.list_submission_date);
                 let reservation_start_date = parse_date(&title_state.reservation_start_date);
                 let reservation_deadline = parse_date(&title_state.reservation_deadline);
                 let order_date_to_maker = parse_date(&title_state.order_date_to_maker);
@@ -432,9 +460,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             { "タイトル削除" }
                         </button>
                         <br/>
-                        { "発売日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
+                        { "入荷日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
-                        { "案内日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
+                        { "納品日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="delivery_date" name="delivery_date" value={delivery_date} />
+                        <br/>
+                        { "リスト提出日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="list_submission_date" name="list_submission_date" value={list_submission_date} />
+                        <br/>
+                        { "解禁日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
                         <br/>
                         { "締切日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
                         <br/>

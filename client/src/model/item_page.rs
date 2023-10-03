@@ -6,6 +6,8 @@ use super::common::{ItemModel, MakerModel, WorkerModel};
 #[derive(Debug, PartialEq, Serialize)]
 pub struct RequestPutTitleInfo {
     pub release_date: Option<String>,
+    pub delivery_date: Option<String>,
+    pub list_submission_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
@@ -46,11 +48,13 @@ pub struct ItemNewResponse {
 pub struct ItemNewRequest {
     pub id: String,
     pub name: String,
-    pub release_date: Option<String>, // DateTimeWithTimeZone
+    pub release_date: Option<String>,         // DateTimeWithTimeZone
+    pub delivery_date: Option<String>,        // DateTimeWithTimeZone
+    pub list_submission_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
-    pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
-    pub updated_at: String,           // DateTimeWithTimeZone
+    pub order_date_to_maker: Option<String>,  // DateTimeWithTimeZone
+    pub updated_at: String,                   // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -65,6 +69,8 @@ pub struct GetItemInfoByTitleId {
     pub workers: Vec<WorkerModel>,
     pub makers: Vec<MakerModel>,
     pub release_date: Option<String>,
+    pub delivery_date: Option<String>,
+    pub list_submission_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
@@ -111,6 +117,8 @@ pub enum ItemInfo {
 pub struct TitleState {
     pub id: String,
     pub release_date: Option<String>,
+    pub delivery_date: Option<String>,
+    pub list_submission_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
@@ -125,6 +133,8 @@ pub struct TitleState {
 pub enum TitleInfo {
     Title,
     ReleaseDate,
+    DeliveryDate,
+    ListSubmissionDate,
     ReservationStartDate,
     ReservationDeadline,
     OrderDateToMaker,
@@ -149,13 +159,13 @@ pub struct YearMonthTitleList {
 pub struct TitleWithItems {
     pub id: String,
     pub name: String,
-    pub release_date: Option<String>, // DateTimeWithTimeZone
-    pub delivery_date: Option<String>, // DateTimeWithTimeZone
+    pub release_date: Option<String>,         // DateTimeWithTimeZone
+    pub delivery_date: Option<String>,        // DateTimeWithTimeZone
     pub list_submission_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
-    pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
-    pub updated_at: String,           // DateTimeWithTimeZone
+    pub order_date_to_maker: Option<String>,  // DateTimeWithTimeZone
+    pub updated_at: String,                   // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
