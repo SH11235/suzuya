@@ -2,8 +2,8 @@ use reqwasm::http::Request;
 use wasm_bindgen::JsValue;
 use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
-use crate::model::item_page::ItemState;
 use crate::common::api::backend_url;
+use crate::model::item_page::ItemState;
 
 #[derive(Properties, PartialEq)]
 pub struct DeleteButtonProperty {
@@ -52,8 +52,33 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                                 maker_id: item_state.maker_id.clone(),
                                 retail_price: item_state.retail_price.clone(),
                                 resubmission: item_state.resubmission.clone(),
-                                double_check_person_id: item_state.double_check_person_id.clone(),
                                 line: item_state.line.clone(),
+                                rough_coordinator_id: item_state.rough_coordinator_id.clone(),
+                                rough_check_person_id: item_state.rough_check_person_id.clone(),
+                                line_art_coordinator_id: item_state.line_art_coordinator_id.clone(),
+                                line_art_check_person_id: item_state
+                                    .line_art_check_person_id
+                                    .clone(),
+                                coloring_coordinator_id: item_state.coloring_coordinator_id.clone(),
+                                coloring_check_person_id: item_state
+                                    .coloring_check_person_id
+                                    .clone(),
+                                design_coordinator_id: item_state.design_coordinator_id.clone(),
+                                design_check_person_id: item_state.design_check_person_id.clone(),
+                                submission_data_coordinator_id: item_state
+                                    .submission_data_coordinator_id
+                                    .clone(),
+                                submission_data_check_person_id: item_state
+                                    .submission_data_check_person_id
+                                    .clone(),
+                                announcement_materials_coordinator_id: item_state
+                                    .announcement_materials_coordinator_id
+                                    .clone(),
+                                announcement_materials_check_person_id: item_state
+                                    .announcement_materials_check_person_id
+                                    .clone(),
+                                jan_coordinator_id: item_state.jan_coordinator_id.clone(),
+                                jan_check_person_id: item_state.jan_check_person_id.clone(),
                                 is_saved: item_state.is_saved,
                             });
                         }
@@ -87,8 +112,29 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price.clone(),
                     resubmission: item_state.resubmission.clone(),
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
+                    rough_coordinator_id: item_state.rough_coordinator_id.clone(),
+                    rough_check_person_id: item_state.rough_check_person_id.clone(),
+                    line_art_coordinator_id: item_state.line_art_coordinator_id.clone(),
+                    line_art_check_person_id: item_state.line_art_check_person_id.clone(),
+                    coloring_coordinator_id: item_state.coloring_coordinator_id.clone(),
+                    coloring_check_person_id: item_state.coloring_check_person_id.clone(),
+                    design_coordinator_id: item_state.design_coordinator_id.clone(),
+                    design_check_person_id: item_state.design_check_person_id.clone(),
+                    submission_data_coordinator_id: item_state
+                        .submission_data_coordinator_id
+                        .clone(),
+                    submission_data_check_person_id: item_state
+                        .submission_data_check_person_id
+                        .clone(),
+                    announcement_materials_coordinator_id: item_state
+                        .announcement_materials_coordinator_id
+                        .clone(),
+                    announcement_materials_check_person_id: item_state
+                        .announcement_materials_check_person_id
+                        .clone(),
+                    jan_coordinator_id: item_state.jan_coordinator_id.clone(),
+                    jan_check_person_id: item_state.jan_check_person_id.clone(),
                     is_saved: item_state.is_saved,
                 });
             }

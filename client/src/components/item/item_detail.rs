@@ -76,15 +76,32 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 "maker_code" => ItemInfo::MakerId,
                 "retail_price" => ItemInfo::RetailPrice,
                 "resubmission" => ItemInfo::Resubmission,
-                "double_check_person" => ItemInfo::DoubleCheckPersonId,
                 "line" => ItemInfo::Line,
+                "rough_coordinator" => ItemInfo::RoughCoordinatorId,
+                "rough_check_person" => ItemInfo::RoughCheckPersonId,
+                "line_art_coordinator" => ItemInfo::LineArtCoordinatorId,
+                "line_art_check_person" => ItemInfo::LineArtCheckPersonId,
+                "coloring_coordinator" => ItemInfo::ColoringCoordinatorId,
+                "coloring_check_person" => ItemInfo::ColoringCheckPersonId,
+                "design_coordinator" => ItemInfo::DesignCoordinatorId,
+                "design_check_person" => ItemInfo::DesignCheckPersonId,
+                "submission_data_coordinator" => ItemInfo::SubmissionDataCoordinatorId,
+                "submission_data_check_person" => ItemInfo::SubmissionDataCheckPersonId,
+                "announcement_materials_coordinator" => {
+                    ItemInfo::AnnouncementMaterialsCoordinatorId
+                }
+                "announcement_materials_check_person" => {
+                    ItemInfo::AnnouncementMaterialsCheckPersonId
+                }
+                "jan_coordinator" => ItemInfo::JanCoordinatorId,
+                "jan_check_person" => ItemInfo::JanCheckPersonId,
                 _ => {
                     panic!("Unexpected name: {}", name);
                 }
             };
             let index: usize = name_index[1].parse().unwrap();
 
-            let mut original_items = vec![];
+            let mut original_items: Vec<ItemState> = vec![];
             items_state.iter().for_each(|item| {
                 original_items.push(ItemState {
                     id: item.id.clone(),
@@ -98,8 +115,25 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     maker_id: item.maker_id.clone(),
                     retail_price: item.retail_price.clone(),
                     resubmission: item.resubmission.clone(),
-                    double_check_person_id: item.double_check_person_id.clone(),
                     line: item.line.clone(),
+                    rough_coordinator_id: item.rough_coordinator_id.clone(),
+                    rough_check_person_id: item.rough_check_person_id.clone(),
+                    line_art_coordinator_id: item.line_art_coordinator_id.clone(),
+                    line_art_check_person_id: item.line_art_check_person_id.clone(),
+                    coloring_coordinator_id: item.coloring_coordinator_id.clone(),
+                    coloring_check_person_id: item.coloring_check_person_id.clone(),
+                    design_coordinator_id: item.design_coordinator_id.clone(),
+                    design_check_person_id: item.design_check_person_id.clone(),
+                    submission_data_coordinator_id: item.submission_data_coordinator_id.clone(),
+                    submission_data_check_person_id: item.submission_data_check_person_id.clone(),
+                    announcement_materials_coordinator_id: item
+                        .announcement_materials_coordinator_id
+                        .clone(),
+                    announcement_materials_check_person_id: item
+                        .announcement_materials_check_person_id
+                        .clone(),
+                    jan_coordinator_id: item.jan_coordinator_id.clone(),
+                    jan_check_person_id: item.jan_check_person_id.clone(),
                     is_saved: item.is_saved.clone(),
                 })
             });
@@ -136,11 +170,50 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     original_items[index - 1].resubmission =
                         if val == RESUBMISSION_OK { true } else { false };
                 }
-                ItemInfo::DoubleCheckPersonId => {
-                    original_items[index - 1].double_check_person_id = Some(val);
-                }
                 ItemInfo::Line => {
                     original_items[index - 1].line = val.parse().unwrap();
+                }
+                ItemInfo::RoughCoordinatorId => {
+                    original_items[index - 1].rough_coordinator_id = Some(val);
+                }
+                ItemInfo::RoughCheckPersonId => {
+                    original_items[index - 1].rough_check_person_id = Some(val);
+                }
+                ItemInfo::LineArtCoordinatorId => {
+                    original_items[index - 1].line_art_coordinator_id = Some(val);
+                }
+                ItemInfo::LineArtCheckPersonId => {
+                    original_items[index - 1].line_art_check_person_id = Some(val);
+                }
+                ItemInfo::ColoringCoordinatorId => {
+                    original_items[index - 1].coloring_coordinator_id = Some(val);
+                }
+                ItemInfo::ColoringCheckPersonId => {
+                    original_items[index - 1].coloring_check_person_id = Some(val);
+                }
+                ItemInfo::DesignCoordinatorId => {
+                    original_items[index - 1].design_coordinator_id = Some(val);
+                }
+                ItemInfo::DesignCheckPersonId => {
+                    original_items[index - 1].design_check_person_id = Some(val);
+                }
+                ItemInfo::SubmissionDataCoordinatorId => {
+                    original_items[index - 1].submission_data_coordinator_id = Some(val);
+                }
+                ItemInfo::SubmissionDataCheckPersonId => {
+                    original_items[index - 1].submission_data_check_person_id = Some(val);
+                }
+                ItemInfo::AnnouncementMaterialsCoordinatorId => {
+                    original_items[index - 1].announcement_materials_coordinator_id = Some(val);
+                }
+                ItemInfo::AnnouncementMaterialsCheckPersonId => {
+                    original_items[index - 1].announcement_materials_check_person_id = Some(val);
+                }
+                ItemInfo::JanCoordinatorId => {
+                    original_items[index - 1].jan_coordinator_id = Some(val);
+                }
+                ItemInfo::JanCheckPersonId => {
+                    original_items[index - 1].jan_check_person_id = Some(val);
                 }
             }
             items_state.set(original_items);
@@ -192,17 +265,54 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             </div>
             <div class="input-warpper">{"再入稿"}<br/>
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "resubmission", props.index)} name={ format!("{}-{}", "resubmission", props.index)}
-                        value={resubmission.clone()} select_list={resubmission_list()}/>
-            </div>
-            <div class="input-warpper">{"ダブルチェック"}<br/>
-                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "double_check_person", props.index)} name={ format!("{}-{}", "double_check_person", props.index)}
-                    value={props.item_info.double_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+                    value={resubmission.clone()} select_list={resubmission_list()}/>
             </div>
             <div class="input-warpper">{"ライン"}<br/>
                 <SelectBox onchange={onchange.clone()} id={ format!("{}-{}", "line", props.index)} name={ format!("{}-{}", "line", props.index)}
-                        value={props.item_info.line.clone()} select_list={line_list()}/>
+                    value={props.item_info.line.clone()} select_list={line_list()}/>
+            </div>
+            <div class="input-warpper">{"ラフ担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "rough_coordinator", props.index)} name={ format!("{}-{}", "rough_coordinator", props.index)}
+                    value={props.item_info.rough_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "rough_check_person", props.index)} name={ format!("{}-{}", "rough_check_person", props.index)}
+                    value={props.item_info.rough_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"線画担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "line_art_coordinator", props.index)} name={ format!("{}-{}", "line_art_coordinator", props.index)}
+                    value={props.item_info.line_art_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "line_art_check_person", props.index)} name={ format!("{}-{}", "line_art_check_person", props.index)}
+                    value={props.item_info.line_art_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"彩色担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "coloring_coordinator", props.index)} name={ format!("{}-{}", "coloring_coordinator", props.index)}
+                    value={props.item_info.coloring_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "coloring_check_person", props.index)} name={ format!("{}-{}", "coloring_check_person", props.index)}
+                    value={props.item_info.coloring_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"デザイン担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "design_coordinator", props.index)} name={ format!("{}-{}", "design_coordinator", props.index)}
+                    value={props.item_info.design_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "design_check_person", props.index)} name={ format!("{}-{}", "design_check_person", props.index)}
+                    value={props.item_info.design_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"提出データ担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "submission_data_coordinator", props.index)} name={ format!("{}-{}", "submission_data_coordinator", props.index)}
+                    value={props.item_info.submission_data_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "submission_data_check_person", props.index)} name={ format!("{}-{}", "submission_data_check_person", props.index)}
+                    value={props.item_info.submission_data_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"告知物担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "announcement_materials_coordinator", props.index)} name={ format!("{}-{}", "announcement_materials_coordinator", props.index)}
+                    value={props.item_info.announcement_materials_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "announcement_materials_check_person", props.index)} name={ format!("{}-{}", "announcement_materials_check_person", props.index)}
+                    value={props.item_info.announcement_materials_check_person_id.clone()} name_value_list={worker_list.clone()}/>
+            </div>
+            <div class="input-warpper">{"JAN担当/チェック"}<br/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "jan_coordinator", props.index)} name={ format!("{}-{}", "jan_coordinator", props.index)}
+                    value={props.item_info.jan_coordinator_id.clone()} name_value_list={worker_list.clone()}/>
+                <SelectUserMaker onchange={onchange.clone()} id={ format!("{}-{}", "jan_check_person", props.index)} name={ format!("{}-{}", "jan_check_person", props.index)}
+                    value={props.item_info.jan_check_person_id.clone()} name_value_list={worker_list.clone()}/>
             </div>
         </div>
-
     }
 }

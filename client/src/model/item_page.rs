@@ -6,6 +6,8 @@ use super::common::{ItemModel, MakerModel, WorkerModel};
 #[derive(Debug, PartialEq, Serialize)]
 pub struct RequestPutTitleInfo {
     pub release_date: Option<String>,
+    pub delivery_date: Option<String>,
+    pub list_submission_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
@@ -31,7 +33,6 @@ pub struct ItemRegisterParams {
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
     pub resubmission: bool,
-    pub double_check_person_id: Option<String>,
     pub line: String,
 }
 
@@ -47,11 +48,13 @@ pub struct ItemNewResponse {
 pub struct ItemNewRequest {
     pub id: String,
     pub name: String,
-    pub release_date: Option<String>, // DateTimeWithTimeZone
+    pub release_date: Option<String>,         // DateTimeWithTimeZone
+    pub delivery_date: Option<String>,        // DateTimeWithTimeZone
+    pub list_submission_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
-    pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
-    pub updated_at: String,           // DateTimeWithTimeZone
+    pub order_date_to_maker: Option<String>,  // DateTimeWithTimeZone
+    pub updated_at: String,                   // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -66,6 +69,8 @@ pub struct GetItemInfoByTitleId {
     pub workers: Vec<WorkerModel>,
     pub makers: Vec<MakerModel>,
     pub release_date: Option<String>,
+    pub delivery_date: Option<String>,
+    pub list_submission_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
@@ -90,8 +95,21 @@ pub struct ItemState {
     pub maker_id: Option<String>,
     pub retail_price: Option<i32>,
     pub resubmission: bool,
-    pub double_check_person_id: Option<String>,
     pub line: String,
+    pub rough_coordinator_id: Option<String>,
+    pub rough_check_person_id: Option<String>,
+    pub line_art_coordinator_id: Option<String>,
+    pub line_art_check_person_id: Option<String>,
+    pub coloring_coordinator_id: Option<String>,
+    pub coloring_check_person_id: Option<String>,
+    pub design_coordinator_id: Option<String>,
+    pub design_check_person_id: Option<String>,
+    pub submission_data_coordinator_id: Option<String>,
+    pub submission_data_check_person_id: Option<String>,
+    pub announcement_materials_coordinator_id: Option<String>,
+    pub announcement_materials_check_person_id: Option<String>,
+    pub jan_coordinator_id: Option<String>,
+    pub jan_check_person_id: Option<String>,
     pub is_saved: bool,
 }
 
@@ -107,13 +125,28 @@ pub enum ItemInfo {
     RetailPrice,
     Resubmission,
     Line,
-    DoubleCheckPersonId,
+    RoughCoordinatorId,
+    RoughCheckPersonId,
+    LineArtCoordinatorId,
+    LineArtCheckPersonId,
+    ColoringCoordinatorId,
+    ColoringCheckPersonId,
+    DesignCoordinatorId,
+    DesignCheckPersonId,
+    SubmissionDataCoordinatorId,
+    SubmissionDataCheckPersonId,
+    AnnouncementMaterialsCoordinatorId,
+    AnnouncementMaterialsCheckPersonId,
+    JanCoordinatorId,
+    JanCheckPersonId,
 }
 
 #[derive(Debug, Default, Deserialize, Eq, Ord, PartialEq, PartialOrd, Serialize)]
 pub struct TitleState {
     pub id: String,
     pub release_date: Option<String>,
+    pub delivery_date: Option<String>,
+    pub list_submission_date: Option<String>,
     pub reservation_start_date: Option<String>,
     pub reservation_deadline: Option<String>,
     pub order_date_to_maker: Option<String>,
@@ -128,6 +161,8 @@ pub struct TitleState {
 pub enum TitleInfo {
     Title,
     ReleaseDate,
+    DeliveryDate,
+    ListSubmissionDate,
     ReservationStartDate,
     ReservationDeadline,
     OrderDateToMaker,
@@ -138,12 +173,6 @@ pub enum TitleInfo {
 }
 
 // /api/item_listのレスポンス
-#[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
-pub struct ItemListResponse {
-    pub year_month_list: Vec<YearMonth>,
-    pub year_month_title_list: Vec<YearMonthTitleList>,
-}
-
 #[derive(Clone, Debug, Default, Deserialize, PartialEq, Serialize)]
 pub struct YearMonthTitleList {
     pub yyyymm: String,
@@ -158,11 +187,13 @@ pub struct YearMonthTitleList {
 pub struct TitleWithItems {
     pub id: String,
     pub name: String,
-    pub release_date: Option<String>, // DateTimeWithTimeZone
+    pub release_date: Option<String>,         // DateTimeWithTimeZone
+    pub delivery_date: Option<String>,        // DateTimeWithTimeZone
+    pub list_submission_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_start_date: Option<String>, // DateTimeWithTimeZone
     pub reservation_deadline: Option<String>, // DateTimeWithTimeZone
-    pub order_date_to_maker: Option<String>, // DateTimeWithTimeZone
-    pub updated_at: String,           // DateTimeWithTimeZone
+    pub order_date_to_maker: Option<String>,  // DateTimeWithTimeZone
+    pub updated_at: String,                   // DateTimeWithTimeZone
     pub project_type: String,
     pub catalog_status: String,
     pub announcement_status: String,
@@ -185,8 +216,6 @@ pub struct ItemWithMakerAndWorker {
     pub maker_id: Option<String>,
     pub maker_code: Option<String>,
     pub retail_price: Option<i32>,
-    pub double_check_person_id: Option<String>,
-    pub double_check_person: Option<String>,
     pub resubmission: bool,
     pub line: String,
 }

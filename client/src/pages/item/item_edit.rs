@@ -60,6 +60,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     title_state.set(TitleState {
                         id: title_id,
                         release_date: fetched_items.release_date,
+                        delivery_date: fetched_items.delivery_date,
+                        list_submission_date: fetched_items.list_submission_date,
                         reservation_start_date: fetched_items.reservation_start_date,
                         reservation_deadline: fetched_items.reservation_deadline,
                         order_date_to_maker: fetched_items.order_date_to_maker,
@@ -85,8 +87,29 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             maker_id: item.maker_id.clone(),
                             retail_price: item.retail_price,
                             resubmission: item.resubmission,
-                            double_check_person_id: item.double_check_person_id.clone(),
                             line: item.line.clone(),
+                            rough_coordinator_id: item.rough_coordinator_id.clone(),
+                            rough_check_person_id: item.rough_check_person_id.clone(),
+                            line_art_coordinator_id: item.line_art_coordinator_id.clone(),
+                            line_art_check_person_id: item.line_art_check_person_id.clone(),
+                            coloring_coordinator_id: item.coloring_coordinator_id.clone(),
+                            coloring_check_person_id: item.coloring_check_person_id.clone(),
+                            design_coordinator_id: item.design_coordinator_id.clone(),
+                            design_check_person_id: item.design_check_person_id.clone(),
+                            submission_data_coordinator_id: item
+                                .submission_data_coordinator_id
+                                .clone(),
+                            submission_data_check_person_id: item
+                                .submission_data_check_person_id
+                                .clone(),
+                            announcement_materials_coordinator_id: item
+                                .announcement_materials_coordinator_id
+                                .clone(),
+                            announcement_materials_check_person_id: item
+                                .announcement_materials_check_person_id
+                                .clone(),
+                            jan_coordinator_id: item.jan_coordinator_id.clone(),
+                            jan_check_person_id: item.jan_check_person_id.clone(),
                             is_saved: true,
                         })
                         .collect::<Vec<ItemState>>();
@@ -128,6 +151,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let name = match name {
                 "title" => TitleInfo::Title,
                 "release_date" => TitleInfo::ReleaseDate,
+                "delivery_date" => TitleInfo::DeliveryDate,
+                "list_submission_date" => TitleInfo::ListSubmissionDate,
                 "reservation_start_date" => TitleInfo::ReservationStartDate,
                 "reservation_deadline" => TitleInfo::ReservationDeadline,
                 "order_date_to_maker" => TitleInfo::OrderDateToMaker,
@@ -145,6 +170,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 id: title_state.id.clone(),
                 title: title_state.title.clone(),
                 release_date: title_state.release_date.clone(),
+                delivery_date: title_state.delivery_date.clone(),
+                list_submission_date: title_state.list_submission_date.clone(),
                 reservation_start_date: title_state.reservation_start_date.clone(),
                 reservation_deadline: title_state.reservation_deadline.clone(),
                 order_date_to_maker: title_state.order_date_to_maker.clone(),
@@ -166,6 +193,20 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
+                        ..original_title_state
+                    });
+                }
+                TitleInfo::DeliveryDate => {
+                    let val = if val == "" { None } else { Some(val) };
+                    title_state.set(TitleState {
+                        delivery_date: val,
+                        ..original_title_state
+                    });
+                }
+                TitleInfo::ListSubmissionDate => {
+                    let val = if val == "" { None } else { Some(val) };
+                    title_state.set(TitleState {
+                        list_submission_date: val,
                         ..original_title_state
                     });
                 }
@@ -237,8 +278,29 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
                     resubmission: item_state.resubmission,
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
+                    rough_coordinator_id: item_state.rough_coordinator_id.clone(),
+                    rough_check_person_id: item_state.rough_check_person_id.clone(),
+                    line_art_coordinator_id: item_state.line_art_coordinator_id.clone(),
+                    line_art_check_person_id: item_state.line_art_check_person_id.clone(),
+                    coloring_coordinator_id: item_state.coloring_coordinator_id.clone(),
+                    coloring_check_person_id: item_state.coloring_check_person_id.clone(),
+                    design_coordinator_id: item_state.design_coordinator_id.clone(),
+                    design_check_person_id: item_state.design_check_person_id.clone(),
+                    submission_data_coordinator_id: item_state
+                        .submission_data_coordinator_id
+                        .clone(),
+                    submission_data_check_person_id: item_state
+                        .submission_data_check_person_id
+                        .clone(),
+                    announcement_materials_coordinator_id: item_state
+                        .announcement_materials_coordinator_id
+                        .clone(),
+                    announcement_materials_check_person_id: item_state
+                        .announcement_materials_check_person_id
+                        .clone(),
+                    jan_coordinator_id: item_state.jan_coordinator_id.clone(),
+                    jan_check_person_id: item_state.jan_check_person_id.clone(),
                     is_saved: item_state.is_saved,
                 });
             }
@@ -271,8 +333,29 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
                     resubmission: item_state.resubmission,
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
+                    rough_coordinator_id: item_state.rough_coordinator_id.clone(),
+                    rough_check_person_id: item_state.rough_check_person_id.clone(),
+                    line_art_coordinator_id: item_state.line_art_coordinator_id.clone(),
+                    line_art_check_person_id: item_state.line_art_check_person_id.clone(),
+                    coloring_coordinator_id: item_state.coloring_coordinator_id.clone(),
+                    coloring_check_person_id: item_state.coloring_check_person_id.clone(),
+                    design_coordinator_id: item_state.design_coordinator_id.clone(),
+                    design_check_person_id: item_state.design_check_person_id.clone(),
+                    submission_data_coordinator_id: item_state
+                        .submission_data_coordinator_id
+                        .clone(),
+                    submission_data_check_person_id: item_state
+                        .submission_data_check_person_id
+                        .clone(),
+                    announcement_materials_coordinator_id: item_state
+                        .announcement_materials_coordinator_id
+                        .clone(),
+                    announcement_materials_check_person_id: item_state
+                        .announcement_materials_check_person_id
+                        .clone(),
+                    jan_coordinator_id: item_state.jan_coordinator_id.clone(),
+                    jan_check_person_id: item_state.jan_check_person_id.clone(),
                     is_saved: true,
                 });
             });
@@ -294,7 +377,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         maker_id: item_state.maker_id.clone(),
                         retail_price: item_state.retail_price,
                         resubmission: item_state.resubmission,
-                        double_check_person_id: item_state.double_check_person_id.clone(),
                         line: item_state.line.clone(),
                     };
                     item
@@ -308,6 +390,12 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         serde_json::to_string(&RequestPutTitleInfo {
                             release_date: date_string_to_iso_string(
                                 title_state.release_date.clone(),
+                            ),
+                            delivery_date: date_string_to_iso_string(
+                                title_state.delivery_date.clone(),
+                            ),
+                            list_submission_date: date_string_to_iso_string(
+                                title_state.list_submission_date.clone(),
                             ),
                             reservation_start_date: date_string_to_iso_string(
                                 title_state.reservation_start_date.clone(),
@@ -422,6 +510,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 });
                 let release_date = parse_date(&title_state.release_date);
+                let delivery_date = parse_date(&title_state.delivery_date);
+                let list_submission_date = parse_date(&title_state.list_submission_date);
                 let reservation_start_date = parse_date(&title_state.reservation_start_date);
                 let reservation_deadline = parse_date(&title_state.reservation_deadline);
                 let order_date_to_maker = parse_date(&title_state.order_date_to_maker);
@@ -436,9 +526,13 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                             { "タイトル削除" }
                         </button>
                         <br/>
-                        { "発売日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
+                        { "入荷日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
                         <br/>
-                        { "案内日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
+                        { "納品日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="delivery_date" name="delivery_date" value={delivery_date} />
+                        <br/>
+                        { "リスト提出日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="list_submission_date" name="list_submission_date" value={list_submission_date} />
+                        <br/>
+                        { "解禁日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
                         <br/>
                         { "締切日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_deadline" name="reservation_deadline" value={reservation_deadline} />
                         <br/>

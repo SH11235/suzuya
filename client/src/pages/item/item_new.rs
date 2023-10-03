@@ -82,6 +82,8 @@ pub fn edit_item() -> Html {
             let name = match name {
                 "title" => TitleInfo::Title,
                 "release_date" => TitleInfo::ReleaseDate,
+                "delivery_date" => TitleInfo::DeliveryDate,
+                "list_submission_date" => TitleInfo::ListSubmissionDate,
                 "reservation_start_date" => TitleInfo::ReservationStartDate,
                 "reservation_deadline" => TitleInfo::ReservationDeadline,
                 "order_date_to_maker" => TitleInfo::OrderDateToMaker,
@@ -99,6 +101,8 @@ pub fn edit_item() -> Html {
                 id: title_state.id.clone(),
                 title: title_state.title.clone(),
                 release_date: title_state.release_date.clone(),
+                delivery_date: title_state.delivery_date.clone(),
+                list_submission_date: title_state.list_submission_date.clone(),
                 reservation_start_date: title_state.reservation_start_date.clone(),
                 reservation_deadline: title_state.reservation_deadline.clone(),
                 order_date_to_maker: title_state.order_date_to_maker.clone(),
@@ -120,6 +124,20 @@ pub fn edit_item() -> Html {
                     let val = if val == "" { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
+                        ..original_title_state
+                    });
+                }
+                TitleInfo::DeliveryDate => {
+                    let val = if val == "" { None } else { Some(val) };
+                    title_state.set(TitleState {
+                        delivery_date: val,
+                        ..original_title_state
+                    });
+                }
+                TitleInfo::ListSubmissionDate => {
+                    let val = if val == "" { None } else { Some(val) };
+                    title_state.set(TitleState {
+                        list_submission_date: val,
                         ..original_title_state
                     });
                 }
@@ -191,8 +209,29 @@ pub fn edit_item() -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price,
                     resubmission: item_state.resubmission,
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
+                    rough_coordinator_id: item_state.rough_coordinator_id.clone(),
+                    rough_check_person_id: item_state.rough_check_person_id.clone(),
+                    line_art_coordinator_id: item_state.line_art_coordinator_id.clone(),
+                    line_art_check_person_id: item_state.line_art_check_person_id.clone(),
+                    coloring_coordinator_id: item_state.coloring_coordinator_id.clone(),
+                    coloring_check_person_id: item_state.coloring_check_person_id.clone(),
+                    design_coordinator_id: item_state.design_coordinator_id.clone(),
+                    design_check_person_id: item_state.design_check_person_id.clone(),
+                    submission_data_coordinator_id: item_state
+                        .submission_data_coordinator_id
+                        .clone(),
+                    submission_data_check_person_id: item_state
+                        .submission_data_check_person_id
+                        .clone(),
+                    announcement_materials_coordinator_id: item_state
+                        .announcement_materials_coordinator_id
+                        .clone(),
+                    announcement_materials_check_person_id: item_state
+                        .announcement_materials_check_person_id
+                        .clone(),
+                    jan_coordinator_id: item_state.jan_coordinator_id.clone(),
+                    jan_check_person_id: item_state.jan_check_person_id.clone(),
                     is_saved: item_state.is_saved,
                 });
             }
@@ -225,7 +264,6 @@ pub fn edit_item() -> Html {
                     maker_id: item_state.maker_id.clone(),
                     retail_price: item_state.retail_price.clone(),
                     resubmission: item_state.resubmission,
-                    double_check_person_id: item_state.double_check_person_id.clone(),
                     line: item_state.line.clone(),
                 });
             });
@@ -238,6 +276,12 @@ pub fn edit_item() -> Html {
                         serde_json::to_string(&RequestPutTitleInfo {
                             release_date: date_string_to_iso_string(
                                 title_state.release_date.clone(),
+                            ),
+                            delivery_date: date_string_to_iso_string(
+                                title_state.delivery_date.clone(),
+                            ),
+                            list_submission_date: date_string_to_iso_string(
+                                title_state.list_submission_date.clone(),
                             ),
                             reservation_start_date: date_string_to_iso_string(
                                 title_state.reservation_start_date.clone(),
@@ -293,8 +337,8 @@ pub fn edit_item() -> Html {
     };
 
     html! {
-      <div class="edit-item-page">
-        <h1>{ "Edit Items" }</h1>
+      <div class="new-item-page">
+        <h1>{ "New Items" }</h1>
         <HeaderLink current_page={"item_new".to_string()} />
         {
             if *fetching_state {
@@ -317,6 +361,8 @@ pub fn edit_item() -> Html {
                     });
                 });
                 let release_date = parse_date(&title_state.release_date);
+                let delivery_date = parse_date(&title_state.delivery_date);
+                let list_submission_date = parse_date(&title_state.list_submission_date);
                 let reservation_start_date = parse_date(&title_state.reservation_start_date);
                 let reservation_deadline = parse_date(&title_state.reservation_deadline);
                 let order_date_to_maker = parse_date(&title_state.order_date_to_maker);
@@ -325,6 +371,10 @@ pub fn edit_item() -> Html {
                 html! {
                     <>
                         { "発売日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="release_date" name="release_date" value={release_date} />
+                        <br/>
+                        { "納品日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="delivery_date" name="delivery_date" value={delivery_date} />
+                        <br/>
+                        { "リスト提出日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="list_submission_date" name="list_submission_date" value={list_submission_date} />
                         <br/>
                         { "案内日：" }<TextBox onchange={title_onchange.clone()} input_type="date" placeholder="yyyy-mm-dd" id="reservation_start_date" name="reservation_start_date" value={reservation_start_date} />
                         <br/>

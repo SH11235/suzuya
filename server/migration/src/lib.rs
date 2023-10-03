@@ -6,6 +6,8 @@ mod m20221017_223732_worker;
 mod m20221017_224042_item;
 mod m20221105_071832_add_resubmission_line_to_item;
 mod m20221106_033801_add_updated_at_to_title;
+mod m20230925_040135_change_double_check;
+mod m20230925_043402_add_title_column;
 
 pub struct Migrator;
 
@@ -19,6 +21,8 @@ impl MigratorTrait for Migrator {
             Box::new(m20221017_224042_item::Migration),
             Box::new(m20221105_071832_add_resubmission_line_to_item::Migration),
             Box::new(m20221106_033801_add_updated_at_to_title::Migration),
+            Box::new(m20230925_040135_change_double_check::Migration),
+            Box::new(m20230925_043402_add_title_column::Migration),
         ]
     }
 }

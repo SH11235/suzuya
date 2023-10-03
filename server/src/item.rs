@@ -1,6 +1,6 @@
 use crate::model::item::{
     InputNewItem, ItemEditResponse, ItemListResponse, ItemNewResponse, ItemWithMakerAndWorker,
-    ItemsPutRequest, TitleFiltered, TitleWithItems, YearMonthList, YearMonthTitleList,
+    ItemsPutRequest, TitleFiltered, TitleWithItems, YearMonthList,
 };
 use crate::setting::AppState;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
@@ -47,12 +47,14 @@ async fn api_item_list(
     year_month_list.extend(year_month_not_null_list);
 
     // year_month_listの長さ分だけ、対応する日付のitemを取得する
-    let mut year_month_title_list = Vec::new();
+    let mut title_list_group_by_year_month = Vec::new();
     let title_sql_select = "
         SELECT
             id,
             name,
             release_date,
+            delivery_date,
+            list_submission_date,
             reservation_start_date,
             reservation_deadline,
             order_date_to_maker,
@@ -64,7 +66,7 @@ async fn api_item_list(
         FROM
             title
     ";
-    for year_month in year_month_list.clone() {
+    for year_month in year_month_list {
         let title_sql = if year_month.yyyymm == "発売日未定" {
             format!(
                 "{}{}",
@@ -143,8 +145,36 @@ async fn api_item_list(
                     item.retail_price,
                     item.resubmission,
                     item.double_check_person_id,
+                    item.line,
                     double_check_person.name AS double_check_person,
-                    item.line
+                    item.rough_coordinator_id,
+                    rough_coordinator.name AS rough_coordinator,
+                    item.rough_check_person_id,
+                    rough_check_person.name AS rough_check_person,
+                    item.line_art_coordinator_id,
+                    line_art_coordinator.name AS line_art_coordinator,
+                    item.line_art_check_person_id,
+                    line_art_check_person.name AS line_art_check_person,
+                    item.coloring_coordinator_id,
+                    coloring_coordinator.name AS coloring_coordinator,
+                    item.coloring_check_person_id,
+                    coloring_check_person.name AS coloring_check_person,
+                    item.design_coordinator_id,
+                    design_coordinator.name AS design_coordinator,
+                    item.design_check_person_id,
+                    design_check_person.name AS design_check_person,
+                    item.submission_data_coordinator_id,
+                    submission_data_coordinator.name AS submission_data_coordinator,
+                    item.submission_data_check_person_id,
+                    submission_data_check_person.name AS submission_data_check_person,
+                    item.announcement_materials_coordinator_id,
+                    announcement_materials_coordinator.name AS announcement_materials_coordinator,
+                    item.announcement_materials_check_person_id,
+                    announcement_materials_check_person.name AS announcement_materials_check_person,
+                    item.jan_coordinator_id,
+                    jan_coordinator.name AS jan_coordinator,
+                    item.jan_check_person_id,
+                    jan_check_person.name AS jan_check_person
                 FROM
                     item
                 LEFT JOIN 
@@ -155,6 +185,34 @@ async fn api_item_list(
                     worker AS pic_design ON item.pic_design_id = pic_design.id
                 LEFT JOIN
                     worker AS double_check_person ON item.double_check_person_id = double_check_person.id
+                LEFT JOIN
+                    worker AS rough_coordinator ON item.rough_coordinator_id = rough_coordinator.id
+                LEFT JOIN
+                    worker AS rough_check_person ON item.rough_check_person_id = rough_check_person.id
+                LEFT JOIN
+                    worker AS line_art_coordinator ON item.line_art_coordinator_id = line_art_coordinator.id
+                LEFT JOIN
+                    worker AS line_art_check_person ON item.line_art_check_person_id = line_art_check_person.id
+                LEFT JOIN
+                    worker AS coloring_coordinator ON item.coloring_coordinator_id = coloring_coordinator.id
+                LEFT JOIN
+                    worker AS coloring_check_person ON item.coloring_check_person_id = coloring_check_person.id
+                LEFT JOIN
+                    worker AS design_coordinator ON item.design_coordinator_id = design_coordinator.id
+                LEFT JOIN
+                    worker AS design_check_person ON item.design_check_person_id = design_check_person.id
+                LEFT JOIN
+                    worker AS submission_data_coordinator ON item.submission_data_coordinator_id = submission_data_coordinator.id
+                LEFT JOIN
+                    worker AS submission_data_check_person ON item.submission_data_check_person_id = submission_data_check_person.id
+                LEFT JOIN
+                    worker AS announcement_materials_coordinator ON item.announcement_materials_coordinator_id = announcement_materials_coordinator.id
+                LEFT JOIN
+                    worker AS announcement_materials_check_person ON item.announcement_materials_check_person_id = announcement_materials_check_person.id
+                LEFT JOIN
+                    worker AS jan_coordinator ON item.jan_coordinator_id = jan_coordinator.id
+                LEFT JOIN
+                    worker AS jan_check_person ON item.jan_check_person_id = jan_check_person.id
                 WHERE
                     title_id = '{}'
                 AND
@@ -175,6 +233,18 @@ async fn api_item_list(
             let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
                 Some(release_date) => {
                     Some(release_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let delivery_date = match title.delivery_date {
+                Some(delivery_date) => {
+                    Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600)))
+                }
+                None => None,
+            };
+            let list_submission_date = match title.list_submission_date {
+                Some(list_submission_date) => {
+                    Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
                 }
                 None => None,
             };
@@ -202,6 +272,8 @@ async fn api_item_list(
                 id: title.id,
                 name: title.name,
                 release_date,
+                delivery_date,
+                list_submission_date,
                 reservation_start_date,
                 reservation_deadline,
                 order_date_to_maker,
@@ -213,7 +285,7 @@ async fn api_item_list(
                 items: items,
             });
         }
-        year_month_title_list.push(YearMonthTitleList {
+        title_list_group_by_year_month.push(ItemListResponse {
             yyyymm: year_month.yyyymm,
             year: year_month.year,
             month: year_month.month,
@@ -223,12 +295,7 @@ async fn api_item_list(
         });
     }
 
-    let response = ItemListResponse {
-        year_month_list: year_month_list.clone(),
-        year_month_title_list,
-    };
-
-    Ok(HttpResponse::Ok().json(response))
+    Ok(HttpResponse::Ok().json(title_list_group_by_year_month))
 }
 
 #[get("/api/item_new")]
@@ -263,6 +330,16 @@ async fn api_create_items(
         Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
         None => None,
     };
+    let delivery_date = match post_data.delivery_date {
+        Some(delivery_date) => Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let list_submission_date = match post_data.list_submission_date {
+        Some(list_submission_date) => {
+            Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
     let reservation_start_date = match post_data.reservation_start_date {
         Some(reservation_start_date) => {
             Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
@@ -287,6 +364,8 @@ async fn api_create_items(
         id: Set(post_data.title_id),
         name: Set(post_data.title_name.clone()),
         release_date: Set(release_date),
+        delivery_date: Set(delivery_date),
+        list_submission_date: Set(list_submission_date),
         reservation_start_date: Set(reservation_start_date),
         reservation_deadline: Set(reservation_deadline),
         order_date_to_maker: Set(order_date_to_maker),
@@ -317,6 +396,20 @@ async fn api_create_items(
             maker_id: Set(item.maker_id),
             retail_price: Set(item.retail_price),
             double_check_person_id: Set(item.double_check_person_id),
+            rough_coordinator_id: Set(item.rough_coordinator_id),
+            rough_check_person_id: Set(item.rough_check_person_id),
+            line_art_coordinator_id: Set(item.line_art_coordinator_id),
+            line_art_check_person_id: Set(item.line_art_check_person_id),
+            coloring_coordinator_id: Set(item.coloring_coordinator_id),
+            coloring_check_person_id: Set(item.coloring_check_person_id),
+            design_coordinator_id: Set(item.design_coordinator_id),
+            design_check_person_id: Set(item.design_check_person_id),
+            submission_data_coordinator_id: Set(item.submission_data_coordinator_id),
+            submission_data_check_person_id: Set(item.submission_data_check_person_id),
+            announcement_materials_coordinator_id: Set(item.announcement_materials_coordinator_id),
+            announcement_materials_check_person_id: Set(item.announcement_materials_check_person_id),
+            jan_coordinator_id: Set(item.jan_coordinator_id),
+            jan_check_person_id: Set(item.jan_check_person_id),
             deleted: Set(false),
             resubmission: Set(item.resubmission),
             line: Set(item.line.clone()),
@@ -374,6 +467,16 @@ async fn api_item_edit_page(
         Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
         None => None,
     };
+    let delivery_date = match title.delivery_date {
+        Some(delivery_date) => Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600))),
+        None => None,
+    };
+    let list_submission_date = match title.list_submission_date {
+        Some(list_submission_date) => {
+            Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
+        }
+        None => None,
+    };
     let reservation_start_date = match title.reservation_start_date {
         Some(reservation_start_date) => {
             Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
@@ -399,6 +502,8 @@ async fn api_item_edit_page(
         workers: workers,
         makers: makers,
         release_date,
+        delivery_date,
+        list_submission_date,
         reservation_start_date,
         reservation_deadline,
         order_date_to_maker,
@@ -433,6 +538,14 @@ async fn api_update_items(
         name: Set(put_data.title_name),
         release_date: match put_data.release_date {
             Some(release_date) => Set(Some(utc_date_time_to_jst(&release_date))),
+            None => Set(None),
+        },
+        delivery_date: match put_data.delivery_date {
+            Some(delivery_date) => Set(Some(utc_date_time_to_jst(&delivery_date))),
+            None => Set(None),
+        },
+        list_submission_date: match put_data.list_submission_date {
+            Some(list_submission_date) => Set(Some(utc_date_time_to_jst(&list_submission_date))),
             None => Set(None),
         },
         reservation_start_date: match put_data.reservation_start_date {
@@ -561,7 +674,7 @@ async fn api_delete_title(
     Ok(HttpResponse::Ok().finish())
 }
 
-fn date_to_string(date_time: &DateTime<Utc>) -> String {
+fn _date_to_string(date_time: &DateTime<Utc>) -> String {
     // format document https://docs.rs/chrono/0.4.19/chrono/format/strftime/index.html
     let date_time_japan = utc_date_time_to_jst(date_time);
     let day_format = date_time_japan.format("%w").to_string(); // Sunday = 0, Monday = 1, ..., Saturday = 6.
@@ -600,22 +713,22 @@ fn last_day_of_month(year: String, month: String) -> String {
 mod tests {
     use chrono::{TimeZone, Utc};
 
-    use crate::item::date_to_string;
+    use crate::item::_date_to_string;
     use crate::item::last_day_of_month;
 
     #[test]
     fn test_date_to_string() {
         let date_time = Utc.ymd(2022, 2, 21).and_hms(16, 0, 0);
-        assert_eq!(date_to_string(&date_time), "02/22(火)".to_string());
+        assert_eq!(_date_to_string(&date_time), "02/22(火)".to_string());
 
         let date_time = Utc.ymd(2022, 12, 31).and_hms(11, 0, 0);
-        assert_eq!(date_to_string(&date_time), "12/31(土)".to_string());
+        assert_eq!(_date_to_string(&date_time), "12/31(土)".to_string());
 
         let date_time = Utc.ymd(2022, 12, 31).and_hms(16, 0, 0);
-        assert_eq!(date_to_string(&date_time), "01/01(日)".to_string());
+        assert_eq!(_date_to_string(&date_time), "01/01(日)".to_string());
 
         let date_time = Utc.ymd(2022, 1, 1).and_hms(0, 0, 0);
-        assert_eq!(date_to_string(&date_time), "01/01(土)".to_string());
+        assert_eq!(_date_to_string(&date_time), "01/01(土)".to_string());
     }
 
     #[test]
