@@ -1,6 +1,6 @@
 use crate::model::item::{
     InputNewItem, ItemEditResponse, ItemListResponse, ItemNewResponse, ItemWithMakerAndWorker,
-    ItemsPutRequest, TitleFiltered, TitleWithItems, YearMonthList, YearMonthTitleList,
+    ItemsPutRequest, TitleFiltered, TitleWithItems, YearMonthList,
 };
 use crate::setting::AppState;
 use actix_web::{delete, get, post, put, web, Error, HttpResponse, Result};
@@ -285,7 +285,7 @@ async fn api_item_list(
                 items: items,
             });
         }
-        title_list_group_by_year_month.push(YearMonthTitleList {
+        title_list_group_by_year_month.push(ItemListResponse {
             yyyymm: year_month.yyyymm,
             year: year_month.year,
             month: year_month.month,
@@ -294,11 +294,6 @@ async fn api_item_list(
             title_list: title_with_items,
         });
     }
-
-    // let response = ItemListResponse {
-    //     year_month_list: year_month_list.clone(),
-    //     year_month_title_list,
-    // };
 
     Ok(HttpResponse::Ok().json(title_list_group_by_year_month))
 }

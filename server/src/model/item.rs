@@ -127,12 +127,6 @@ pub struct ItemEditResponse {
 
 #[derive(Debug, Serialize)]
 pub struct ItemListResponse {
-    pub year_month_list: Vec<YearMonthList>,
-    pub year_month_title_list: Vec<YearMonthTitleList>,
-}
-
-#[derive(Debug, Serialize)]
-pub struct YearMonthTitleList {
     pub yyyymm: String,
     pub year: String,
     pub month: String,
