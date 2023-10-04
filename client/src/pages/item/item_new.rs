@@ -11,7 +11,6 @@ use crate::model::item_page::{
 };
 use reqwasm::http::Request;
 use uuid::Uuid;
-use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
@@ -250,7 +249,6 @@ pub fn edit_item() -> Html {
         let title_state = title_state.clone();
         Callback::from(move |_| {
             let mut saved_items = vec![];
-            web_sys::console::log_1(&"save_onclick".into());
             items_state.iter().for_each(|item_state| {
                 saved_items.push(ItemRegisterParams {
                     id: item_state.id.clone(),
@@ -329,8 +327,7 @@ pub fn edit_item() -> Html {
                         .unwrap()
                         .alert_with_message(&error_message)
                         .unwrap();
-                    let error_message = JsValue::from_str(&error_message);
-                    web_sys::console::error_1(&error_message);
+                    log::error!("{}", error_message);
                 }
             });
         })

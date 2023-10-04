@@ -12,7 +12,6 @@ use crate::model::item_page::{
 use reqwasm::http::Request;
 use urlencoding::decode;
 use uuid::Uuid;
-use wasm_bindgen::JsValue;
 use web_sys::HtmlInputElement;
 use yew::{
     events::Event, function_component, html, use_effect_with_deps, use_state, Callback, Html,
@@ -319,7 +318,6 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
 
         Callback::from(move |_| {
             let mut saved_items = vec![];
-            web_sys::console::log_1(&"save_onclick".into());
             items_state.iter().for_each(|item_state| {
                 saved_items.push(ItemState {
                     id: item_state.id.clone(),
@@ -447,8 +445,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         .unwrap()
                         .alert_with_message(&error_message)
                         .unwrap();
-                    let error_message = JsValue::from_str(&error_message);
-                    web_sys::console::error_1(&error_message);
+                    log::error!("{}", error_message);
                 }
             });
         })
@@ -475,8 +472,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 } else {
                     let error_message =
                         format!("Failed to delete title: {}", delete_response.status());
-                    let error_message = JsValue::from_str(&error_message);
-                    web_sys::console::log_1(&error_message);
+                    log::info!("{}", error_message);
                     web_sys::window()
                         .unwrap()
                         .alert_with_message("タイトルの削除に失敗しました")

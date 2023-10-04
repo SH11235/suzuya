@@ -5,10 +5,10 @@ use pages::worker::worker_list::WorkerList;
 use yew::prelude::*;
 use yew_router::prelude::*;
 
+mod common;
 mod components;
 mod model;
 mod pages;
-mod common;
 
 #[derive(Routable, PartialEq, Clone, Debug)]
 pub enum Route {
@@ -66,4 +66,5 @@ fn switch(routes: &Route) -> Html {
 
 fn main() {
     yew::start_app::<App>();
+    wasm_logger::init(wasm_logger::Config::default());
 }

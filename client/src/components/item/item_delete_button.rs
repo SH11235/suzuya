@@ -1,5 +1,4 @@
 use reqwasm::http::Request;
-use wasm_bindgen::JsValue;
 use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
 use crate::common::api::backend_url;
@@ -87,8 +86,7 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                 } else {
                     let error_message =
                         format!("Failed to delete item: {}", delete_response.status());
-                    let error_message = JsValue::from_str(&error_message);
-                    web_sys::console::log_1(&error_message);
+                    log::error!("{}", error_message);
                 }
             });
         }

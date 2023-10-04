@@ -1,11 +1,10 @@
 use reqwasm::http::Request;
 use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
-use crate::model::worker_page::WorkerState;
-use crate::model::worker_page::PutWorkerRequest;
 use crate::common::api::backend_url;
+use crate::model::worker_page::PutWorkerRequest;
+use crate::model::worker_page::WorkerState;
 
 #[derive(Properties, PartialEq)]
 pub struct SaveButtonProperty {
@@ -39,12 +38,7 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             let put_url = format!("{}{}{}", backend_url(), "/api/worker/", id);
             let client = Request::put(&put_url)
                 .header("Content-Type", "application/json")
-                .body(
-                    serde_json::to_string(&PutWorkerRequest {
-                        name: worker_name,
-                    })
-                    .unwrap(),
-                );
+                .body(serde_json::to_string(&PutWorkerRequest { name: worker_name }).unwrap());
             let put_response = client.send().await.expect("Failed to update worker");
             if put_response.status() == 200 {
                 let mut new_workers = vec![];
@@ -70,8 +64,7 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             } else {
                 // responseが200以外の場合はエラーを出す
                 let error_message = format!("Failed to update worker: {}", put_response.status());
-                let error_message = JsValue::from_str(&error_message);
-                web_sys::console::error_1(&error_message);
+                log::error!("{}", error_message);
             }
         });
     });
@@ -102,12 +95,7 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             let post_url = format!("{}{}", backend_url(), "/api/new_worker");
             let client = Request::post(&post_url)
                 .header("Content-Type", "application/json")
-                .body(
-                    serde_json::to_string(&PutWorkerRequest {
-                        name: worker_name,
-                    })
-                    .unwrap(),
-                );
+                .body(serde_json::to_string(&PutWorkerRequest { name: worker_name }).unwrap());
             let post_response = client.send().await.expect("Failed to update worker");
             if post_response.status() == 201 {
                 let mut new_workers = vec![];
@@ -141,8 +129,7 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
                     .unwrap()
                     .alert_with_message(&error_message)
                     .unwrap();
-                let error_message = JsValue::from_str(&error_message);
-                web_sys::console::error_1(&error_message);
+                log::error!("{}", error_message);
             }
         });
     });

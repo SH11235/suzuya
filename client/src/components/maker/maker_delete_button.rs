@@ -1,9 +1,8 @@
 use reqwasm::http::Request;
-use wasm_bindgen::JsValue;
 use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
-use crate::model::maker_page::MakerState;
 use crate::common::api::backend_url;
+use crate::model::maker_page::MakerState;
 
 #[derive(Properties, PartialEq)]
 pub struct DeleteButtonProperty {
@@ -17,7 +16,11 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
     let id_for_view = props.input_id.clone();
     let makers_state_for_db = props.makers_state_handle.clone();
     let makers_state_for_view = props.makers_state_handle.clone();
-    let target_maker = props.makers_state_handle.iter().find(|maker| maker.id == props.input_id).unwrap();
+    let target_maker = props
+        .makers_state_handle
+        .iter()
+        .find(|maker| maker.id == props.input_id)
+        .unwrap();
     let delete_from_db = Callback::from(move |_| {
         // confirmを出す
         let confirm = web_sys::window()
@@ -48,8 +51,7 @@ pub fn delete_button(props: &DeleteButtonProperty) -> Html {
                 } else {
                     let error_message =
                         format!("Failed to delete maker: {}", delete_response.status());
-                    let error_message = JsValue::from_str(&error_message);
-                    web_sys::console::log_1(&error_message);
+                    log::error!("{}", error_message);
                 }
             });
         }

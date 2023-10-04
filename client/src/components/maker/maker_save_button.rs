@@ -1,11 +1,10 @@
 use reqwasm::http::Request;
 use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 use yew::{function_component, html, Callback, Properties, UseStateHandle};
 
+use crate::common::api::backend_url;
 use crate::model::maker_page::MakerState;
 use crate::model::maker_page::PutMakerRequest;
-use crate::common::api::backend_url;
 
 #[derive(Properties, PartialEq)]
 pub struct SaveButtonProperty {
@@ -70,8 +69,7 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             } else {
                 // responseが200以外の場合はエラーを出す
                 let error_message = format!("Failed to update maker: {}", put_response.status());
-                let error_message = JsValue::from_str(&error_message);
-                web_sys::console::error_1(&error_message);
+                log::error!("{}", error_message);
             }
         });
     });
@@ -141,8 +139,7 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
                     .unwrap()
                     .alert_with_message(&error_message)
                     .unwrap();
-                let error_message = JsValue::from_str(&error_message);
-                web_sys::console::error_1(&error_message);
+                log::error!("{}", error_message);
             }
         });
     });
