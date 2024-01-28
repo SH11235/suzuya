@@ -37,7 +37,7 @@ async fn api_create_worker(
     let uuid = Uuid::new_v4();
 
     worker::ActiveModel {
-        id: Set(uuid.clone()),
+        id: Set(uuid),
         name: Set(request_body.name.to_owned()),
         deleted: Set(false),
     }

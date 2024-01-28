@@ -37,7 +37,7 @@ async fn api_create_maker(
     let uuid = Uuid::new_v4();
 
     maker::ActiveModel {
-        id: Set(uuid.clone()),
+        id: Set(uuid),
         code_name: Set(request_body.code_name.to_owned()),
         ..Default::default()
     }

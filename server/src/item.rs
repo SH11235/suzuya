@@ -230,42 +230,25 @@ async fn api_item_list(
             .all(conn)
             .await
             .expect("could not find items.");
-            let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
-                Some(release_date) => {
-                    Some(release_date.with_timezone(&FixedOffset::east(9 * 3600)))
-                }
-                None => None,
-            };
-            let delivery_date = match title.delivery_date {
-                Some(delivery_date) => {
-                    Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600)))
-                }
-                None => None,
-            };
-            let list_submission_date = match title.list_submission_date {
-                Some(list_submission_date) => {
-                    Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
-                }
-                None => None,
-            };
-            let reservation_start_date = match title.reservation_start_date {
-                Some(reservation_start_date) => {
-                    Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
-                }
-                None => None,
-            };
-            let reservation_deadline = match title.reservation_deadline {
-                Some(reservation_deadline) => {
-                    Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
-                }
-                None => None,
-            };
-            let order_date_to_maker = match title.order_date_to_maker {
-                Some(order_date_to_maker) => {
-                    Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
-                }
-                None => None,
-            };
+            let release_date: Option<DateTimeWithTimeZone> = title
+                .release_date
+                .map(|release_date| release_date.with_timezone(&FixedOffset::east(9 * 3600)));
+            let delivery_date = title
+                .delivery_date
+                .map(|delivery_date| delivery_date.with_timezone(&FixedOffset::east(9 * 3600)));
+            let list_submission_date = title.list_submission_date.map(|list_submission_date| {
+                list_submission_date.with_timezone(&FixedOffset::east(9 * 3600))
+            });
+            let reservation_start_date =
+                title.reservation_start_date.map(|reservation_start_date| {
+                    reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600))
+                });
+            let reservation_deadline = title.reservation_deadline.map(|reservation_deadline| {
+                reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600))
+            });
+            let order_date_to_maker = title.order_date_to_maker.map(|order_date_to_maker| {
+                order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600))
+            });
             let updated_at = title.updated_at.with_timezone(&FixedOffset::east(9 * 3600));
             item_count += items.len();
             title_with_items.push(TitleWithItems {
@@ -282,7 +265,7 @@ async fn api_item_list(
                 catalog_status: title.catalog_status,
                 announcement_status: title.announcement_status,
                 remarks: title.remarks,
-                items: items,
+                items,
             });
         }
         title_list_group_by_year_month.push(ItemListResponse {
@@ -290,7 +273,7 @@ async fn api_item_list(
             year: year_month.year,
             month: year_month.month,
             title_count: title_with_items.len(),
-            item_count: item_count,
+            item_count,
             title_list: title_with_items,
         });
     }
@@ -326,38 +309,26 @@ async fn api_create_items(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
 
-    let release_date: Option<DateTimeWithTimeZone> = match post_data.release_date {
-        Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
-        None => None,
-    };
-    let delivery_date = match post_data.delivery_date {
-        Some(delivery_date) => Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600))),
-        None => None,
-    };
-    let list_submission_date = match post_data.list_submission_date {
-        Some(list_submission_date) => {
-            Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
-    let reservation_start_date = match post_data.reservation_start_date {
-        Some(reservation_start_date) => {
-            Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
-    let reservation_deadline = match post_data.reservation_deadline {
-        Some(reservation_deadline) => {
-            Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
-    let order_date_to_maker = match post_data.order_date_to_maker {
-        Some(order_date_to_maker) => {
-            Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
+    let release_date: Option<DateTimeWithTimeZone> = post_data
+        .release_date
+        .map(|release_date| release_date.with_timezone(&FixedOffset::east(9 * 3600)));
+    let delivery_date = post_data
+        .delivery_date
+        .map(|delivery_date| delivery_date.with_timezone(&FixedOffset::east(9 * 3600)));
+    let list_submission_date = post_data.list_submission_date.map(|list_submission_date| {
+        list_submission_date.with_timezone(&FixedOffset::east(9 * 3600))
+    });
+    let reservation_start_date = post_data
+        .reservation_start_date
+        .map(|reservation_start_date| {
+            reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600))
+        });
+    let reservation_deadline = post_data.reservation_deadline.map(|reservation_deadline| {
+        reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600))
+    });
+    let order_date_to_maker = post_data
+        .order_date_to_maker
+        .map(|order_date_to_maker| order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)));
 
     // title登録
     let title = title::ActiveModel {
@@ -388,7 +359,7 @@ async fn api_create_items(
             title_id: Set(title_id),
             name: Set(item.name.clone()),
             product_code: Set(item.product_code.clone()),
-            sku: Set(item.sku.clone()),
+            sku: Set(item.sku),
             illust_status: Set(item.illust_status.clone()),
             pic_illust_id: Set(item.pic_illust_id),
             design_status: Set(item.design_status.clone()),
@@ -463,44 +434,30 @@ async fn api_item_edit_page(
         .await
         .expect("could not find makers.");
 
-    let release_date: Option<DateTimeWithTimeZone> = match title.release_date {
-        Some(release_date) => Some(release_date.with_timezone(&FixedOffset::east(9 * 3600))),
-        None => None,
-    };
-    let delivery_date = match title.delivery_date {
-        Some(delivery_date) => Some(delivery_date.with_timezone(&FixedOffset::east(9 * 3600))),
-        None => None,
-    };
-    let list_submission_date = match title.list_submission_date {
-        Some(list_submission_date) => {
-            Some(list_submission_date.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
-    let reservation_start_date = match title.reservation_start_date {
-        Some(reservation_start_date) => {
-            Some(reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
-    let reservation_deadline = match title.reservation_deadline {
-        Some(reservation_deadline) => {
-            Some(reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
-    let order_date_to_maker = match title.order_date_to_maker {
-        Some(order_date_to_maker) => {
-            Some(order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)))
-        }
-        None => None,
-    };
+    let release_date: Option<DateTimeWithTimeZone> = title
+        .release_date
+        .map(|release_date| release_date.with_timezone(&FixedOffset::east(9 * 3600)));
+    let delivery_date = title
+        .delivery_date
+        .map(|delivery_date| delivery_date.with_timezone(&FixedOffset::east(9 * 3600)));
+    let list_submission_date = title.list_submission_date.map(|list_submission_date| {
+        list_submission_date.with_timezone(&FixedOffset::east(9 * 3600))
+    });
+    let reservation_start_date = title.reservation_start_date.map(|reservation_start_date| {
+        reservation_start_date.with_timezone(&FixedOffset::east(9 * 3600))
+    });
+    let reservation_deadline = title.reservation_deadline.map(|reservation_deadline| {
+        reservation_deadline.with_timezone(&FixedOffset::east(9 * 3600))
+    });
+    let order_date_to_maker = title
+        .order_date_to_maker
+        .map(|order_date_to_maker| order_date_to_maker.with_timezone(&FixedOffset::east(9 * 3600)));
     let updated_at = title.updated_at.with_timezone(&FixedOffset::east(9 * 3600));
 
     Ok(HttpResponse::Ok().json(ItemEditResponse {
-        items: items,
-        workers: workers,
-        makers: makers,
+        items,
+        workers,
+        makers,
         release_date,
         delivery_date,
         list_submission_date,
@@ -523,7 +480,7 @@ async fn api_update_items(
 ) -> Result<HttpResponse, Error> {
     let conn = &data.conn;
     let put_data = post_data.into_inner();
-    let title_id = put_data.title_id.clone();
+    let title_id = put_data.title_id;
 
     // title_id存在確認
     Title::find_by_id(title_id)
@@ -574,7 +531,7 @@ async fn api_update_items(
     .expect("could not update title.");
 
     for item in put_data.items.iter() {
-        let item_id = item.id.clone();
+        let item_id = item.id;
         // item_id存在確認
         let item_id_exist = Item::find_by_id(item_id)
             .one(conn)

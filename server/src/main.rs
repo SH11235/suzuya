@@ -1,7 +1,6 @@
 use actix_cors::Cors;
 use actix_web::http::header;
 use actix_web::{middleware, web, App, HttpServer};
-use sea_orm;
 use listenfd::ListenFd;
 use migration::{Migrator, MigratorTrait};
 use std::env;
@@ -23,7 +22,7 @@ async fn main() -> std::io::Result<()> {
 
     // establish connection to database and apply migrations
     let conn = sea_orm::Database::connect(&db_url).await.unwrap();
-    if env::var("MIGRATION").unwrap_or(String::from("false")) == String::from("true") {
+    if env::var("MIGRATION").unwrap_or(String::from("false")) == *"true" {
         tracing::debug!("Run migration.");
         Migrator::up(&conn, None).await.unwrap();
         tracing::debug!("Finish migration.");
@@ -39,7 +38,7 @@ async fn main() -> std::io::Result<()> {
                 dotenv::dotenv().ok();
                 env::var("allowed_origin")
                     .expect("allowed_origin must be set")
-                    .split(",")
+                    .split(',')
                     .collect::<Vec<&str>>()
                     .iter()
                     .any(|env_origin| env_origin == origin)
