@@ -6,11 +6,11 @@ pub fn date_time_with_timezone_to_string(date_time_with_timezone: &Option<String
             // yyyy-mm-ddThh:mm:ss+00:00 もしくは"2022-11-07T01:29:51.703763+09:00"の形式であるか正規表現でチェックする
             let re1 = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$").unwrap();
             let re2 = Regex::new(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{6}\+\d{2}:\d{2}$").unwrap();
-            if re1.is_match(&date_time_with_timezone) || re2.is_match(&date_time_with_timezone) {
-                let date_time_with_timezone = date_time_with_timezone.replace("T", " ");
+            if re1.is_match(date_time_with_timezone) || re2.is_match(date_time_with_timezone) {
+                let date_time_with_timezone = date_time_with_timezone.replace('T', " ");
                 let date_time_with_timezone = date_time_with_timezone.replace("+00:00", "");
-                let date_time_with_timezone = date_time_with_timezone.replace("-", "/");
-                let date_time_with_timezone = date_time_with_timezone.split(" ").collect::<Vec<&str>>();
+                let date_time_with_timezone = date_time_with_timezone.replace('-', "/");
+                let date_time_with_timezone = date_time_with_timezone.split(' ').collect::<Vec<&str>>();
                 let date_time_with_timezone = date_time_with_timezone[0];
                 date_time_with_timezone.to_string()
             } else {
@@ -23,7 +23,7 @@ pub fn date_time_with_timezone_to_string(date_time_with_timezone: &Option<String
 
 pub fn parse_date(date: &Option<String>) -> String {
     match date {
-        Some(date) => (&date[0..10]).to_string(),
+        Some(date) => date[0..10].to_string(),
         None => "".to_string(),
     }
 }

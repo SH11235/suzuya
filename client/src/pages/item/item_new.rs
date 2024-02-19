@@ -25,10 +25,10 @@ pub fn edit_item() -> Html {
     });
     let initial_items: Vec<ItemState> = vec![];
     let items_state = use_state(|| initial_items);
-    let makers_state = use_state(|| vec![]);
-    let workers_state = use_state(|| vec![]);
+    let makers_state = use_state(std::vec::Vec::new);
+    let workers_state = use_state(std::vec::Vec::new);
     let fetching_state = use_state(|| true);
-    let get_url = format!("{}", backend_url() + "/api/item_new");
+    let get_url = backend_url() + "/api/item_new";
     {
         let makers_state = makers_state.clone();
         let workers_state = workers_state.clone();
@@ -120,42 +120,42 @@ pub fn edit_item() -> Html {
                     });
                 }
                 TitleInfo::ReleaseDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::DeliveryDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         delivery_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ListSubmissionDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         list_submission_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationStartDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_start_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationDeadline => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_deadline: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::OrderDateToMaker => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         order_date_to_maker: val,
                         ..original_title_state
@@ -180,7 +180,7 @@ pub fn edit_item() -> Html {
                     });
                 }
                 TitleInfo::Remarks => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         remarks: val,
                         ..original_title_state
@@ -254,20 +254,20 @@ pub fn edit_item() -> Html {
                     id: item_state.id.clone(),
                     name: item_state.name.clone(),
                     product_code: item_state.product_code.clone(),
-                    sku: item_state.sku.clone(),
+                    sku: item_state.sku,
                     illust_status: item_state.illust_status.clone(),
                     pic_illust_id: item_state.pic_illust_id.clone(),
                     design_status: item_state.design_status.clone(),
                     pic_design_id: item_state.pic_design_id.clone(),
                     maker_id: item_state.maker_id.clone(),
-                    retail_price: item_state.retail_price.clone(),
+                    retail_price: item_state.retail_price,
                     resubmission: item_state.resubmission,
                     line: item_state.line.clone(),
                 });
             });
             let title_state = title_state.clone();
             wasm_bindgen_futures::spawn_local(async move {
-                let post_url = format!("{}", backend_url() + "/api/item_new",);
+                let post_url = backend_url() + "/api/item_new";
                 let client = Request::post(&post_url)
                     .header("Content-Type", "application/json")
                     .body(
@@ -306,7 +306,7 @@ pub fn edit_item() -> Html {
                     match release_date {
                         Some(date) => {
                             // 2022-05-03... → 202205
-                            let date = date.replace("-", "")[0..6].to_string();
+                            let date = date.replace('-', "")[0..6].to_string();
                             web_sys::window()
                                 .unwrap()
                                 .location()

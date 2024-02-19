@@ -21,7 +21,7 @@ pub fn monthly_field(props: &MonthlyFieldProperty) -> Html {
             let year_month_list = year_month_list.clone();
             let input: HtmlInputElement = e.target_unchecked_into();
             let name: String = input.name();
-            let index = name.as_str().split("-").collect::<Vec<&str>>()[1]
+            let index = name.as_str().split('-').collect::<Vec<&str>>()[1]
                 .parse::<usize>()
                 .unwrap();
             let selected_yyyymm = &year_month_list[index - 1].yyyymm;

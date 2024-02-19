@@ -88,11 +88,11 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             input.value()
         };
         // maker_codeが空の場合はアラートを出す
-        if maker_code == "" {
+        if maker_code.is_empty() {
             let error_message = "メーカーコードを入力してください";
             web_sys::window()
                 .unwrap()
-                .alert_with_message(&error_message)
+                .alert_with_message(error_message)
                 .unwrap();
             return;
         }

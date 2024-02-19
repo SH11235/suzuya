@@ -9,19 +9,19 @@ pub fn project_type_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(PROJECT_DEFAULT),
-            color: Color::WHITE,
+            color: Color::White,
         },
         StatusName {
             name: String::from(PROJECT_S),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(PROJECT_Y),
-            color: Color::BLUE,
+            color: Color::Blue,
         },
         StatusName {
             name: String::from(PROJECT_RE),
-            color: Color::GRAY,
+            color: Color::Gray,
         },
     ]
 }
@@ -34,19 +34,19 @@ pub fn catalog_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(CATALOG_NOT_STARTED_YET),
-            color: Color::WHITE,
+            color: Color::White,
         },
         StatusName {
             name: String::from(CATALOG_UNNECESSARY),
-            color: Color::GRAY,
+            color: Color::Gray,
         },
         StatusName {
             name: String::from(CATALOG_IN_PROGRESS),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(CATALOG_COMPLETED),
-            color: Color::GREEN,
+            color: Color::Green,
         },
     ]
 }
@@ -65,43 +65,43 @@ pub fn illust_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(ILLUST_NOT_STARTED_YET),
-            color: Color::WHITE,
+            color: Color::White,
         },
         StatusName {
             name: String::from(ILLUST_WAITING_FOR_MATERIALS),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(ILLUST_ROUGH_IN_PROGRESS),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(ILLUST_ROUGH_UNDER_SUPERVISION),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(ILLUST_WAITING_FOR_DELIVERY),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(ILLUST_LINE_DRAWING_IN_PROGRESS),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(ILLUST_LINE_DRAWING_UNDER_SUPERVISION),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(ILLUST_COLORING_IN_PROGRESS),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(ILLUST_COLORING_UNDER_SUPERVISION),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(ILLUST_COMPLETED),
-            color: Color::GREEN,
+            color: Color::Green,
         },
     ]
 }
@@ -120,43 +120,43 @@ pub fn design_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(DESIGN_NOT_STARTED_YET),
-            color: Color::WHITE,
+            color: Color::White,
         },
         StatusName {
             name: String::from(DESIGN_WAITING_FOR_MATERIALS),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(DESIGN_IN_PROGRESS),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(DESIGN_UNDER_SUPERVISION),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(DESIGN_PREPARING_SUBMISSION_DATA),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(DESIGN_ARRANGING_PROOFREADING),
-            color: Color::BLUE,
+            color: Color::Blue,
         },
         StatusName {
             name: String::from(DESIGN_WAITING_FOR_ANOTHER_PROOFREADING),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(DESIGN_PROOFREADING_UNDER_SUPERVISION),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(DESIGN_PROOFREADING_COMPLETED),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(DESIGN_ORDERED),
-            color: Color::GREEN,
+            color: Color::Green,
         },
     ]
 }
@@ -167,11 +167,11 @@ pub fn resubmission_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(RESUBMISSION_NONE),
-            color: Color::WHITE,
+            color: Color::White,
         },
         StatusName {
             name: String::from(RESUBMISSION_OK),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
     ]
 }
@@ -183,15 +183,15 @@ pub fn line_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(LINE_UNADDRESSED),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(LINE_UNNECESSARY),
-            color: Color::GRAY,
+            color: Color::Gray,
         },
         StatusName {
             name: String::from(LINE_DONE),
-            color: Color::GREEN,
+            color: Color::Green,
         },
     ]
 }
@@ -205,23 +205,23 @@ pub fn announce_status_list() -> Vec<StatusName> {
     vec![
         StatusName {
             name: String::from(ANNOUNCE_NOT_STARTED_YET),
-            color: Color::WHITE,
+            color: Color::White,
         },
         StatusName {
             name: String::from(ANNOUNCE_UNNECESSARY),
-            color: Color::GRAY,
+            color: Color::Gray,
         },
         StatusName {
             name: String::from(ANNOUNCE_IN_PROGRESS),
-            color: Color::YELLOW,
+            color: Color::Yellow,
         },
         StatusName {
             name: String::from(ANNOUNCE_UNDER_SUPERVISION),
-            color: Color::PINK,
+            color: Color::Pink,
         },
         StatusName {
             name: String::from(ANNOUNCE_COMPLETED),
-            color: Color::GREEN,
+            color: Color::Green,
         },
     ]
 }
@@ -229,67 +229,67 @@ pub fn announce_status_list() -> Vec<StatusName> {
 pub fn get_corresponding_color(text: &str) -> Color {
     match text {
         // 重複する文言はコメントアウトしているが、色の対応は同じなので問題ない
-        PROJECT_DEFAULT => Color::WHITE,
-        PROJECT_S => Color::YELLOW,
-        PROJECT_Y => Color::BLUE,
-        PROJECT_RE => Color::GRAY,
-        CATALOG_NOT_STARTED_YET => Color::WHITE,
-        CATALOG_UNNECESSARY => Color::GRAY,
-        CATALOG_IN_PROGRESS => Color::YELLOW,
-        CATALOG_COMPLETED => Color::GREEN,
+        PROJECT_DEFAULT => Color::White,
+        PROJECT_S => Color::Yellow,
+        PROJECT_Y => Color::Blue,
+        PROJECT_RE => Color::Gray,
+        CATALOG_NOT_STARTED_YET => Color::White,
+        CATALOG_UNNECESSARY => Color::Gray,
+        CATALOG_IN_PROGRESS => Color::Yellow,
+        CATALOG_COMPLETED => Color::Green,
         // ILLUST_NOT_STARTED_YET => Color::WHITE,
-        ILLUST_WAITING_FOR_MATERIALS => Color::PINK,
-        ILLUST_ROUGH_IN_PROGRESS => Color::YELLOW,
-        ILLUST_ROUGH_UNDER_SUPERVISION => Color::PINK,
-        ILLUST_WAITING_FOR_DELIVERY => Color::YELLOW,
-        ILLUST_LINE_DRAWING_IN_PROGRESS => Color::YELLOW,
-        ILLUST_LINE_DRAWING_UNDER_SUPERVISION => Color::PINK,
-        ILLUST_COLORING_IN_PROGRESS => Color::YELLOW,
-        ILLUST_COLORING_UNDER_SUPERVISION => Color::PINK,
-        ILLUST_COMPLETED => Color::GREEN,
+        ILLUST_WAITING_FOR_MATERIALS => Color::Pink,
+        ILLUST_ROUGH_IN_PROGRESS => Color::Yellow,
+        ILLUST_ROUGH_UNDER_SUPERVISION => Color::Pink,
+        ILLUST_WAITING_FOR_DELIVERY => Color::Yellow,
+        ILLUST_LINE_DRAWING_IN_PROGRESS => Color::Yellow,
+        ILLUST_LINE_DRAWING_UNDER_SUPERVISION => Color::Pink,
+        ILLUST_COLORING_IN_PROGRESS => Color::Yellow,
+        ILLUST_COLORING_UNDER_SUPERVISION => Color::Pink,
+        ILLUST_COMPLETED => Color::Green,
         // DESIGN_NOT_STARTED_YET => Color::WHITE,
         // DESIGN_WAITING_FOR_MATERIALS => Color::PINK,
-        DESIGN_IN_PROGRESS => Color::YELLOW,
-        DESIGN_UNDER_SUPERVISION => Color::PINK,
-        DESIGN_PREPARING_SUBMISSION_DATA => Color::YELLOW,
-        DESIGN_ARRANGING_PROOFREADING => Color::BLUE,
-        DESIGN_WAITING_FOR_ANOTHER_PROOFREADING => Color::YELLOW,
-        DESIGN_PROOFREADING_UNDER_SUPERVISION => Color::PINK,
-        DESIGN_PROOFREADING_COMPLETED => Color::YELLOW,
-        DESIGN_ORDERED => Color::GREEN,
-        RESUBMISSION_NONE => Color::WHITE,
-        RESUBMISSION_OK => Color::YELLOW,
-        LINE_UNADDRESSED => Color::YELLOW,
+        DESIGN_IN_PROGRESS => Color::Yellow,
+        DESIGN_UNDER_SUPERVISION => Color::Pink,
+        DESIGN_PREPARING_SUBMISSION_DATA => Color::Yellow,
+        DESIGN_ARRANGING_PROOFREADING => Color::Blue,
+        DESIGN_WAITING_FOR_ANOTHER_PROOFREADING => Color::Yellow,
+        DESIGN_PROOFREADING_UNDER_SUPERVISION => Color::Pink,
+        DESIGN_PROOFREADING_COMPLETED => Color::Yellow,
+        DESIGN_ORDERED => Color::Green,
+        RESUBMISSION_NONE => Color::White,
+        RESUBMISSION_OK => Color::Yellow,
+        LINE_UNADDRESSED => Color::Yellow,
         // LINE_UNNECESSARY => Color::GRAY,
-        LINE_DONE => Color::GREEN,
+        LINE_DONE => Color::Green,
         // ANNOUNCE_NOT_STARTED_YET => Color::WHITE,
         // ANNOUNCE_UNNECESSARY => Color::GRAY,
         // ANNOUNCE_IN_PROGRESS => Color::YELLOW,
-        ANNOUNCE_UNDER_SUPERVISION => Color::PINK,
+        ANNOUNCE_UNDER_SUPERVISION => Color::Pink,
         // ANNOUNCE_COMPLETED => Color::GREEN,
-        _ => Color::WHITE,
+        _ => Color::White,
     }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub enum Color {
-    WHITE,
-    PINK,
-    YELLOW,
-    BLUE,
-    GREEN,
-    GRAY,
+    White,
+    Pink,
+    Yellow,
+    Blue,
+    Green,
+    Gray,
 }
 
 impl fmt::Display for Color {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Color::WHITE => write!(f, "white"),
-            Color::PINK => write!(f, "pink"),
-            Color::YELLOW => write!(f, "yellow"),
-            Color::BLUE => write!(f, "blue"),
-            Color::GREEN => write!(f, "green"),
-            Color::GRAY => write!(f, "gray"),
+            Color::White => write!(f, "white"),
+            Color::Pink => write!(f, "pink"),
+            Color::Yellow => write!(f, "yellow"),
+            Color::Blue => write!(f, "blue"),
+            Color::Green => write!(f, "green"),
+            Color::Gray => write!(f, "gray"),
         }
     }
 }

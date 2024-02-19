@@ -13,7 +13,7 @@ use yew::{
 
 #[function_component(MakerList)]
 pub fn maker_list() -> Html {
-    let makers_state = use_state(|| vec![]);
+    let makers_state = use_state(std::vec::Vec::new);
     let get_url = format!("{}{}", backend_url(), "/api/maker_list");
     let mut index: usize = 0;
     {

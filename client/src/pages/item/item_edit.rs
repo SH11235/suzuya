@@ -29,9 +29,9 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
     let title_state = use_state(|| TitleState {
         ..Default::default()
     });
-    let items_state = use_state(|| vec![]);
-    let makers_state = use_state(|| vec![]);
-    let workers_state = use_state(|| vec![]);
+    let items_state = use_state(std::vec::Vec::new);
+    let makers_state = use_state(std::vec::Vec::new);
+    let workers_state = use_state(std::vec::Vec::new);
     let fetching_state = use_state(|| true);
     let get_url = format!(
         "{}{}",
@@ -189,42 +189,42 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 TitleInfo::ReleaseDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         release_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::DeliveryDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         delivery_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ListSubmissionDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         list_submission_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationStartDate => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_start_date: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::ReservationDeadline => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         reservation_deadline: val,
                         ..original_title_state
                     });
                 }
                 TitleInfo::OrderDateToMaker => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         order_date_to_maker: val,
                         ..original_title_state
@@ -249,7 +249,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     });
                 }
                 TitleInfo::Remarks => {
-                    let val = if val == "" { None } else { Some(val) };
+                    let val = if val.is_empty() { None } else { Some(val) };
                     title_state.set(TitleState {
                         remarks: val,
                         ..original_title_state
@@ -363,7 +363,8 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
             let put_param_items = items_state
                 .iter()
                 .map(|item_state| {
-                    let item = ItemRegisterParams {
+                    
+                    ItemRegisterParams {
                         id: item_state.id.clone(),
                         name: item_state.name.clone(),
                         product_code: item_state.product_code.clone(),
@@ -376,12 +377,11 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                         retail_price: item_state.retail_price,
                         resubmission: item_state.resubmission,
                         line: item_state.line.clone(),
-                    };
-                    item
+                    }
                 })
                 .collect::<Vec<ItemRegisterParams>>();
             wasm_bindgen_futures::spawn_local(async move {
-                let put_url = format!("{}", backend_url() + "/api/item",);
+                let put_url = backend_url() + "/api/item";
                 let client = Request::put(&put_url)
                     .header("Content-Type", "application/json")
                     .body(
@@ -424,7 +424,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                     match release_date {
                         Some(date) => {
                             // 2022-05-03... → 202205
-                            let date = date.replace("-", "")[0..6].to_string();
+                            let date = date.replace('-', "")[0..6].to_string();
                             web_sys::window()
                                 .unwrap()
                                 .location()
@@ -512,7 +512,7 @@ pub fn edit_item(props: &EditItemPageProperty) -> Html {
                 let reservation_deadline = parse_date(&title_state.reservation_deadline);
                 let order_date_to_maker = parse_date(&title_state.order_date_to_maker);
                 // 2022/11/06T06:38:10+09:00 → 2022/11/06 06:38:10
-                let updated_at = (&title_state.updated_at[0..19]).replace("-", "/").replace("T", " ");
+                let updated_at = title_state.updated_at[0..19].replace('-', "/").replace('T', " ");
                 let items = items_state.clone();
                 let mut index: usize = 0;
                 html! {

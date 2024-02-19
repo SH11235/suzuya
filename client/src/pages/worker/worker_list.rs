@@ -13,7 +13,7 @@ use yew::{
 
 #[function_component(WorkerList)]
 pub fn worker_list() -> Html {
-    let workers_state = use_state(|| vec![]);
+    let workers_state = use_state(std::vec::Vec::new);
     let get_url = format!("{}{}", backend_url(), "/api/worker_list");
     let mut index: usize = 0;
     {

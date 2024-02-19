@@ -39,13 +39,13 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
     }];
     maker_list.extend(makers);
 
-    let sku = props.item_info.sku.clone().unwrap_or(0);
+    let sku = props.item_info.sku.unwrap_or(0);
     let sku = if sku == 0 {
         "".to_string()
     } else {
         sku.to_string()
     };
-    let retail_price = props.item_info.retail_price.clone().unwrap_or(0);
+    let retail_price = props.item_info.retail_price.unwrap_or(0);
     let retail_price = if retail_price == 0 {
         "".to_string()
     } else {
@@ -63,7 +63,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
             let input: HtmlInputElement = e.target_unchecked_into();
             let val: String = input.value();
             let name_index: String = input.name();
-            let name_index = name_index.as_str().split("-").collect::<Vec<&str>>();
+            let name_index = name_index.as_str().split('-').collect::<Vec<&str>>();
             let name = name_index[0];
             let name = match name {
                 "name" => ItemInfo::Name,
@@ -107,14 +107,14 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                     id: item.id.clone(),
                     name: item.name.clone(),
                     product_code: item.product_code.clone(),
-                    sku: item.sku.clone(),
+                    sku: item.sku,
                     illust_status: item.illust_status.clone(),
                     pic_illust_id: item.pic_illust_id.clone(),
                     design_status: item.design_status.clone(),
                     pic_design_id: item.pic_design_id.clone(),
                     maker_id: item.maker_id.clone(),
-                    retail_price: item.retail_price.clone(),
-                    resubmission: item.resubmission.clone(),
+                    retail_price: item.retail_price,
+                    resubmission: item.resubmission,
                     line: item.line.clone(),
                     rough_coordinator_id: item.rough_coordinator_id.clone(),
                     rough_check_person_id: item.rough_check_person_id.clone(),
@@ -134,7 +134,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                         .clone(),
                     jan_coordinator_id: item.jan_coordinator_id.clone(),
                     jan_check_person_id: item.jan_check_person_id.clone(),
-                    is_saved: item.is_saved.clone(),
+                    is_saved: item.is_saved,
                 })
             });
 
@@ -168,7 +168,7 @@ pub fn item_detail(props: &ItemDetailProperty) -> Html {
                 }
                 ItemInfo::Resubmission => {
                     original_items[index - 1].resubmission =
-                        if val == RESUBMISSION_OK { true } else { false };
+                        val == RESUBMISSION_OK;
                 }
                 ItemInfo::Line => {
                     original_items[index - 1].line = val.parse().unwrap();

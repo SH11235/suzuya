@@ -9,7 +9,7 @@ use yew::{function_component, html, use_effect_with_deps, use_state, Html};
 
 #[function_component(ItemList)]
 pub fn item_list() -> Html {
-    let title_list_group_by_year_month = use_state(|| vec![]);
+    let title_list_group_by_year_month = use_state(std::vec::Vec::new);
     let selected_yyyymm = use_state(|| "".to_string());
     let selected_titles: YearMonthTitleList =
         match title_list_group_by_year_month.clone().iter().find(
@@ -25,7 +25,7 @@ pub fn item_list() -> Html {
                 title_list: vec![],
             },
         };
-    let year_month_list_state = use_state(|| vec![]);
+    let year_month_list_state = use_state(std::vec::Vec::new);
     let get_url = format!("{}{}", backend_url(), "/api/item_list");
 
     {
@@ -137,7 +137,7 @@ pub fn item_list() -> Html {
                             "none"
                         };
                         let display_style = format!("display: {};", is_display);
-                        if title_with_items.items.len() == 0 {
+                        if title_with_items.items.is_empty() {
                             html! {
                                 <tr style={display_style.clone()}>
                                     <td rowspan={date_column_rowspan.to_string()}>
@@ -246,7 +246,7 @@ pub fn item_list() -> Html {
                                                     {item.maker_code.clone().unwrap_or("".to_string())}
                                                 </td>
                                                 <td>
-                                                    {item.retail_price.clone().unwrap_or(0)}
+                                                    {item.retail_price.unwrap_or(0)}
                                                 </td>
                                                 <td>
                                                     {resubmission}
@@ -293,7 +293,7 @@ pub fn item_list() -> Html {
                                                     {item.maker_code.clone().unwrap_or("".to_string())}
                                                 </td>
                                                 <td>
-                                                    {item.retail_price.clone().unwrap_or(0)}
+                                                    {item.retail_price.unwrap_or(0)}
                                                 </td>
                                                 <td>
                                                     {resubmission}

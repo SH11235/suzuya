@@ -83,11 +83,11 @@ pub fn save_button(props: &SaveButtonProperty) -> Html {
             input.value()
         };
         // worker_nameが空の場合はアラートを出す
-        if worker_name == "" {
+        if worker_name.is_empty() {
             let error_message = "名前を入力してください";
             web_sys::window()
                 .unwrap()
-                .alert_with_message(&error_message)
+                .alert_with_message(error_message)
                 .unwrap();
             return;
         }
